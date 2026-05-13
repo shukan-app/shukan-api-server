@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: shukan-local-postgres
+    environment:
+      POSTGRES_USER: shukan_user
+      POSTGRES_PASSWORD: dev_password
+      POSTGRES_DB: shukan_dev
+      TZ: Asia/Tokyo
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+
+volumes:
+  postgres-data:
