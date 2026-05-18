@@ -10,11 +10,19 @@ public final class Main {
 	}
 	
 	private void migrateDatabase() {
-		String url = System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:postgresql://localhost:5432/shukan_dev");
-		String user = System.getenv().getOrDefault("JDBC_DATABASE_USERNAME", "shukan_user");
-		String password = System.getenv().getOrDefault("JDBC_DATABASE_PASSWORD", "dev_password");
+		String url = requireEnv("JDBC_DATABASE_URL");
+		String user = requireEnv("JDBC_DATABASE_USERNAME");
+		String password = requireEnv("JDBC_DATABASE_PASSWORD");
 		
 		Flyway flyway = Flyway.configure().dataSource(url, user, password).load();
 		flyway.migrate();
+	}
+	
+	private String requireEnv(String name) {
+		String value = System.getenv(name);
+		if (value == null || value.isBlank()) {
+			throw new IllegalStateException("Missing required environment variable: " + name);
+		}
+		return value;
 	}
 }
