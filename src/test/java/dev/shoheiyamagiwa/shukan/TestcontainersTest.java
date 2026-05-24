@@ -31,7 +31,7 @@ public class TestcontainersTest {
 			
 			try (ResultSet rs = statement.executeQuery("SELECT 1 AS result")) {
 				assertTrue(rs.next());
-				assertEquals(1, rs.getInt("result"), "It should be successful to query data to PostgreSQL");
+				assertEquals(1, rs.getInt("result"), "Querying PostgreSQL returned an unexpected value");
 			}
 		}
 	}
