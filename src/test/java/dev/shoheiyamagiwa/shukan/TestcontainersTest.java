@@ -29,9 +29,10 @@ public class TestcontainersTest {
 		try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
 		     Statement statement = connection.createStatement()) {
 			
-			ResultSet rs = statement.executeQuery("SELECT 1 AS result");
-			assertTrue(rs.next());
-			assertEquals(1, rs.getInt("result"), "It should be successful to query data to PostgreSQL");
+			try (ResultSet rs = statement.executeQuery("SELECT 1 AS result")) {
+				assertTrue(rs.next());
+				assertEquals(1, rs.getInt("result"), "It should be successful to query data to PostgreSQL");
+			}
 		}
 	}
 }
