@@ -51,9 +51,9 @@ public final class MainTest {
 		
 		try {
 			HttpResponse<String> response = sendGet(app, "/protected",
-					"Authorization", "Bearer valid-token",
-					"X-Firebase-AppCheck", "valid-app-check-token",
-					"CF-Connecting-IP", "203.0.113.10");
+				"Authorization", "Bearer valid-token",
+				"X-Firebase-AppCheck", "valid-app-check-token",
+				"CF-Connecting-IP", "203.0.113.10");
 			
 			assertEquals(200, response.statusCode());
 			assertEquals("{\"authId\":\"auth-valid-token\",\"clientIp\":\"203.0.113.10\"}", response.body());
@@ -68,8 +68,8 @@ public final class MainTest {
 		
 		try {
 			HttpResponse<String> response = sendGet(app, "/protected",
-					"X-Firebase-AppCheck", "valid-app-check-token",
-					"CF-Connecting-IP", "203.0.113.10");
+				"X-Firebase-AppCheck", "valid-app-check-token",
+				"CF-Connecting-IP", "203.0.113.10");
 			
 			assertEquals(401, response.statusCode());
 			assertEquals("{\"message\":\"Unauthorized\"}", response.body());
@@ -84,9 +84,9 @@ public final class MainTest {
 		
 		try {
 			HttpResponse<String> response = sendGet(app, "/protected",
-					"Authorization", "valid-token",
-					"X-Firebase-AppCheck", "valid-app-check-token",
-					"CF-Connecting-IP", "203.0.113.10");
+				"Authorization", "valid-token",
+				"X-Firebase-AppCheck", "valid-app-check-token",
+				"CF-Connecting-IP", "203.0.113.10");
 			
 			assertEquals(401, response.statusCode());
 			assertEquals("{\"message\":\"Unauthorized\"}", response.body());
@@ -101,9 +101,9 @@ public final class MainTest {
 		
 		try {
 			HttpResponse<String> response = sendGet(app, "/protected",
-					"Authorization", "Bearer valid-token",
-					"X-Firebase-AppCheck", "valid-app-check-token",
-					"CF-Connecting-IP", "203.0.113.10");
+				"Authorization", "Bearer valid-token",
+				"X-Firebase-AppCheck", "valid-app-check-token",
+				"CF-Connecting-IP", "203.0.113.10");
 			
 			assertEquals(401, response.statusCode());
 			assertEquals("{\"message\":\"Unauthorized\"}", response.body());
@@ -118,8 +118,8 @@ public final class MainTest {
 		
 		try {
 			HttpResponse<String> response = sendGet(app, "/protected",
-					"Authorization", "Bearer valid-token",
-					"CF-Connecting-IP", "203.0.113.10");
+				"Authorization", "Bearer valid-token",
+				"CF-Connecting-IP", "203.0.113.10");
 			
 			assertEquals(403, response.statusCode());
 			assertEquals("{\"message\":\"Forbidden\"}", response.body());
@@ -134,9 +134,9 @@ public final class MainTest {
 		
 		try {
 			HttpResponse<String> response = sendGet(app, "/protected",
-					"Authorization", "Bearer valid-token",
-					"X-Firebase-AppCheck", "valid-app-check-token",
-					"CF-Connecting-IP", "203.0.113.10");
+				"Authorization", "Bearer valid-token",
+				"X-Firebase-AppCheck", "valid-app-check-token",
+				"CF-Connecting-IP", "203.0.113.10");
 			
 			assertEquals(403, response.statusCode());
 			assertEquals("{\"message\":\"Forbidden\"}", response.body());
@@ -151,8 +151,8 @@ public final class MainTest {
 		
 		try {
 			HttpResponse<String> response = sendGet(app, "/protected",
-					"Authorization", "Bearer valid-token",
-					"X-Firebase-AppCheck", "valid-app-check-token");
+				"Authorization", "Bearer valid-token",
+				"X-Firebase-AppCheck", "valid-app-check-token");
 			
 			assertEquals(400, response.statusCode());
 			assertEquals("{\"message\":\"Bad Request\"}", response.body());
@@ -167,9 +167,9 @@ public final class MainTest {
 		
 		try {
 			HttpResponse<String> response = sendGet(app, "/protected",
-					"Authorization", "Bearer valid-token",
-					"X-Firebase-AppCheck", "valid-app-check-token",
-					"CF-Connecting-IP", "203.0.113.10");
+				"Authorization", "Bearer valid-token",
+				"X-Firebase-AppCheck", "valid-app-check-token",
+				"CF-Connecting-IP", "203.0.113.10");
 			
 			assertEquals(400, response.statusCode());
 			assertEquals("{\"message\":\"Bad Request\"}", response.body());
@@ -204,10 +204,10 @@ public final class MainTest {
 	}
 	
 	private HttpResponse<String> sendGet(Javalin app, String path, String... headers)
-			throws IOException, InterruptedException {
+		throws IOException, InterruptedException {
 		HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
-				.uri(URI.create("http://localhost:" + app.port() + path))
-				.GET();
+			.uri(URI.create("http://localhost:" + app.port() + path))
+			.GET();
 		
 		for (int i = 0; i < headers.length; i += 2) {
 			requestBuilder.header(headers[i], headers[i + 1]);

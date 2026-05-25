@@ -21,11 +21,6 @@ public final class Main {
 		main.start();
 	}
 	
-	private void start() {
-		migrateDatabase();
-		createApplication().start(resolvePort());
-	}
-	
 	public static Javalin createApplication() {
 		return createApplication(new DenyingAuthMiddlewareProvider());
 	}
@@ -46,11 +41,11 @@ public final class Main {
 			routeRegistrar.accept(config.routes);
 			
 			config.routes.error(HttpStatus.NOT_FOUND, ctx -> ctx
-					.status(HttpStatus.NOT_FOUND)
-					.json(new ErrorResponseDto("Not Found")));
+				.status(HttpStatus.NOT_FOUND)
+				.json(new ErrorResponseDto("Not Found")));
 			config.routes.exception(Exception.class, (exception, ctx) -> ctx
-					.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.json(new ErrorResponseDto("Internal Server Error")));
+				.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.json(new ErrorResponseDto("Internal Server Error")));
 		});
 	}
 	
@@ -68,6 +63,11 @@ public final class Main {
 		} catch (NumberFormatException exception) {
 			throw new IllegalStateException("PORT must be a valid integer: " + value, exception);
 		}
+	}
+	
+	private void start() {
+		migrateDatabase();
+		createApplication().start(resolvePort());
 	}
 	
 	private void migrateDatabase() {
