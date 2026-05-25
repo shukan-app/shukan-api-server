@@ -30,7 +30,8 @@ public final class ArchitectureTest {
 		Architectures.layeredArchitecture()
 				.consideringAllDependencies()
 				.withOptionalLayers(true)
-				.layer("Controller").definedBy("dev.shoheiyamagiwa.shukan.controller..", "dev.shoheiyamagiwa.shukan")
+				.layer("Controller").definedBy("dev.shoheiyamagiwa.shukan.controller..",
+						"dev.shoheiyamagiwa.shukan.middleware..", "dev.shoheiyamagiwa.shukan")
 				.layer("Service").definedBy("dev.shoheiyamagiwa.shukan.service..")
 				.layer("Repository").definedBy("dev.shoheiyamagiwa.shukan.repository..")
 				.layer("Entity").definedBy("dev.shoheiyamagiwa.shukan.entity..")
@@ -109,7 +110,8 @@ public final class ArchitectureTest {
 				.should().dependOnClassesThat().resideInAnyPackage(
 						"dev.shoheiyamagiwa.shukan.service..",
 						"dev.shoheiyamagiwa.shukan.repository..",
-						"dev.shoheiyamagiwa.shukan.controller.."
+						"dev.shoheiyamagiwa.shukan.controller..",
+						"dev.shoheiyamagiwa.shukan.middleware.."
 				)
 				.allowEmptyShould(true)
 				.check(importedClasses);
