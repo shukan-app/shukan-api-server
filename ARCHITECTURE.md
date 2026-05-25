@@ -34,37 +34,37 @@
 
 ```java
 public interface UserRepository {
-    void save(User user);
+	void save(User user);
 }
 
 public interface ProfileRepository {
-    void save(Profile profile);
+	void save(Profile profile);
 }
 
 public interface RepositoryProvider {
-    UserRepository getUserRepository();
+	UserRepository getUserRepository();
 
-    ProfileRepository getProfileRepository();
+	ProfileRepository getProfileRepository();
 }
 
 public interface TransactionManager {
-    <T> T executeInTransaction(Function<RepositoryProvider, T> operation);
+	<T> T executeInTransaction(Function<RepositoryProvider, T> operation);
 }
 
 public final class UserService {
-    private final TransactionManager transactionManager;
+	private final TransactionManager transactionManager;
 
-    public UserService(TransactionManager transactionManager) {
-        this.transactionManager = transactionManager;
-    }
+	public UserService(TransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
 
-    public void registerUser(User user, Profile profile) {
-        transactionManager.executeInTransaction(provider -> {
-            provider.getUserRepository().save(user);
-            provider.getProfileRepository().save(profile);
-            return null;
-        });
-    }
+	public void registerUser(User user, Profile profile) {
+		transactionManager.executeInTransaction(provider -> {
+			provider.getUserRepository().save(user);
+			provider.getProfileRepository().save(profile);
+			return null;
+		});
+	}
 }
 ```
 
@@ -100,164 +100,164 @@ public final class UserService {
 import java.sql.Connection;
 
 public final class PostgresUserDao {
-    private final Connection connection;
+	private final Connection connection;
 
-    public PostgresUserDao(Connection connection) {
-        this.connection = connection;
-    }
+	public PostgresUserDao(Connection connection) {
+		this.connection = connection;
+	}
 
-    public Optional<PostgresUserDto> selectById(String id) {
-        /* SELECT */
-    }
+	public Optional<PostgresUserDto> selectById(String id) {
+		/* SELECT */
+	}
 
-    public void upsert(String id, String name) {
-        /* INSERT/UPDATE */
-    }
+	public void upsert(String id, String name) {
+		/* INSERT/UPDATE */
+	}
 }
 
 public final class RedisUserDao {
-    private final JedisPool jedisPool;
+	private final JedisPool jedisPool;
 
-    public RedisUserDao(JedisPool jedisPool) {
-        this.jedisPool = jedisPool;
-    }
+	public RedisUserDao(JedisPool jedisPool) {
+		this.jedisPool = jedisPool;
+	}
 
-    public Optional<RedisUserDto> get(String id) {
-        /* GET & Deserialize */
-    }
+	public Optional<RedisUserDto> get(String id) {
+		/* GET & Deserialize */
+	}
 
-    public void set(String id, String name) {
-        /* SETEX */
-    }
+	public void set(String id, String name) {
+		/* SETEX */
+	}
 
-    public void delete(String id) {
-        /* DEL */
-    }
+	public void delete(String id) {
+		/* DEL */
+	}
 }
 
 // ProfileRepositoryImplも同様に実装する
 public final class UserRepositoryImpl implements UserRepository {
-    private final PostgresUserDao postgresDao;
-    private final RedisUserDao redisDao;
+	private final PostgresUserDao postgresDao;
+	private final RedisUserDao redisDao;
 
-    public UserRepositoryImpl(PostgresUserDao postgresDao, RedisUserDao redisDao) {
-        this.postgresDao = postgresDao;
-        this.redisDao = redisDao;
-    }
+	public UserRepositoryImpl(PostgresUserDao postgresDao, RedisUserDao redisDao) {
+		this.postgresDao = postgresDao;
+		this.redisDao = redisDao;
+	}
 
-    @Override
-    public Optional<User> findById(String id) {
-        // Check for cached data
-        Optional<RedisUserDto> redisDtoOpt = redisDao.get(id);
-        if (redisDtoOpt.isPresent()) {
-            return Optional.of(toDomainEntity(redisDtoOpt.get()));
-        }
+	@Override
+	public Optional<User> findById(String id) {
+		// Check for cached data
+		Optional<RedisUserDto> redisDtoOpt = redisDao.get(id);
+		if (redisDtoOpt.isPresent()) {
+			return Optional.of(toDomainEntity(redisDtoOpt.get()));
+		}
 
-        // Check for data in a Database
-        Optional<PostgresUserDto> pgDtoOpt = postgresDao.selectById(id);
+		// Check for data in a Database
+		Optional<PostgresUserDto> pgDtoOpt = postgresDao.selectById(id);
 
-        if (pgDtoOpt.isPresent()) {
-            User user = toDomainEntity(pgDtoOpt.get());
+		if (pgDtoOpt.isPresent()) {
+			User user = toDomainEntity(pgDtoOpt.get());
 
-            redisDao.set(user.getId(), user.getName());
+			redisDao.set(user.getId(), user.getName());
 
-            return Optional.of(user);
-        }
+			return Optional.of(user);
+		}
 
-        return Optional.empty();
-    }
+		return Optional.empty();
+	}
 
-    @Override
-    public void save(User user) {
-        PostgresUserDto pgDto = toPostgresDto(user);
-        postgresDao.upsert(pgDto.id(), pgDto.name());
+	@Override
+	public void save(User user) {
+		PostgresUserDto pgDto = toPostgresDto(user);
+		postgresDao.upsert(pgDto.id(), pgDto.name());
 
-        redisDao.delete(user.getId());
-    }
+		redisDao.delete(user.getId());
+	}
 
-    // Mapping Method
-    private User toDomainEntity(PostgresUserDto dto) {
-        return new User(dto.id(), dto.name());
-    }
+	// Mapping Method
+	private User toDomainEntity(PostgresUserDto dto) {
+		return new User(dto.id(), dto.name());
+	}
 
-    private User toDomainEntity(RedisUserDto dto) {
-        return new User(dto.id(), dto.name());
-    }
+	private User toDomainEntity(RedisUserDto dto) {
+		return new User(dto.id(), dto.name());
+	}
 
-    private PostgresUserDto toPostgresDto(User entity) {
-        return new PostgresUserDto(entity.getId(), entity.getName());
-    }
+	private PostgresUserDto toPostgresDto(User entity) {
+		return new PostgresUserDto(entity.getId(), entity.getName());
+	}
 
-    private RedisUserDto toRedisDto(User entity) {
-        return new RedisUserDto(entity.getId(), entity.getName());
-    }
+	private RedisUserDto toRedisDto(User entity) {
+		return new RedisUserDto(entity.getId(), entity.getName());
+	}
 }
 
 public final class JdbcRepositoryProvider implements RepositoryProvider {
-    private final Connection connection;
-    private final JedisPool jedisPool;
+	private final Connection connection;
+	private final JedisPool jedisPool;
 
-    private UserRepository userRepository;
-    private ProfileRepository profileRepository;
+	private UserRepository userRepository;
+	private ProfileRepository profileRepository;
 
-    public JdbcRepositoryProvider(Connection connection, JedisPool jedisPool) {
-        this.connection = connection;
-        this.jedisPool = jedisPool;
-    }
+	public JdbcRepositoryProvider(Connection connection, JedisPool jedisPool) {
+		this.connection = connection;
+		this.jedisPool = jedisPool;
+	}
 
-    @Override
-    public UserRepository getUserRepository() {
-        if (this.userRepository == null) {
-            PostgresUserDao postgresDao = new PostgresUserDao(this.connection);
-            RedisUserDao redisDao = new RedisUserDao(this.jedisPool);
+	@Override
+	public UserRepository getUserRepository() {
+		if (this.userRepository == null) {
+			PostgresUserDao postgresDao = new PostgresUserDao(this.connection);
+			RedisUserDao redisDao = new RedisUserDao(this.jedisPool);
 
-            this.userRepository = new UserRepositoryImpl(postgresDao, redisDao);
-        }
-        return this.userRepository;
-    }
+			this.userRepository = new UserRepositoryImpl(postgresDao, redisDao);
+		}
+		return this.userRepository;
+	}
 
-    @Override
-    public ProfileRepository getProfileRepository() {
-        if (this.profileRepository == null) {
-            PostgresProfileDao postgresDao = new PostgresProfileDao(this.connection);
-            RedisProfileDao redisDao = new RedisProfileDao(this.jedisPool);
+	@Override
+	public ProfileRepository getProfileRepository() {
+		if (this.profileRepository == null) {
+			PostgresProfileDao postgresDao = new PostgresProfileDao(this.connection);
+			RedisProfileDao redisDao = new RedisProfileDao(this.jedisPool);
 
-            this.profileRepository = new ProfileRepositoryImpl(postgresDao, redisDao);
-        }
-        return this.profileRepository;
-    }
+			this.profileRepository = new ProfileRepositoryImpl(postgresDao, redisDao);
+		}
+		return this.profileRepository;
+	}
 }
 
 public final class JdbcTransactionManager implements TransactionManager {
-    private final DataSource dataSource;
-    private final JedisPool jedisPool;
+	private final DataSource dataSource;
+	private final JedisPool jedisPool;
 
-    public JdbcTransactionManager(DataSource dataSource, JedisPool jedisPool) {
-        this.dataSource = dataSource;
-        this.jedisPool = jedisPool;
-    }
+	public JdbcTransactionManager(DataSource dataSource, JedisPool jedisPool) {
+		this.dataSource = dataSource;
+		this.jedisPool = jedisPool;
+	}
 
-    @Override
-    public <T> T executeInTransaction(Function<RepositoryProvider, T> operation) {
-        try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
+	@Override
+	public <T> T executeInTransaction(Function<RepositoryProvider, T> operation) {
+		try (Connection conn = dataSource.getConnection()) {
+			conn.setAutoCommit(false);
 
-            try {
-                RepositoryProvider provider = new JdbcRepositoryProvider(conn, jedisPool);
+			try {
+				RepositoryProvider provider = new JdbcRepositoryProvider(conn, jedisPool);
 
-                T result = operation.apply(provider);
+				T result = operation.apply(provider);
 
-                conn.commit();
-                return result;
+				conn.commit();
+				return result;
 
-            } catch (Exception e) {
-                conn.rollback();
-                throw new RuntimeException("Transaction failed and rolled back", e);
-            }
-        } catch (SQLException e) {
-            throw new InfrastructureException("Database connection error", e);
-        }
-    }
+			} catch (Exception e) {
+				conn.rollback();
+				throw new RuntimeException("Transaction failed and rolled back", e);
+			}
+		} catch (SQLException e) {
+			throw new InfrastructureException("Database connection error", e);
+		}
+	}
 }
 ```
 
