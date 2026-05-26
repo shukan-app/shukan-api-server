@@ -7,14 +7,9 @@ public final class DenyingAuthMiddlewareProvider implements AuthMiddlewareProvid
 	public Optional<String> verifyBearerToken(String bearerToken) {
 		return Optional.empty();
 	}
-	
+
 	@Override
 	public boolean verifyAppCheckToken(String appCheckToken) {
 		return false;
-	}
-	
-	@Override
-	public Optional<String> verifyConnectingIp(String connectingIp) {
-		return Optional.empty();
 	}
 }
