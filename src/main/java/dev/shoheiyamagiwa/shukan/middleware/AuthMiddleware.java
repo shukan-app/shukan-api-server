@@ -11,7 +11,6 @@ import java.util.Optional;
 public final class AuthMiddleware {
 	private static final String AUTHORIZATION_HEADER = "Authorization";
 	private static final String APP_CHECK_HEADER = "X-Firebase-AppCheck";
-	private static final String CONNECTING_IP_HEADER = "CF-Connecting-IP";
 	private static final String BEARER_PREFIX = "Bearer ";
 	
 	private final AuthMiddlewareProvider provider;
@@ -53,20 +52,8 @@ public final class AuthMiddleware {
 			return;
 		}
 		
-		String connectingIp = ctx.header(CONNECTING_IP_HEADER);
-		if (isBlank(connectingIp)) {
-			reject(ctx, HttpStatus.BAD_REQUEST, "Bad Request");
-			return;
-		}
-		
-		Optional<String> clientIp = provider.verifyConnectingIp(connectingIp);
-		if (clientIp.isEmpty()) {
-			reject(ctx, HttpStatus.BAD_REQUEST, "Bad Request");
-			return;
-		}
-		
 		ctx.attribute(AuthenticatedRequestContext.ATTRIBUTE_NAME,
-			new AuthenticatedRequestContext(authId.get(), clientIp.get()));
+			new AuthenticatedRequestContext(authId.get()));
 	}
 	
 	private boolean isBlank(@Nullable String value) {
