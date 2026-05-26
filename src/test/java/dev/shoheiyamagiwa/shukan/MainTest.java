@@ -46,13 +46,12 @@ public final class MainTest {
 	}
 
 	@Test
-	public void testProtectedEndpointAcceptsVerifiedHeaders() throws IOException, InterruptedException {
-		Javalin app = createProtectedApplication(new TestAuthMiddlewareProvider(true, true)).start(0);
+	public void testProtectedEndpointAcceptsVerifiedToken() throws IOException, InterruptedException {
+		Javalin app = createProtectedApplication(new TestAuthMiddlewareProvider(true)).start(0);
 
 		try {
 			HttpResponse<String> response = sendGet(app, "/protected",
-				"Authorization", "Bearer valid-token",
-				"X-Firebase-AppCheck", "valid-app-check-token");
+				"Authorization", "Bearer valid-token");
 
 			assertEquals(200, response.statusCode());
 			assertEquals("{\"authId\":\"auth-valid-token\"}", response.body());
@@ -63,11 +62,10 @@ public final class MainTest {
 
 	@Test
 	public void testProtectedEndpointRejectsMissingAuthorizationHeader() throws IOException, InterruptedException {
-		Javalin app = createProtectedApplication(new TestAuthMiddlewareProvider(true, true)).start(0);
+		Javalin app = createProtectedApplication(new TestAuthMiddlewareProvider(true)).start(0);
 
 		try {
-			HttpResponse<String> response = sendGet(app, "/protected",
-				"X-Firebase-AppCheck", "valid-app-check-token");
+			HttpResponse<String> response = sendGet(app, "/protected");
 
 			assertEquals(401, response.statusCode());
 			assertEquals("{\"message\":\"Unauthorized\"}", response.body());
@@ -78,12 +76,11 @@ public final class MainTest {
 
 	@Test
 	public void testProtectedEndpointRejectsMalformedAuthorizationHeader() throws IOException, InterruptedException {
-		Javalin app = createProtectedApplication(new TestAuthMiddlewareProvider(true, true)).start(0);
+		Javalin app = createProtectedApplication(new TestAuthMiddlewareProvider(true)).start(0);
 
 		try {
 			HttpResponse<String> response = sendGet(app, "/protected",
-				"Authorization", "valid-token",
-				"X-Firebase-AppCheck", "valid-app-check-token");
+				"Authorization", "valid-token");
 
 			assertEquals(401, response.statusCode());
 			assertEquals("{\"message\":\"Unauthorized\"}", response.body());
@@ -94,46 +91,14 @@ public final class MainTest {
 
 	@Test
 	public void testProtectedEndpointRejectsAuthorizationProviderFailure() throws IOException, InterruptedException {
-		Javalin app = createProtectedApplication(new TestAuthMiddlewareProvider(false, true)).start(0);
-
-		try {
-			HttpResponse<String> response = sendGet(app, "/protected",
-				"Authorization", "Bearer valid-token",
-				"X-Firebase-AppCheck", "valid-app-check-token");
-
-			assertEquals(401, response.statusCode());
-			assertEquals("{\"message\":\"Unauthorized\"}", response.body());
-		} finally {
-			app.stop();
-		}
-	}
-
-	@Test
-	public void testProtectedEndpointRejectsMissingAppCheckHeader() throws IOException, InterruptedException {
-		Javalin app = createProtectedApplication(new TestAuthMiddlewareProvider(true, true)).start(0);
+		Javalin app = createProtectedApplication(new TestAuthMiddlewareProvider(false)).start(0);
 
 		try {
 			HttpResponse<String> response = sendGet(app, "/protected",
 				"Authorization", "Bearer valid-token");
 
-			assertEquals(403, response.statusCode());
-			assertEquals("{\"message\":\"Forbidden\"}", response.body());
-		} finally {
-			app.stop();
-		}
-	}
-
-	@Test
-	public void testProtectedEndpointRejectsAppCheckProviderFailure() throws IOException, InterruptedException {
-		Javalin app = createProtectedApplication(new TestAuthMiddlewareProvider(true, false)).start(0);
-
-		try {
-			HttpResponse<String> response = sendGet(app, "/protected",
-				"Authorization", "Bearer valid-token",
-				"X-Firebase-AppCheck", "valid-app-check-token");
-
-			assertEquals(403, response.statusCode());
-			assertEquals("{\"message\":\"Forbidden\"}", response.body());
+			assertEquals(401, response.statusCode());
+			assertEquals("{\"message\":\"Unauthorized\"}", response.body());
 		} finally {
 			app.stop();
 		}
@@ -182,19 +147,13 @@ public final class MainTest {
 	private record ProtectedResponseDto(String authId) {
 	}
 
-	private record TestAuthMiddlewareProvider(boolean acceptsAuthorization,
-	                                          boolean acceptsAppCheck) implements AuthMiddlewareProvider {
+	private record TestAuthMiddlewareProvider(boolean acceptsAuthorization) implements AuthMiddlewareProvider {
 		@Override
 		public Optional<String> verifyBearerToken(String bearerToken) {
 			if (!acceptsAuthorization) {
 				return Optional.empty();
 			}
 			return Optional.of("auth-" + bearerToken);
-		}
-
-		@Override
-		public boolean verifyAppCheckToken(String appCheckToken) {
-			return acceptsAppCheck;
 		}
 	}
 }

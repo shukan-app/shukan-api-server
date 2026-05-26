@@ -30,8 +30,5 @@ public final class FirebaseAuthMiddlewareProvider implements AuthMiddlewareProvi
 		}
 	}
 
-	@Override
-	public boolean verifyAppCheckToken(String appCheckToken) {
-		return true;
-	}
+
 }

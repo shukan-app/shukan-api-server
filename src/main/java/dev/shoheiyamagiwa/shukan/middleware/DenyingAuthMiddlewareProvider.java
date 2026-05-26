@@ -8,8 +8,5 @@ public final class DenyingAuthMiddlewareProvider implements AuthMiddlewareProvid
 		return Optional.empty();
 	}
 
-	@Override
-	public boolean verifyAppCheckToken(String appCheckToken) {
-		return false;
-	}
+
 }
