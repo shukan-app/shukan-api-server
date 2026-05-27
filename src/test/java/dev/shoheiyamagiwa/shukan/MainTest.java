@@ -54,7 +54,7 @@ public final class MainTest {
 				"Authorization", "Bearer valid-token");
 
 			assertEquals(200, response.statusCode());
-			assertEquals("{\"authId\":\"auth-valid-token\"}", response.body());
+			assertEquals("{\"userId\":\"auth-valid-token\"}", response.body());
 		} finally {
 			app.stop();
 		}
@@ -125,7 +125,7 @@ public final class MainTest {
 			if (authContext == null) {
 				throw new IllegalStateException("Missing authenticated request context");
 			}
-			ctx.json(new ProtectedResponseDto(authContext.authId()));
+			ctx.json(new ProtectedResponseDto(authContext.userId()));
 		}));
 	}
 
@@ -144,7 +144,7 @@ public final class MainTest {
 		return HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 	}
 
-	private record ProtectedResponseDto(String authId) {
+	private record ProtectedResponseDto(String userId) {
 	}
 
 	private record TestAuthMiddlewareProvider(boolean acceptsAuthorization) implements AuthMiddlewareProvider {

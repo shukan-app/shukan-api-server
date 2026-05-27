@@ -37,14 +37,14 @@ public final class AuthMiddleware {
 			return;
 		}
 		
-		Optional<String> authId = provider.verifyBearerToken(bearerToken);
-		if (authId.isEmpty()) {
+		Optional<String> userId = provider.verifyBearerToken(bearerToken);
+		if (userId.isEmpty()) {
 			reject(ctx, HttpStatus.UNAUTHORIZED, "Unauthorized");
 			return;
 		}
-		
+
 		ctx.attribute(AuthenticatedRequestContext.ATTRIBUTE_NAME,
-			new AuthenticatedRequestContext(authId.get()));
+			new AuthenticatedRequestContext(userId.get()));
 	}
 	
 	private void reject(Context ctx, HttpStatus status, String message) {
