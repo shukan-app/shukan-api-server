@@ -7,6 +7,4 @@ public final class DenyingAuthMiddlewareProvider implements AuthMiddlewareProvid
 	public Optional<String> verifyBearerToken(String bearerToken) {
 		return Optional.empty();
 	}
-
-
 }
