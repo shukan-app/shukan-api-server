@@ -59,7 +59,7 @@ public final class Main {
 		return parsePort(System.getenv("PORT"));
 	}
 	
-	public static int parsePort(@Nullable String value) {
+	static int parsePort(@Nullable String value) {
 		if (value == null || value.isBlank()) {
 			return 7070;
 		}
