@@ -1,0 +1,1 @@
+ブランチ名は `GitHub Flow` をベースとし，Issueの番号を含めてください．(例: `feature/#1-create-something-great`)
