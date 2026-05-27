@@ -44,7 +44,7 @@ public final class FirebaseAuthMiddlewareProviderTest {
 	}
 
 	@Test
-	public void testVerifyBearerTokenReturnsEmptyOnRuntimeException() {
+	public void testVerifyBearerTokenReturnsEmptyOnUnexpectedRuntimeException() {
 		FirebaseAuthMiddlewareProvider provider = new FirebaseAuthMiddlewareProvider(
 			token -> {
 				throw new RuntimeException("Unexpected error");
