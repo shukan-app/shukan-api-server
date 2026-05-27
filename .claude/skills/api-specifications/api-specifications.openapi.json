@@ -1,0 +1,3025 @@
+{
+	"openapi": "3.1.0",
+	"info": {
+		"title": "デフォルトモジュール",
+		"description": "",
+		"version": "1.0.0"
+	},
+	"tags": [],
+	"paths": {
+		"/users/me/companies": {
+			"get": {
+				"summary": "自身が登録しているすべての企業を取得する",
+				"deprecated": false,
+				"description": "自身が登録しているすべての企業を取得するエンドポイント",
+				"operationId": "getCompanies",
+				"tags": [],
+				"parameters": [
+					{
+						"name": "page",
+						"in": "query",
+						"description": "ページ番号",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 0,
+							"writeOnly": true,
+							"minimum": 0,
+							"maximum": 99
+						}
+					},
+					{
+						"name": "pageSize",
+						"in": "query",
+						"description": "取得件数",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 50,
+							"maximum": 100,
+							"minimum": 1
+						}
+					},
+					{
+						"name": "q",
+						"in": "query",
+						"description": "検索クエリ（企業名）",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"writeOnly": true,
+							"minLength": 1,
+							"maxLength": 32
+						}
+					},
+					{
+						"name": "status",
+						"in": "query",
+						"description": "ステータス",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"writeOnly": true,
+							"enum": [
+								"bookmarked",
+								"preentry",
+								"informalContact",
+								"experienceProgram",
+								"preparingApplication",
+								"underScreening",
+								"interviewScheduling",
+								"interviewInProgress",
+								"finalSelection",
+								"offerReceived",
+								"offerAccepted",
+								"offerDeclined",
+								"selectionWithdrawn",
+								"rejected"
+							],
+							"x-apidog-enum": [
+								{
+									"value": "bookmarked",
+									"name": "",
+									"description": "保存済み"
+								},
+								{
+									"value": "preentry",
+									"name": "",
+									"description": "プレエントリー済み"
+								},
+								{
+									"value": "informalContact",
+									"name": "",
+									"description": "カジュアル面談や座談会など"
+								},
+								{
+									"value": "experienceProgram",
+									"name": "",
+									"description": "体験プログラム（インターンなど）"
+								},
+								{
+									"value": "preparingApplication",
+									"name": "",
+									"description": "応募準備中"
+								},
+								{
+									"value": "underScreening",
+									"name": "",
+									"description": "選考結果待ち"
+								},
+								{
+									"value": "interviewScheduling",
+									"name": "",
+									"description": "面接日程調整中"
+								},
+								{
+									"value": "interviewInProgress",
+									"name": "",
+									"description": "面接進行中"
+								},
+								{
+									"value": "finalSelection",
+									"name": "",
+									"description": "最終選考中"
+								},
+								{
+									"value": "offerReceived",
+									"name": "",
+									"description": "内定確認中"
+								},
+								{
+									"value": "offerAccepted",
+									"name": "",
+									"description": "内定承諾済み"
+								},
+								{
+									"value": "offerDeclined",
+									"name": "",
+									"description": "内定辞退済み"
+								},
+								{
+									"value": "selectionWithdrawn",
+									"name": "",
+									"description": "選考辞退"
+								},
+								{
+									"value": "rejected",
+									"name": "",
+									"description": "お見送り"
+								}
+							]
+						}
+					},
+					{
+						"name": "sort",
+						"in": "query",
+						"description": "ソート種別",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": ["taskDate", "eventDate"],
+							"x-apidog-enum": [
+								{
+									"value": "taskDate",
+									"name": "タスク期限",
+									"description": ""
+								},
+								{
+									"value": "eventDate",
+									"name": "イベント日時",
+									"description": ""
+								}
+							],
+							"writeOnly": true
+						}
+					},
+					{
+						"name": "order",
+						"in": "query",
+						"description": "ソート順",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"readOnly": true,
+							"enum": ["ascend", "descend"],
+							"x-apidog-enum": [
+								{
+									"value": "ascend",
+									"name": "昇順",
+									"description": ""
+								},
+								{
+									"value": "descend",
+									"name": "降順",
+									"description": ""
+								}
+							]
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"pagination": {
+											"$ref": "#/components/schemas/%E3%83%9A%E3%83%BC%E3%82%B8%E3%83%8D%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3"
+										},
+										"data": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/%E4%BC%81%E6%A5%AD"
+											},
+											"minItems": 0,
+											"readOnly": true,
+											"maxItems": 100
+										}
+									},
+									"x-apidog-orders": ["pagination", "data"],
+									"required": ["pagination", "data"],
+									"x-apidog-ignore-properties": []
+								}
+							}
+						},
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "企業",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34194031-run"
+			},
+			"post": {
+				"summary": "企業を新規登録する",
+				"deprecated": false,
+				"description": "企業を新規登録するエンドポイント",
+				"operationId": "registerCompany",
+				"tags": [],
+				"parameters": [],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/%E4%BC%81%E6%A5%AD%E8%A9%B3%E7%B4%B0"
+							},
+							"examples": {}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/%E4%BC%81%E6%A5%AD%E8%A9%B3%E7%B4%B0"
+								}
+							}
+						},
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "企業",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34201948-run"
+			}
+		},
+		"/users/me/companies/{id}": {
+			"get": {
+				"summary": "特定の企業を取得する",
+				"deprecated": false,
+				"description": "特定の企業を取得するエンドポイント",
+				"operationId": "getCompany",
+				"tags": [],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "ID",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"writeOnly": true
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/%E4%BC%81%E6%A5%AD%E8%A9%B3%E7%B4%B0"
+								}
+							}
+						},
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "企業",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34202775-run"
+			},
+			"put": {
+				"summary": "特定の企業を更新する",
+				"deprecated": false,
+				"description": "特定の企業を更新するエンドポイント",
+				"operationId": "updateCompany",
+				"tags": [],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "ID",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"writeOnly": true
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "string",
+										"format": "uuid",
+										"readOnly": true,
+										"title": "ID"
+									},
+									"name": {
+										"type": "string",
+										"title": "名前",
+										"minLength": 2,
+										"maxLength": 32
+									},
+									"appliedRole": {
+										"type": "string",
+										"title": "応募役職",
+										"minLength": 2,
+										"maxLength": 32
+									},
+									"status": {
+										"title": "ステータス",
+										"$ref": "#/components/schemas/%E4%BC%81%E6%A5%AD%E3%82%B9%E3%83%86%E3%83%BC%E3%82%BF%E3%82%B9"
+									},
+									"applicationRoute": {
+										"title": "応募経路",
+										"$ref": "#/components/schemas/%E5%B0%B1%E6%B4%BB%E3%83%97%E3%83%A9%E3%83%83%E3%83%88%E3%83%95%E3%82%A9%E3%83%BC%E3%83%A0"
+									},
+									"contactType": {
+										"title": "連絡先種別",
+										"$ref": "#/components/schemas/%E9%80%A3%E7%B5%A1%E5%85%88%E7%A8%AE%E5%88%A5"
+									},
+									"createdAt": {
+										"type": "string",
+										"format": "date-time",
+										"readOnly": true,
+										"title": "作成日時",
+										"description": "RFC3339形式"
+									},
+									"updatedAt": {
+										"type": "string",
+										"format": "date-time",
+										"readOnly": true,
+										"title": "更新日時",
+										"description": "RFC3339形式"
+									},
+									"deletedAt": {
+										"type": ["string", "null"],
+										"format": "date-time",
+										"readOnly": true,
+										"title": "削除日時",
+										"description": "RFC3339形式"
+									}
+								},
+								"x-apidog-orders": [
+									"01KQ52Z0Q7W3YA0MF8MJC0NV7J"
+								],
+								"required": [
+									"id",
+									"name",
+									"appliedRole",
+									"status",
+									"applicationRoute",
+									"contactType",
+									"createdAt",
+									"updatedAt",
+									"deletedAt"
+								],
+								"x-apidog-refs": {
+									"01KQ52Z0Q7W3YA0MF8MJC0NV7J": {
+										"$ref": "#/components/schemas/%E4%BC%81%E6%A5%AD%E8%A9%B3%E7%B4%B0"
+									}
+								},
+								"x-apidog-ignore-properties": [
+									"id",
+									"name",
+									"appliedRole",
+									"status",
+									"applicationRoute",
+									"contactType",
+									"createdAt",
+									"updatedAt",
+									"deletedAt"
+								]
+							},
+							"examples": {}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/%E4%BC%81%E6%A5%AD%E8%A9%B3%E7%B4%B0"
+								}
+							}
+						},
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "企業",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34202459-run"
+			},
+			"delete": {
+				"summary": "特定の企業を削除する",
+				"deprecated": false,
+				"description": "特定の企業を削除するエンドポイント",
+				"operationId": "deleteCompany",
+				"tags": [],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "ID",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"writeOnly": true
+						}
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "",
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "企業",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34202772-run"
+			}
+		},
+		"/users/me/tasks": {
+			"get": {
+				"summary": "自身のタスクを複数取得する",
+				"deprecated": false,
+				"description": "自身のタスクを複数取得するためのエンドポイント",
+				"operationId": "getTasks",
+				"tags": [],
+				"parameters": [
+					{
+						"name": "page",
+						"in": "query",
+						"description": "ページ番号",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"writeOnly": true,
+							"minimum": 0,
+							"maximum": 99
+						}
+					},
+					{
+						"name": "pageSize",
+						"in": "query",
+						"description": "取得件数",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"minimum": 1,
+							"maximum": 100,
+							"writeOnly": true
+						}
+					},
+					{
+						"name": "type",
+						"in": "query",
+						"description": "タスク種別",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"title": "タスク種別",
+							"enum": [
+								"documentSubmission",
+								"assessment",
+								"scheduling",
+								"replyRequired",
+								"preparation",
+								"other"
+							],
+							"x-apidog-enum": [
+								{
+									"value": "documentSubmission",
+									"name": "書類の提出",
+									"description": ""
+								},
+								{
+									"value": "assessment",
+									"name": "テストの受検",
+									"description": ""
+								},
+								{
+									"value": "scheduling",
+									"name": "日程調整",
+									"description": ""
+								},
+								{
+									"value": "replyRequired",
+									"name": "企業への返信",
+									"description": ""
+								},
+								{
+									"value": "preparation",
+									"name": "選考準備・対策",
+									"description": ""
+								},
+								{
+									"value": "other",
+									"name": "その他",
+									"description": ""
+								}
+							]
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"pagination": {
+											"$ref": "#/components/schemas/%E3%83%9A%E3%83%BC%E3%82%B8%E3%83%8D%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3"
+										},
+										"data": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/%E3%82%BF%E3%82%B9%E3%82%AF"
+											}
+										}
+									},
+									"x-apidog-orders": ["pagination", "data"],
+									"required": ["pagination", "data"],
+									"x-apidog-ignore-properties": []
+								}
+							}
+						},
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "タスク",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34221052-run"
+			},
+			"post": {
+				"summary": "タスクを新しく登録する",
+				"deprecated": false,
+				"description": "タスクを新しく登録するためのエンドポイント",
+				"operationId": "addTask",
+				"tags": [],
+				"parameters": [],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/%E3%82%BF%E3%82%B9%E3%82%AF%E6%9B%B8%E3%81%8D%E8%BE%BC%E3%81%BF%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88"
+							},
+							"examples": {}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/%E3%82%BF%E3%82%B9%E3%82%AF"
+								}
+							}
+						},
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "タスク",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34222136-run"
+			}
+		},
+		"/users/me/tasks/{id}": {
+			"put": {
+				"summary": "特定のタスクを更新する",
+				"deprecated": false,
+				"description": "特定のタスクを更新するためのエンドポイント",
+				"operationId": "updateTask",
+				"tags": [],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "ID",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"writeOnly": true
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/%E3%82%BF%E3%82%B9%E3%82%AF%E6%9B%B8%E3%81%8D%E8%BE%BC%E3%81%BF%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88"
+							},
+							"examples": {}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/%E3%82%BF%E3%82%B9%E3%82%AF"
+								}
+							}
+						},
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "タスク",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34242044-run"
+			},
+			"delete": {
+				"summary": "特定のタスクを削除する",
+				"deprecated": false,
+				"description": "特定のタスクを削除するためのエンドポイント",
+				"operationId": "deleteTask",
+				"tags": [],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "ID",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"writeOnly": true
+						}
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "",
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "タスク",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34242168-run"
+			}
+		},
+		"/users/me/events": {
+			"get": {
+				"summary": "自身のイベントを複数取得する",
+				"deprecated": false,
+				"description": "自身のイベントを複数取得するエンドポイント",
+				"operationId": "getEvents",
+				"tags": [],
+				"parameters": [
+					{
+						"name": "page",
+						"in": "query",
+						"description": "ページ番号",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"writeOnly": true,
+							"minimum": 0,
+							"maximum": 99
+						}
+					},
+					{
+						"name": "pageSize",
+						"in": "query",
+						"description": "取得件数",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"writeOnly": true,
+							"minimum": 1,
+							"maximum": 100
+						}
+					},
+					{
+						"name": "type",
+						"in": "query",
+						"description": "イベント種別",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"title": "イベント種別",
+							"enum": [
+								"infoSession",
+								"informalMeet",
+								"interview",
+								"groupWork",
+								"experienceProgram",
+								"assessment",
+								"offerEvent",
+								"other"
+							],
+							"x-apidog-enum": [
+								{
+									"value": "infoSession",
+									"name": "説明会など",
+									"description": ""
+								},
+								{
+									"value": "informalMeet",
+									"name": "面談・座談会など",
+									"description": ""
+								},
+								{
+									"value": "interview",
+									"name": "面接",
+									"description": ""
+								},
+								{
+									"value": "groupWork",
+									"name": "グループワーク",
+									"description": ""
+								},
+								{
+									"value": "experienceProgram",
+									"name": "インターン・仕事体験",
+									"description": ""
+								},
+								{
+									"value": "assessment",
+									"name": "試験・テスト",
+									"description": ""
+								},
+								{
+									"value": "offerEvent",
+									"name": "内定関連行事",
+									"description": ""
+								},
+								{
+									"value": "other",
+									"name": "その他",
+									"description": ""
+								}
+							],
+							"writeOnly": true
+						}
+					},
+					{
+						"name": "status",
+						"in": "query",
+						"description": "ステータス",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"title": "イベントステータス",
+							"enum": [
+								"scheduled",
+								"attended",
+								"absent",
+								"canceled",
+								"reschedulingRequired"
+							],
+							"x-apidog-enum": [
+								{
+									"value": "scheduled",
+									"name": "予約済み",
+									"description": ""
+								},
+								{
+									"value": "attended",
+									"name": "参加済み・終了",
+									"description": ""
+								},
+								{
+									"value": "absent",
+									"name": "欠席・不参加",
+									"description": ""
+								},
+								{
+									"value": "canceled",
+									"name": "キャンセル済み",
+									"description": ""
+								},
+								{
+									"value": "reschedulingRequired",
+									"name": "日程再調整が必要",
+									"description": ""
+								}
+							],
+							"writeOnly": true
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"pagination": {
+											"$ref": "#/components/schemas/%E3%83%9A%E3%83%BC%E3%82%B8%E3%83%8D%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3"
+										},
+										"data": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88"
+											}
+										}
+									},
+									"x-apidog-orders": ["pagination", "data"],
+									"required": ["pagination", "data"],
+									"x-apidog-ignore-properties": []
+								}
+							}
+						},
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "イベント",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34313662-run"
+			},
+			"post": {
+				"summary": "イベントを新しく登録する",
+				"deprecated": false,
+				"description": "イベントを新しく登録するエンドポイント",
+				"operationId": "addEvent",
+				"tags": [],
+				"parameters": [],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E6%9B%B8%E3%81%8D%E8%BE%BC%E3%81%BF%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88"
+							},
+							"examples": {}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88"
+								}
+							}
+						},
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "イベント",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34314328-run"
+			}
+		},
+		"/users/me/events/{id}": {
+			"put": {
+				"summary": "特定のイベントを更新する",
+				"deprecated": false,
+				"description": "特定のイベントを更新するエンドポイント",
+				"operationId": "updateEvent",
+				"tags": [],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "ID",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"writeOnly": true
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E6%9B%B8%E3%81%8D%E8%BE%BC%E3%81%BF%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88"
+							},
+							"examples": {}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88"
+								}
+							}
+						},
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "イベント",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34314372-run"
+			},
+			"delete": {
+				"summary": "特定のイベントを削除する",
+				"deprecated": false,
+				"description": "特定のイベントを削除するエンドポイント",
+				"operationId": "deleteEvent",
+				"tags": [],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "ID",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"writeOnly": true
+						}
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "",
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "イベント",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34314711-run"
+			}
+		},
+		"/users/me/scouts": {
+			"get": {
+				"summary": "自身のスカウトを複数取得する",
+				"deprecated": false,
+				"description": "自身のスカウトを複数取得するエンドポイント",
+				"operationId": "getScouts",
+				"tags": [],
+				"parameters": [
+					{
+						"name": "page",
+						"in": "query",
+						"description": "ページ番号",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"minimum": 0,
+							"maximum": 99,
+							"writeOnly": true
+						}
+					},
+					{
+						"name": "pageSize",
+						"in": "query",
+						"description": "取得件数",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"minimum": 1,
+							"maximum": 100,
+							"writeOnly": true
+						}
+					},
+					{
+						"name": "status",
+						"in": "query",
+						"description": "ステータス",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"title": "スカウトステータス",
+							"enum": [
+								"unread",
+								"unresponded",
+								"accepted",
+								"declined"
+							],
+							"x-apidog-enum": [
+								{
+									"value": "unread",
+									"name": "未読",
+									"description": ""
+								},
+								{
+									"value": "unresponded",
+									"name": "未対応",
+									"description": ""
+								},
+								{
+									"value": "accepted",
+									"name": "承諾済み",
+									"description": ""
+								},
+								{
+									"value": "declined",
+									"name": "辞退済み",
+									"description": ""
+								}
+							],
+							"writeOnly": true
+						}
+					},
+					{
+						"name": "platform",
+						"in": "query",
+						"description": "就活プラットフォーム",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"title": "就活プラットフォーム",
+							"enum": [
+								"mynavi",
+								"rikunabi",
+								"oneCareer",
+								"gaishiShukatsu",
+								"offerBox",
+								"kimisuka",
+								"dodaCampus",
+								"iroots",
+								"supporterz",
+								"paiza",
+								"levtech",
+								"trackJob",
+								"wantedly",
+								"direct",
+								"agent",
+								"referral",
+								"other"
+							],
+							"x-apidog-enum": [
+								{
+									"value": "mynavi",
+									"name": "マイナビ",
+									"description": ""
+								},
+								{
+									"value": "rikunabi",
+									"name": "リクナビ",
+									"description": ""
+								},
+								{
+									"value": "oneCareer",
+									"name": "ワンキャリア",
+									"description": ""
+								},
+								{
+									"value": "gaishiShukatsu",
+									"name": "外資就活ドットコム",
+									"description": ""
+								},
+								{
+									"value": "offerBox",
+									"name": "OfferBox",
+									"description": ""
+								},
+								{
+									"value": "kimisuka",
+									"name": "キミスカ",
+									"description": ""
+								},
+								{
+									"value": "dodaCampus",
+									"name": "dodaキャンパス",
+									"description": ""
+								},
+								{
+									"value": "iroots",
+									"name": "アイルーツ",
+									"description": ""
+								},
+								{
+									"value": "supporterz",
+									"name": "サポーターズ",
+									"description": ""
+								},
+								{
+									"value": "paiza",
+									"name": "Paiza",
+									"description": ""
+								},
+								{
+									"value": "levtech",
+									"name": "レバテック",
+									"description": ""
+								},
+								{
+									"value": "trackJob",
+									"name": "Track Job",
+									"description": ""
+								},
+								{
+									"value": "wantedly",
+									"name": "Wantedly",
+									"description": ""
+								},
+								{
+									"value": "direct",
+									"name": "直接応募",
+									"description": ""
+								},
+								{
+									"value": "agent",
+									"name": "就活エージェント",
+									"description": ""
+								},
+								{
+									"value": "referral",
+									"name": "社員紹介",
+									"description": ""
+								},
+								{
+									"value": "other",
+									"name": "その他",
+									"description": ""
+								}
+							],
+							"writeOnly": true
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"pagination": {
+											"$ref": "#/components/schemas/%E3%83%9A%E3%83%BC%E3%82%B8%E3%83%8D%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3"
+										},
+										"data": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/%E3%82%B9%E3%82%AB%E3%82%A6%E3%83%88"
+											}
+										}
+									},
+									"x-apidog-orders": ["pagination", "data"],
+									"required": ["pagination", "data"],
+									"x-apidog-ignore-properties": []
+								}
+							}
+						},
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "スカウト",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34317071-run"
+			},
+			"post": {
+				"summary": "スカウトを新しく登録する",
+				"deprecated": false,
+				"description": "スカウトを新しく登録するエンドポイント",
+				"operationId": "addScout",
+				"tags": [],
+				"parameters": [],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/%E3%82%B9%E3%82%AB%E3%82%A6%E3%83%88"
+							},
+							"examples": {}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/%E3%82%B9%E3%82%AB%E3%82%A6%E3%83%88"
+								}
+							}
+						},
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "スカウト",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34318613-run"
+			}
+		},
+		"/users/me/scouts/{id}": {
+			"put": {
+				"summary": "特定のスカウトを更新する",
+				"deprecated": false,
+				"description": "特定のスカウトを更新するエンドポイント",
+				"operationId": "updateScout",
+				"tags": [],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "ID",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"writeOnly": true
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/%E3%82%B9%E3%82%AB%E3%82%A6%E3%83%88"
+							},
+							"examples": {}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/%E3%82%B9%E3%82%AB%E3%82%A6%E3%83%88"
+								}
+							}
+						},
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "スカウト",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34318632-run"
+			},
+			"delete": {
+				"summary": "特定のスカウトを削除する",
+				"deprecated": false,
+				"description": "特定のスカウトを削除する",
+				"operationId": "deleteScout",
+				"tags": [],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "ID",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid",
+							"writeOnly": true
+						}
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "",
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "スカウト",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34318650-run"
+			}
+		},
+		"/users/me": {
+			"delete": {
+				"summary": "自身のユーザー情報を削除する",
+				"deprecated": false,
+				"description": "自身のユーザー情報を削除するエンドポイント",
+				"operationId": "deleteUser",
+				"tags": [],
+				"parameters": [],
+				"responses": {
+					"204": {
+						"description": "",
+						"headers": {},
+						"x-apidog-name": "成功",
+						"x-apidog-ordering": 0
+					},
+					"400": {
+						"$ref": "#/components/responses/エラー",
+						"description": "",
+						"x-apidog-ordering": 1
+					}
+				},
+				"security": [
+					{
+						"Default": [],
+						"x-apidog": {
+							"required": true,
+							"schemeGroups": [
+								{
+									"id": "_z-8avsr-eEe8t_ZS3qmU",
+									"schemeIds": ["Default"]
+								}
+							],
+							"use": {
+								"configs": {},
+								"id": "_z-8avsr-eEe8t_ZS3qmU"
+							},
+							"scopes": {}
+						}
+					}
+				],
+				"x-apidog-folder": "",
+				"x-apidog-status": "developing",
+				"x-apidog-maintainer": "shohei-yamagiwa",
+				"x-run-in-apidog": "https://app.apidog.com/web/project/1262496/apis/api-34188244-run"
+			}
+		}
+	},
+	"webhooks": {},
+	"components": {
+		"schemas": {
+			"企業": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"readOnly": true,
+						"title": "ID"
+					},
+					"name": {
+						"type": "string",
+						"title": "名前",
+						"minLength": 2,
+						"maxLength": 32
+					},
+					"appliedRole": {
+						"type": "string",
+						"title": "応募役職",
+						"minLength": 2,
+						"maxLength": 32
+					},
+					"status": {
+						"title": "ステータス",
+						"$ref": "#/components/schemas/%E4%BC%81%E6%A5%AD%E3%82%B9%E3%83%86%E3%83%BC%E3%82%BF%E3%82%B9"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"readOnly": true,
+						"title": "作成日時",
+						"description": "RFC3339形式"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"readOnly": true,
+						"title": "更新日時",
+						"description": "RFC3339形式"
+					},
+					"deletedAt": {
+						"type": ["string", "null"],
+						"format": "date-time",
+						"readOnly": true,
+						"title": "削除日時",
+						"description": "RFC3339形式"
+					}
+				},
+				"x-apidog-orders": [
+					"id",
+					"name",
+					"appliedRole",
+					"status",
+					"createdAt",
+					"updatedAt",
+					"deletedAt"
+				],
+				"required": [
+					"name",
+					"appliedRole",
+					"status",
+					"createdAt",
+					"updatedAt",
+					"deletedAt",
+					"id"
+				],
+				"x-apidog-ignore-properties": [],
+				"x-apidog-folder": "企業"
+			},
+			"企業詳細": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"readOnly": true,
+						"title": "ID"
+					},
+					"name": {
+						"type": "string",
+						"title": "名前",
+						"minLength": 2,
+						"maxLength": 32
+					},
+					"appliedRole": {
+						"type": "string",
+						"title": "応募役職",
+						"minLength": 2,
+						"maxLength": 32
+					},
+					"status": {
+						"title": "ステータス",
+						"$ref": "#/components/schemas/%E4%BC%81%E6%A5%AD%E3%82%B9%E3%83%86%E3%83%BC%E3%82%BF%E3%82%B9"
+					},
+					"applicationRoute": {
+						"title": "応募経路",
+						"$ref": "#/components/schemas/%E5%B0%B1%E6%B4%BB%E3%83%97%E3%83%A9%E3%83%83%E3%83%88%E3%83%95%E3%82%A9%E3%83%BC%E3%83%A0"
+					},
+					"contactType": {
+						"title": "連絡先種別",
+						"$ref": "#/components/schemas/%E9%80%A3%E7%B5%A1%E5%85%88%E7%A8%AE%E5%88%A5"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"readOnly": true,
+						"title": "作成日時",
+						"description": "RFC3339形式"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"readOnly": true,
+						"title": "更新日時",
+						"description": "RFC3339形式"
+					},
+					"deletedAt": {
+						"type": ["string", "null"],
+						"format": "date-time",
+						"readOnly": true,
+						"title": "削除日時",
+						"description": "RFC3339形式"
+					}
+				},
+				"x-apidog-orders": [
+					"id",
+					"name",
+					"appliedRole",
+					"status",
+					"applicationRoute",
+					"contactType",
+					"createdAt",
+					"updatedAt",
+					"deletedAt"
+				],
+				"required": [
+					"name",
+					"appliedRole",
+					"status",
+					"createdAt",
+					"updatedAt",
+					"deletedAt",
+					"applicationRoute",
+					"contactType",
+					"id"
+				],
+				"x-apidog-ignore-properties": [],
+				"x-apidog-folder": "企業"
+			},
+			"企業ステータス": {
+				"type": "string",
+				"writeOnly": true,
+				"enum": [
+					"bookmarked",
+					"preentry",
+					"informalContact",
+					"experienceProgram",
+					"preparingApplication",
+					"underScreening",
+					"interviewScheduling",
+					"interviewInProgress",
+					"finalSelection",
+					"offerReceived",
+					"offerAccepted",
+					"offerDeclined",
+					"selectionWithdrawn",
+					"rejected"
+				],
+				"x-apidog-enum": [
+					{
+						"value": "bookmarked",
+						"name": "",
+						"description": "保存済み"
+					},
+					{
+						"value": "preentry",
+						"name": "",
+						"description": "プレエントリー済み"
+					},
+					{
+						"value": "informalContact",
+						"name": "",
+						"description": "カジュアル面談や座談会など"
+					},
+					{
+						"value": "experienceProgram",
+						"name": "",
+						"description": "体験プログラム（インターンなど）"
+					},
+					{
+						"value": "preparingApplication",
+						"name": "",
+						"description": "応募準備中"
+					},
+					{
+						"value": "underScreening",
+						"name": "",
+						"description": "選考結果待ち"
+					},
+					{
+						"value": "interviewScheduling",
+						"name": "",
+						"description": "面接日程調整中"
+					},
+					{
+						"value": "interviewInProgress",
+						"name": "",
+						"description": "面接進行中"
+					},
+					{
+						"value": "finalSelection",
+						"name": "",
+						"description": "最終選考中"
+					},
+					{
+						"value": "offerReceived",
+						"name": "",
+						"description": "内定確認中"
+					},
+					{
+						"value": "offerAccepted",
+						"name": "",
+						"description": "内定承諾済み"
+					},
+					{
+						"value": "offerDeclined",
+						"name": "",
+						"description": "内定辞退済み"
+					},
+					{
+						"value": "selectionWithdrawn",
+						"name": "",
+						"description": "選考辞退"
+					},
+					{
+						"value": "rejected",
+						"name": "",
+						"description": "お見送り"
+					}
+				],
+				"title": "企業ステータス",
+				"x-apidog-folder": "企業"
+			},
+			"連絡先種別": {
+				"type": "string",
+				"enum": [
+					"email",
+					"phone",
+					"line",
+					"platformMessage",
+					"contactForm",
+					"other"
+				],
+				"x-apidog-enum": [
+					{
+						"value": "email",
+						"name": "メール",
+						"description": ""
+					},
+					{
+						"value": "phone",
+						"name": "電話",
+						"description": ""
+					},
+					{
+						"value": "line",
+						"name": "LINE",
+						"description": ""
+					},
+					{
+						"value": "platformMessage",
+						"name": "マイページなど",
+						"description": ""
+					},
+					{
+						"value": "contactForm",
+						"name": "お問い合わせフォーム",
+						"description": ""
+					},
+					{
+						"value": "other",
+						"name": "その他",
+						"description": ""
+					}
+				],
+				"title": "連絡先種別",
+				"x-apidog-folder": "企業"
+			},
+			"タスク": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"readOnly": true,
+						"title": "ID"
+					},
+					"title": {
+						"type": "string",
+						"title": "タイトル",
+						"minLength": 2,
+						"maxLength": 32
+					},
+					"company": {
+						"$ref": "#/components/schemas/%E4%BC%81%E6%A5%AD",
+						"title": "企業"
+					},
+					"type": {
+						"$ref": "#/components/schemas/%E3%82%BF%E3%82%B9%E3%82%AF%E7%A8%AE%E5%88%A5",
+						"title": "種別"
+					},
+					"status": {
+						"$ref": "#/components/schemas/%E3%82%BF%E3%82%B9%E3%82%AF%E3%82%B9%E3%83%86%E3%83%BC%E3%82%BF%E3%82%B9",
+						"title": "ステータス"
+					},
+					"createdBy": {
+						"title": "作成元",
+						"$ref": "#/components/schemas/%E3%82%BF%E3%82%B9%E3%82%AF%E4%BD%9C%E6%88%90%E5%85%83"
+					},
+					"url": {
+						"type": ["string", "null"],
+						"title": "参照URL",
+						"maxLength": 2048,
+						"minLength": 7
+					},
+					"deadline": {
+						"type": ["string", "null"],
+						"title": "期限日時",
+						"format": "date-time"
+					},
+					"createdAt": {
+						"type": "string",
+						"readOnly": true,
+						"format": "date-time",
+						"title": "作成日時"
+					},
+					"updatedAt": {
+						"type": "string",
+						"readOnly": true,
+						"format": "date-time",
+						"title": "更新日時"
+					},
+					"deletedAt": {
+						"type": ["string", "null"],
+						"title": "削除日時",
+						"readOnly": true,
+						"format": "date-time"
+					}
+				},
+				"x-apidog-orders": [
+					"id",
+					"title",
+					"company",
+					"type",
+					"status",
+					"createdBy",
+					"url",
+					"deadline",
+					"createdAt",
+					"updatedAt",
+					"deletedAt"
+				],
+				"required": [
+					"id",
+					"title",
+					"company",
+					"type",
+					"status",
+					"createdBy",
+					"url",
+					"createdAt",
+					"updatedAt",
+					"deletedAt",
+					"deadline"
+				],
+				"x-apidog-ignore-properties": [],
+				"x-apidog-folder": "タスク"
+			},
+			"タスク種別": {
+				"type": "string",
+				"title": "タスク種別",
+				"enum": [
+					"documentSubmission",
+					"assessment",
+					"scheduling",
+					"replyRequired",
+					"preparation",
+					"other"
+				],
+				"x-apidog-enum": [
+					{
+						"value": "documentSubmission",
+						"name": "書類の提出",
+						"description": ""
+					},
+					{
+						"value": "assessment",
+						"name": "テストの受検",
+						"description": ""
+					},
+					{
+						"value": "scheduling",
+						"name": "日程調整",
+						"description": ""
+					},
+					{
+						"value": "replyRequired",
+						"name": "企業への返信",
+						"description": ""
+					},
+					{
+						"value": "preparation",
+						"name": "選考準備・対策",
+						"description": ""
+					},
+					{
+						"value": "other",
+						"name": "その他",
+						"description": ""
+					}
+				],
+				"x-apidog-folder": "タスク"
+			},
+			"タスクステータス": {
+				"type": "string",
+				"enum": ["complete", "incomplete"],
+				"x-apidog-enum": [
+					{
+						"value": "complete",
+						"name": "完了済み",
+						"description": ""
+					},
+					{
+						"value": "incomplete",
+						"name": "未完了",
+						"description": ""
+					}
+				],
+				"title": "タスクステータス",
+				"x-apidog-folder": "タスク"
+			},
+			"タスク作成元": {
+				"type": "string",
+				"title": "タスク作成元",
+				"enum": ["user", "ai"],
+				"x-apidog-enum": [
+					{
+						"value": "user",
+						"name": "ユーザー",
+						"description": ""
+					},
+					{
+						"value": "ai",
+						"name": "AI",
+						"description": ""
+					}
+				],
+				"x-apidog-folder": "タスク"
+			},
+			"タスク書き込みリクエスト": {
+				"type": "object",
+				"properties": {
+					"title": {
+						"type": "string",
+						"title": "タイトル",
+						"minLength": 2,
+						"maxLength": 32
+					},
+					"companyId": {
+						"type": "string",
+						"title": "企業ID",
+						"format": "uuid",
+						"writeOnly": true
+					},
+					"type": {
+						"$ref": "#/components/schemas/%E3%82%BF%E3%82%B9%E3%82%AF%E7%A8%AE%E5%88%A5",
+						"title": "種別"
+					},
+					"status": {
+						"$ref": "#/components/schemas/%E3%82%BF%E3%82%B9%E3%82%AF%E3%82%B9%E3%83%86%E3%83%BC%E3%82%BF%E3%82%B9",
+						"title": "ステータス"
+					},
+					"url": {
+						"type": ["string", "null"],
+						"title": "参照URL",
+						"maxLength": 2048,
+						"minLength": 7
+					},
+					"deadline": {
+						"type": ["string", "null"],
+						"title": "期限日時",
+						"format": "date-time"
+					}
+				},
+				"x-apidog-refs": {},
+				"x-apidog-orders": [
+					"title",
+					"companyId",
+					"type",
+					"status",
+					"url",
+					"deadline"
+				],
+				"required": [
+					"title",
+					"companyId",
+					"type",
+					"status",
+					"url",
+					"deadline"
+				],
+				"x-apidog-ignore-properties": [],
+				"x-apidog-folder": "タスク"
+			},
+			"イベント": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"format": "uuid",
+						"readOnly": true,
+						"title": "ID"
+					},
+					"title": {
+						"type": "string",
+						"title": "タイトル",
+						"minLength": 2,
+						"maxLength": 50
+					},
+					"company": {
+						"$ref": "#/components/schemas/%E4%BC%81%E6%A5%AD",
+						"title": "企業"
+					},
+					"type": {
+						"$ref": "#/components/schemas/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E7%A8%AE%E5%88%A5",
+						"title": "種別"
+					},
+					"status": {
+						"$ref": "#/components/schemas/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E3%82%B9%E3%83%86%E3%83%BC%E3%82%BF%E3%82%B9",
+						"title": "ステータス"
+					},
+					"formatType": {
+						"$ref": "#/components/schemas/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E9%96%8B%E5%82%AC%E7%A8%AE%E5%88%A5",
+						"title": "開催種別"
+					},
+					"location": {
+						"type": ["string", "null"],
+						"minLength": 2,
+						"maxLength": 50,
+						"title": "開催場所"
+					},
+					"detailsUrl": {
+						"type": ["string", "null"],
+						"minLength": 7,
+						"maxLength": 2048,
+						"title": "詳細URL"
+					},
+					"beginAt": {
+						"type": "string",
+						"format": "date-time",
+						"title": "開始日時"
+					},
+					"endAt": {
+						"type": "string",
+						"format": "date-time",
+						"title": "終了日時"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"readOnly": true,
+						"title": "作成日時"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"readOnly": true,
+						"title": "更新日時"
+					},
+					"deletedAt": {
+						"type": ["string", "null"],
+						"title": "削除日時",
+						"format": "date-time",
+						"readOnly": true
+					}
+				},
+				"x-apidog-orders": [
+					"id",
+					"title",
+					"company",
+					"type",
+					"status",
+					"formatType",
+					"location",
+					"detailsUrl",
+					"beginAt",
+					"endAt",
+					"createdAt",
+					"updatedAt",
+					"deletedAt"
+				],
+				"required": [
+					"id",
+					"title",
+					"company",
+					"type",
+					"status",
+					"formatType",
+					"location",
+					"beginAt",
+					"createdAt",
+					"updatedAt",
+					"deletedAt",
+					"detailsUrl",
+					"endAt"
+				],
+				"x-apidog-ignore-properties": [],
+				"x-apidog-folder": "イベント"
+			},
+			"イベント種別": {
+				"type": "string",
+				"title": "イベント種別",
+				"enum": [
+					"infoSession",
+					"informalMeet",
+					"interview",
+					"groupWork",
+					"experienceProgram",
+					"assessment",
+					"offerEvent",
+					"other"
+				],
+				"x-apidog-enum": [
+					{
+						"value": "infoSession",
+						"name": "説明会など",
+						"description": ""
+					},
+					{
+						"value": "informalMeet",
+						"name": "面談・座談会など",
+						"description": ""
+					},
+					{
+						"value": "interview",
+						"name": "面接",
+						"description": ""
+					},
+					{
+						"value": "groupWork",
+						"name": "グループワーク",
+						"description": ""
+					},
+					{
+						"value": "experienceProgram",
+						"name": "インターン・仕事体験",
+						"description": ""
+					},
+					{
+						"value": "assessment",
+						"name": "試験・テスト",
+						"description": ""
+					},
+					{
+						"value": "offerEvent",
+						"name": "内定関連行事",
+						"description": ""
+					},
+					{
+						"value": "other",
+						"name": "その他",
+						"description": ""
+					}
+				],
+				"x-apidog-folder": "イベント"
+			},
+			"イベントステータス": {
+				"type": "string",
+				"title": "イベントステータス",
+				"enum": [
+					"scheduled",
+					"attended",
+					"absent",
+					"canceled",
+					"reschedulingRequired"
+				],
+				"x-apidog-enum": [
+					{
+						"value": "scheduled",
+						"name": "予約済み",
+						"description": ""
+					},
+					{
+						"value": "attended",
+						"name": "参加済み・終了",
+						"description": ""
+					},
+					{
+						"value": "absent",
+						"name": "欠席・不参加",
+						"description": ""
+					},
+					{
+						"value": "canceled",
+						"name": "キャンセル済み",
+						"description": ""
+					},
+					{
+						"value": "reschedulingRequired",
+						"name": "日程再調整が必要",
+						"description": ""
+					}
+				],
+				"x-apidog-folder": "イベント"
+			},
+			"イベント開催種別": {
+				"type": "string",
+				"title": "イベント開催種別",
+				"enum": ["online", "offline", "hybrid", "onDemand"],
+				"x-apidog-enum": [
+					{
+						"value": "online",
+						"name": "オンライン",
+						"description": ""
+					},
+					{
+						"value": "offline",
+						"name": "オフライン・対面",
+						"description": ""
+					},
+					{
+						"value": "hybrid",
+						"name": "ハイブリッド",
+						"description": ""
+					},
+					{
+						"value": "onDemand",
+						"name": "オンデマンド",
+						"description": ""
+					}
+				],
+				"x-apidog-folder": "イベント"
+			},
+			"イベント書き込みリクエスト": {
+				"type": "object",
+				"properties": {
+					"title": {
+						"type": "string",
+						"title": "タイトル",
+						"minLength": 2,
+						"maxLength": 50
+					},
+					"companyId": {
+						"type": "string",
+						"title": "企業ID",
+						"format": "uuid",
+						"writeOnly": true
+					},
+					"type": {
+						"title": "種別",
+						"$ref": "#/components/schemas/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E7%A8%AE%E5%88%A5"
+					},
+					"status": {
+						"title": "ステータス",
+						"$ref": "#/components/schemas/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E3%82%B9%E3%83%86%E3%83%BC%E3%82%BF%E3%82%B9"
+					},
+					"formatType": {
+						"title": "開催種別",
+						"$ref": "#/components/schemas/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E9%96%8B%E5%82%AC%E7%A8%AE%E5%88%A5"
+					},
+					"location": {
+						"type": ["string", "null"],
+						"minLength": 2,
+						"maxLength": 50,
+						"title": "開催場所"
+					},
+					"detailsUrl": {
+						"type": ["string", "null"],
+						"minLength": 7,
+						"maxLength": 2048,
+						"title": "詳細URL"
+					},
+					"beginAt": {
+						"type": "string",
+						"format": "date-time",
+						"title": "開始日時"
+					},
+					"endAt": {
+						"type": "string",
+						"format": "date-time",
+						"title": "終了日時"
+					}
+				},
+				"x-apidog-refs": {},
+				"x-apidog-orders": [
+					"title",
+					"companyId",
+					"type",
+					"status",
+					"formatType",
+					"location",
+					"detailsUrl",
+					"beginAt",
+					"endAt"
+				],
+				"required": [
+					"title",
+					"companyId",
+					"type",
+					"status",
+					"formatType",
+					"location",
+					"beginAt",
+					"detailsUrl",
+					"endAt"
+				],
+				"x-apidog-ignore-properties": [],
+				"x-apidog-folder": "イベント"
+			},
+			"スカウト": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"title": "ID ",
+						"format": "uuid",
+						"readOnly": true
+					},
+					"title": {
+						"type": "string",
+						"title": "タイトル",
+						"maxLength": 50,
+						"minLength": 2
+					},
+					"companyName": {
+						"type": "string",
+						"title": "会社名",
+						"minLength": 2,
+						"maxLength": 50
+					},
+					"status": {
+						"title": "ステータス",
+						"$ref": "#/components/schemas/%E3%82%B9%E3%82%AB%E3%82%A6%E3%83%88%E3%82%B9%E3%83%86%E3%83%BC%E3%82%BF%E3%82%B9"
+					},
+					"platform": {
+						"title": "就活プラットフォーム",
+						"$ref": "#/components/schemas/%E5%B0%B1%E6%B4%BB%E3%83%97%E3%83%A9%E3%83%83%E3%83%88%E3%83%95%E3%82%A9%E3%83%BC%E3%83%A0"
+					},
+					"detailsUrl": {
+						"type": ["string", "null"],
+						"maxLength": 2048,
+						"minLength": 7,
+						"title": "詳細URL"
+					},
+					"createdAt": {
+						"type": "string",
+						"title": "作成日時",
+						"format": "date-time",
+						"readOnly": true
+					},
+					"updatedAt": {
+						"type": "string",
+						"title": "更新日時",
+						"format": "date-time",
+						"readOnly": true
+					},
+					"deletedAt": {
+						"type": ["string", "null"],
+						"title": "削除日時",
+						"format": "date-time",
+						"readOnly": true
+					}
+				},
+				"x-apidog-orders": [
+					"id",
+					"title",
+					"companyName",
+					"status",
+					"platform",
+					"detailsUrl",
+					"createdAt",
+					"updatedAt",
+					"deletedAt"
+				],
+				"required": [
+					"id",
+					"title",
+					"companyName",
+					"platform",
+					"detailsUrl",
+					"status",
+					"createdAt",
+					"updatedAt",
+					"deletedAt"
+				],
+				"x-apidog-ignore-properties": [],
+				"x-apidog-folder": "スカウト"
+			},
+			"スカウトステータス": {
+				"type": "string",
+				"title": "スカウトステータス",
+				"enum": ["unread", "unresponded", "accepted", "declined"],
+				"x-apidog-enum": [
+					{
+						"value": "unread",
+						"name": "未読",
+						"description": ""
+					},
+					{
+						"value": "unresponded",
+						"name": "未対応",
+						"description": ""
+					},
+					{
+						"value": "accepted",
+						"name": "承諾済み",
+						"description": ""
+					},
+					{
+						"value": "declined",
+						"name": "辞退済み",
+						"description": ""
+					}
+				],
+				"x-apidog-folder": "スカウト"
+			},
+			"ページネーション": {
+				"type": "object",
+				"properties": {
+					"page": {
+						"type": "integer",
+						"title": "ページ番号",
+						"minimum": 0,
+						"readOnly": true,
+						"maximum": 99
+					},
+					"pageSize": {
+						"type": "integer",
+						"title": "取得件数 ",
+						"minimum": 1,
+						"maximum": 100,
+						"readOnly": true
+					},
+					"totalPages": {
+						"type": "integer",
+						"title": "総ページ数",
+						"minimum": 0,
+						"readOnly": true,
+						"maximum": 99
+					}
+				},
+				"x-apidog-orders": ["page", "pageSize", "totalPages"],
+				"required": ["page", "pageSize", "totalPages"],
+				"x-apidog-ignore-properties": [],
+				"x-apidog-folder": ""
+			},
+			"就活プラットフォーム": {
+				"type": "string",
+				"title": "就活プラットフォーム",
+				"enum": [
+					"mynavi",
+					"rikunabi",
+					"oneCareer",
+					"gaishiShukatsu",
+					"offerBox",
+					"kimisuka",
+					"dodaCampus",
+					"iroots",
+					"supporterz",
+					"paiza",
+					"levtech",
+					"trackJob",
+					"wantedly",
+					"direct",
+					"agent",
+					"referral",
+					"other"
+				],
+				"x-apidog-enum": [
+					{
+						"value": "mynavi",
+						"name": "マイナビ",
+						"description": ""
+					},
+					{
+						"value": "rikunabi",
+						"name": "リクナビ",
+						"description": ""
+					},
+					{
+						"value": "oneCareer",
+						"name": "ワンキャリア",
+						"description": ""
+					},
+					{
+						"value": "gaishiShukatsu",
+						"name": "外資就活ドットコム",
+						"description": ""
+					},
+					{
+						"value": "offerBox",
+						"name": "OfferBox",
+						"description": ""
+					},
+					{
+						"value": "kimisuka",
+						"name": "キミスカ",
+						"description": ""
+					},
+					{
+						"value": "dodaCampus",
+						"name": "dodaキャンパス",
+						"description": ""
+					},
+					{
+						"value": "iroots",
+						"name": "アイルーツ",
+						"description": ""
+					},
+					{
+						"value": "supporterz",
+						"name": "サポーターズ",
+						"description": ""
+					},
+					{
+						"value": "paiza",
+						"name": "Paiza",
+						"description": ""
+					},
+					{
+						"value": "levtech",
+						"name": "レバテック",
+						"description": ""
+					},
+					{
+						"value": "trackJob",
+						"name": "Track Job",
+						"description": ""
+					},
+					{
+						"value": "wantedly",
+						"name": "Wantedly",
+						"description": ""
+					},
+					{
+						"value": "direct",
+						"name": "直接応募",
+						"description": ""
+					},
+					{
+						"value": "agent",
+						"name": "就活エージェント",
+						"description": ""
+					},
+					{
+						"value": "referral",
+						"name": "社員紹介",
+						"description": ""
+					},
+					{
+						"value": "other",
+						"name": "その他",
+						"description": ""
+					}
+				],
+				"x-apidog-folder": ""
+			}
+		},
+		"responses": {
+			"エラー": {
+				"description": "",
+				"content": {
+					"application/json": {
+						"schema": {
+							"type": "object",
+							"description": "RFC 9457 準拠",
+							"properties": {
+								"type": {
+									"type": "string",
+									"format": "uri-reference",
+									"title": "問題タイプ"
+								},
+								"title": {
+									"type": "string",
+									"title": "タイトル"
+								},
+								"status": {
+									"type": "integer",
+									"minimum": 100,
+									"maximum": 599,
+									"title": "ステータスコード"
+								},
+								"detail": {
+									"type": "string",
+									"title": "詳細"
+								},
+								"instance": {
+									"type": "string",
+									"format": "uri-reference",
+									"title": "インスタンス",
+									"description": "エラーが発生した特定のリクエストやリソースを示すURI"
+								},
+								"errors": {
+									"type": "array",
+									"title": "エラーの一覧",
+									"items": {
+										"type": "object",
+										"title": "エラー",
+										"properties": {
+											"type": {
+												"type": "string",
+												"format": "uri-reference",
+												"title": "問題タイプ"
+											},
+											"title": {
+												"type": "string",
+												"title": "タイトル"
+											},
+											"status": {
+												"type": "integer",
+												"minimum": 100,
+												"maximum": 599,
+												"title": "ステータスコード"
+											},
+											"detail": {
+												"type": "string",
+												"title": "詳細"
+											},
+											"instance": {
+												"type": "string",
+												"format": "uri-reference",
+												"title": "インスタンス",
+												"description": "エラーが発生した特定のリクエストやリソースを示すURI"
+											}
+										},
+										"additionalProperties": true,
+										"x-apidog-orders": [
+											"type",
+											"title",
+											"status",
+											"detail",
+											"instance"
+										]
+									}
+								}
+							},
+							"additionalProperties": true,
+							"x-apidog-orders": [
+								"type",
+								"title",
+								"status",
+								"detail",
+								"instance",
+								"errors"
+							]
+						}
+					}
+				}
+			}
+		},
+		"securitySchemes": {
+			"Firebase AppCheck": {
+				"type": "apiKey",
+				"in": "header",
+				"name": "X-Firebase-AppCheck"
+			},
+			"Custom Auth Key": {
+				"type": "apiKey",
+				"in": "header",
+				"name": "X-Custom-Auth-Key"
+			},
+			"JWT Auth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT",
+				"x-apidog": {
+					"addTokenTo": "header",
+					"headerPrefix": "Bearer"
+				}
+			}
+		}
+	},
+	"servers": [],
+	"security": [
+		{
+			"Default": [],
+			"x-apidog": {
+				"required": true,
+				"schemeGroups": [
+					{
+						"id": "_z-8avsr-eEe8t_ZS3qmU",
+						"schemeIds": ["Default"]
+					}
+				],
+				"use": {
+					"configs": {},
+					"id": "_z-8avsr-eEe8t_ZS3qmU"
+				},
+				"scopes": {}
+			}
+		}
+	]
+}
