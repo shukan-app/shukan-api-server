@@ -1,10 +1,15 @@
 package dev.shoheiyamagiwa.shukan;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import dev.shoheiyamagiwa.shukan.controller.ErrorResponseDto;
 import dev.shoheiyamagiwa.shukan.controller.HealthController;
 import dev.shoheiyamagiwa.shukan.middleware.AuthMiddleware;
 import dev.shoheiyamagiwa.shukan.middleware.AuthMiddlewareProvider;
 import dev.shoheiyamagiwa.shukan.middleware.DenyingAuthMiddlewareProvider;
+import dev.shoheiyamagiwa.shukan.middleware.FirebaseAuthMiddlewareProvider;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.HttpStatus;
@@ -13,6 +18,7 @@ import io.javalin.router.JavalinDefaultRoutingApi;
 import org.flywaydb.core.Flyway;
 import org.jspecify.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.function.Consumer;
 
 public final class Main {
@@ -67,7 +73,24 @@ public final class Main {
 	
 	private void start() {
 		migrateDatabase();
-		createApplication().start(resolvePort());
+		FirebaseApp firebaseApp = initializeFirebase();
+		createApplication(new FirebaseAuthMiddlewareProvider(
+			FirebaseAuth.getInstance(firebaseApp)
+		)).start(resolvePort());
+	}
+
+	private static synchronized FirebaseApp initializeFirebase() {
+		if (!FirebaseApp.getApps().isEmpty()) {
+			return FirebaseApp.getInstance();
+		}
+		try {
+			FirebaseOptions options = FirebaseOptions.builder()
+				.setCredentials(GoogleCredentials.getApplicationDefault())
+				.build();
+			return FirebaseApp.initializeApp(options);
+		} catch (IOException e) {
+			throw new IllegalStateException("Failed to load application default credentials", e);
+		}
 	}
 	
 	private void migrateDatabase() {
