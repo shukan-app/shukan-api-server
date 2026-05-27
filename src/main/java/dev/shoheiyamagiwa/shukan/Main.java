@@ -79,7 +79,10 @@ public final class Main {
 		)).start(resolvePort());
 	}
 
-	private static FirebaseApp initializeFirebase() {
+	private static synchronized FirebaseApp initializeFirebase() {
+		if (!FirebaseApp.getApps().isEmpty()) {
+			return FirebaseApp.getInstance();
+		}
 		try {
 			FirebaseOptions options = FirebaseOptions.builder()
 				.setCredentials(GoogleCredentials.getApplicationDefault())
