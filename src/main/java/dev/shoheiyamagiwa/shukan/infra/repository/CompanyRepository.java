@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public final class CompanyRepository {
-	
 	private static final String SELECT_COMPANY =
 			"SELECT c.id, c.name, c.applied_role,"
 					+ " cs.name AS status,"
@@ -92,8 +91,7 @@ public final class CompanyRepository {
 		params.add(pageSize);
 		params.add((long) page * pageSize);
 		
-		try (Connection conn = getConnection();
-		     PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 			setParams(stmt, params);
 			try (ResultSet rs = stmt.executeQuery()) {
 				List<Company> companies = new ArrayList<>();
@@ -111,15 +109,15 @@ public final class CompanyRepository {
 		List<Object> params = new ArrayList<>();
 		params.add(authId);
 		
-		StringBuilder where =
-				new StringBuilder(
-						" WHERE c.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
-								+ " AND c.deleted_at IS NULL");
+		StringBuilder where = new StringBuilder(
+				" WHERE c.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+						+ " AND c.deleted_at IS NULL");
 		
 		if (q != null && !q.isBlank()) {
 			where.append(" AND c.name ILIKE '%' || ? || '%'");
 			params.add(q);
 		}
+		
 		if (status != null) {
 			where.append(" AND cs.name = ?");
 			params.add(status.getValue());
@@ -130,8 +128,7 @@ public final class CompanyRepository {
 						+ " JOIN company_status cs ON cs.id = c.status_id"
 						+ where;
 		
-		try (Connection conn = getConnection();
-		     PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 			setParams(stmt, params);
 			try (ResultSet rs = stmt.executeQuery()) {
 				rs.next();
@@ -159,8 +156,7 @@ public final class CompanyRepository {
 			ContactType contactType) {
 		try (Connection conn = getConnection()) {
 			UUID statusId = resolveOrCreateLookupId(conn, "company_status", status.getValue());
-			UUID applicationRouteId =
-					resolveOrCreateLookupId(conn, "application_routes", applicationRoute.getValue());
+			UUID applicationRouteId = resolveOrCreateLookupId(conn, "application_routes", applicationRoute.getValue());
 			UUID contactTypeId = resolveOrCreateLookupId(conn, "contact_types", contactType.getValue());
 			
 			String insertSql =
@@ -169,6 +165,7 @@ public final class CompanyRepository {
 							+ " VALUES ((SELECT u.id FROM users u WHERE u.auth_id = ?), ?, ?, ?, ?, ?, '')"
 							+ " RETURNING id";
 			UUID companyId;
+			
 			try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
 				stmt.setString(1, authId);
 				stmt.setString(2, name);
@@ -176,6 +173,7 @@ public final class CompanyRepository {
 				stmt.setObject(4, statusId);
 				stmt.setObject(5, applicationRouteId);
 				stmt.setObject(6, contactTypeId);
+				
 				try (ResultSet rs = stmt.executeQuery()) {
 					rs.next();
 					companyId = rs.getObject("id", UUID.class);
@@ -198,19 +196,18 @@ public final class CompanyRepository {
 			ContactType contactType) {
 		try (Connection conn = getConnection()) {
 			UUID statusId = resolveOrCreateLookupId(conn, "company_status", status.getValue());
-			UUID applicationRouteId =
-					resolveOrCreateLookupId(conn, "application_routes", applicationRoute.getValue());
+			UUID applicationRouteId = resolveOrCreateLookupId(conn, "application_routes", applicationRoute.getValue());
 			UUID contactTypeId = resolveOrCreateLookupId(conn, "contact_types", contactType.getValue());
 			
-			String updateSql =
-					"UPDATE companies SET"
-							+ " name = ?, applied_role = ?,"
-							+ " status_id = ?, application_route_id = ?, contact_type_id = ?,"
-							+ " updated_at = CURRENT_TIMESTAMP"
-							+ " WHERE id = ?"
-							+ " AND user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
-							+ " AND deleted_at IS NULL";
+			String updateSql = "UPDATE companies SET"
+					+ " name = ?, applied_role = ?,"
+					+ " status_id = ?, application_route_id = ?, contact_type_id = ?,"
+					+ " updated_at = CURRENT_TIMESTAMP"
+					+ " WHERE id = ?"
+					+ " AND user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+					+ " AND deleted_at IS NULL";
 			int affected;
+			
 			try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
 				stmt.setString(1, name);
 				stmt.setString(2, appliedRole);
@@ -225,6 +222,7 @@ public final class CompanyRepository {
 			if (affected == 0) {
 				return Optional.empty();
 			}
+			
 			return findById(conn, authId, companyId);
 		} catch (SQLException e) {
 			throw new RuntimeException("Database error", e);
@@ -232,13 +230,12 @@ public final class CompanyRepository {
 	}
 	
 	public boolean softDelete(String authId, UUID companyId) {
-		String sql =
-				"UPDATE companies SET deleted_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP"
-						+ " WHERE id = ?"
-						+ " AND user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
-						+ " AND deleted_at IS NULL";
-		try (Connection conn = getConnection();
-		     PreparedStatement stmt = conn.prepareStatement(sql)) {
+		String sql = "UPDATE companies SET deleted_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP"
+				+ " WHERE id = ?"
+				+ " AND user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+				+ " AND deleted_at IS NULL";
+		
+		try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setObject(1, companyId);
 			stmt.setString(2, authId);
 			return stmt.executeUpdate() > 0;
@@ -247,16 +244,15 @@ public final class CompanyRepository {
 		}
 	}
 	
-	private Optional<Company> findById(Connection conn, String authId, UUID companyId)
-			throws SQLException {
-		String sql =
-				SELECT_COMPANY
-						+ " WHERE c.id = ?"
-						+ " AND c.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
-						+ " AND c.deleted_at IS NULL";
+	private Optional<Company> findById(Connection conn, String authId, UUID companyId) throws SQLException {
+		String sql = SELECT_COMPANY
+				+ " WHERE c.id = ?"
+				+ " AND c.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+				+ " AND c.deleted_at IS NULL";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setObject(1, companyId);
 			stmt.setString(2, authId);
+			
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
 					return Optional.of(CompanyMapper.toEntity(mapRow(rs)));
@@ -266,9 +262,9 @@ public final class CompanyRepository {
 		}
 	}
 	
-	private UUID resolveOrCreateLookupId(Connection conn, String tableName, String value)
-			throws SQLException {
+	private UUID resolveOrCreateLookupId(Connection conn, String tableName, String value) throws SQLException {
 		String selectSql = "SELECT id FROM " + tableName + " WHERE name = ?";
+		
 		try (PreparedStatement stmt = conn.prepareStatement(selectSql)) {
 			stmt.setString(1, value);
 			try (ResultSet rs = stmt.executeQuery()) {
@@ -277,6 +273,7 @@ public final class CompanyRepository {
 				}
 			}
 		}
+		
 		String insertSql = "INSERT INTO " + tableName + " (name) VALUES (?) RETURNING id";
 		try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
 			stmt.setString(1, value);
