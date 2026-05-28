@@ -42,24 +42,17 @@ public final class Main {
 	public static Javalin createApplication(
 			AuthMiddlewareProvider authMiddlewareProvider,
 			Consumer<JavalinDefaultRoutingApi> routeRegistrar) {
-		return Javalin.create(
-				config -> {
-					config.http.defaultContentType = ContentType.JSON;
-					config.jsonMapper(new JavalinJackson3());
-					
-					new AuthMiddleware(authMiddlewareProvider).registerRoutes(config.routes);
-					new HealthController().registerRoutes(config.routes);
-					routeRegistrar.accept(config.routes);
-					
-					config.routes.error(
-							HttpStatus.NOT_FOUND,
-							ctx -> ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("Not Found")));
-					config.routes.exception(
-							Exception.class,
-							(exception, ctx) ->
-									ctx.status(HttpStatus.INTERNAL_SERVER_ERROR)
-											.json(new ErrorResponseDto("Internal Server Error")));
-				});
+		return Javalin.create(config -> {
+			config.http.defaultContentType = ContentType.JSON;
+			config.jsonMapper(new JavalinJackson3());
+			
+			new AuthMiddleware(authMiddlewareProvider).registerRoutes(config.routes);
+			new HealthController().registerRoutes(config.routes);
+			routeRegistrar.accept(config.routes);
+			
+			config.routes.error(HttpStatus.NOT_FOUND, ctx -> ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("Not Found")));
+			config.routes.exception(Exception.class, (exception, ctx) -> ctx.status(HttpStatus.INTERNAL_SERVER_ERROR).json(new ErrorResponseDto("Internal Server Error")));
+		});
 	}
 	
 	private static int resolvePort() {
@@ -83,10 +76,9 @@ public final class Main {
 			return FirebaseApp.getInstance();
 		}
 		try {
-			FirebaseOptions options =
-					FirebaseOptions.builder()
-							.setCredentials(GoogleCredentials.getApplicationDefault())
-							.build();
+			FirebaseOptions options = FirebaseOptions.builder()
+					.setCredentials(GoogleCredentials.getApplicationDefault())
+					.build();
 			return FirebaseApp.initializeApp(options);
 		} catch (IOException e) {
 			throw new IllegalStateException("Failed to load application default credentials", e);
@@ -94,10 +86,12 @@ public final class Main {
 	}
 	
 	private void start() {
-		migrateDatabase();
 		String url = requireEnv("JDBC_DATABASE_URL");
 		String user = requireEnv("JDBC_DATABASE_USERNAME");
 		String password = requireEnv("JDBC_DATABASE_PASSWORD");
+		
+		migrateDatabase(url, user, password);
+		
 		CompanyRepository companyRepository = new CompanyRepository(url, user, password);
 		CompanyService companyService = new CompanyService(companyRepository);
 		CompanyController companyController = new CompanyController(companyService);
@@ -108,11 +102,7 @@ public final class Main {
 				.start(resolvePort());
 	}
 	
-	private void migrateDatabase() {
-		String url = requireEnv("JDBC_DATABASE_URL");
-		String user = requireEnv("JDBC_DATABASE_USERNAME");
-		String password = requireEnv("JDBC_DATABASE_PASSWORD");
-		
+	private static void migrateDatabase(String url, String user, String password) {
 		Flyway flyway = Flyway.configure().dataSource(url, user, password).load();
 		flyway.migrate();
 	}
