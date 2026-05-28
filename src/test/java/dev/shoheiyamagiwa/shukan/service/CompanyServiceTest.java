@@ -35,10 +35,14 @@ public final class CompanyServiceTest {
 				.load()
 				.migrate();
 		
-		CompanyRepository repository = new CompanyRepository(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
+		CompanyRepository repository =
+				new CompanyRepository(
+						postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
 		companyService = new CompanyService(repository);
 		
-		try (Connection conn = DriverManager.getConnection(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
+		try (Connection conn =
+					 DriverManager.getConnection(
+							 postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
 		     PreparedStatement stmt = conn.prepareStatement("INSERT INTO users (auth_id) VALUES (?)")) {
 			stmt.setString(1, TEST_AUTH_ID);
 			stmt.executeUpdate();
@@ -47,13 +51,14 @@ public final class CompanyServiceTest {
 	
 	@Test
 	public void testRegisterCompany() {
-		Company company = companyService.registerCompany(
-				TEST_AUTH_ID,
-				"Test Corp",
-				"Software Engineer",
-				CompanyStatus.BOOKMARKED,
-				RecrutingPlatform.MYNAVI,
-				ContactType.EMAIL);
+		Company company =
+				companyService.registerCompany(
+						TEST_AUTH_ID,
+						"Test Corp",
+						"Software Engineer",
+						CompanyStatus.BOOKMARKED,
+						RecrutingPlatform.MYNAVI,
+						ContactType.EMAIL);
 		
 		assertNotNull(company.id());
 		assertEquals("Test Corp", company.name());
@@ -67,13 +72,14 @@ public final class CompanyServiceTest {
 	
 	@Test
 	public void testFindCompany() {
-		Company created = companyService.registerCompany(
-				TEST_AUTH_ID,
-				"Find Corp",
-				"Designer",
-				CompanyStatus.PREENTRY,
-				RecrutingPlatform.OTHER,
-				ContactType.OTHER);
+		Company created =
+				companyService.registerCompany(
+						TEST_AUTH_ID,
+						"Find Corp",
+						"Designer",
+						CompanyStatus.PREENTRY,
+						RecrutingPlatform.OTHER,
+						ContactType.OTHER);
 		
 		Optional<Company> found = companyService.findCompany(TEST_AUTH_ID, created.id());
 		
@@ -117,7 +123,9 @@ public final class CompanyServiceTest {
 				RecrutingPlatform.PAIZA,
 				ContactType.PHONE);
 		
-		CompaniesPage page = companyService.getCompanies(TEST_AUTH_ID, 0, 50, null, CompanyStatus.OFFER_RECEIVED, null, null);
+		CompaniesPage page =
+				companyService.getCompanies(
+						TEST_AUTH_ID, 0, 50, null, CompanyStatus.OFFER_RECEIVED, null, null);
 		
 		List<Company> filtered = page.companies();
 		assertTrue(filtered.stream().allMatch(c -> c.status() == CompanyStatus.OFFER_RECEIVED));
@@ -125,22 +133,24 @@ public final class CompanyServiceTest {
 	
 	@Test
 	public void testUpdateCompany() {
-		Company created = companyService.registerCompany(
-				TEST_AUTH_ID,
-				"Update Corp",
-				"Engineer",
-				CompanyStatus.BOOKMARKED,
-				RecrutingPlatform.RIKUNABI,
-				ContactType.EMAIL);
+		Company created =
+				companyService.registerCompany(
+						TEST_AUTH_ID,
+						"Update Corp",
+						"Engineer",
+						CompanyStatus.BOOKMARKED,
+						RecrutingPlatform.RIKUNABI,
+						ContactType.EMAIL);
 		
-		Optional<Company> updated = companyService.updateCompany(
-				TEST_AUTH_ID,
-				created.id(),
-				"Updated Corp",
-				"Senior Engineer",
-				CompanyStatus.PREENTRY,
-				RecrutingPlatform.AGENT,
-				ContactType.OTHER);
+		Optional<Company> updated =
+				companyService.updateCompany(
+						TEST_AUTH_ID,
+						created.id(),
+						"Updated Corp",
+						"Senior Engineer",
+						CompanyStatus.PREENTRY,
+						RecrutingPlatform.AGENT,
+						ContactType.OTHER);
 		
 		assertTrue(updated.isPresent());
 		assertEquals("Updated Corp", updated.get().name());
@@ -150,13 +160,14 @@ public final class CompanyServiceTest {
 	
 	@Test
 	public void testDeleteCompany() {
-		Company created = companyService.registerCompany(
-				TEST_AUTH_ID,
-				"Delete Corp",
-				"Intern",
-				CompanyStatus.REJECTED,
-				RecrutingPlatform.OTHER,
-				ContactType.OTHER);
+		Company created =
+				companyService.registerCompany(
+						TEST_AUTH_ID,
+						"Delete Corp",
+						"Intern",
+						CompanyStatus.REJECTED,
+						RecrutingPlatform.OTHER,
+						ContactType.OTHER);
 		
 		boolean deleted = companyService.deleteCompany(TEST_AUTH_ID, created.id());
 		
