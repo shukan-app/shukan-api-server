@@ -155,15 +155,14 @@ public final class CompanyRepository {
 			RecruitingPlatform applicationRoute,
 			ContactType contactType) {
 		try (Connection conn = getConnection()) {
-			UUID statusId = resolveOrCreateLookupId(conn, "company_status", status.getValue());
-			UUID applicationRouteId = resolveOrCreateLookupId(conn, "application_routes", applicationRoute.getValue());
-			UUID contactTypeId = resolveOrCreateLookupId(conn, "contact_types", contactType.getValue());
+			UUID statusId = resolveLookupId(conn, "company_status", status.getValue());
+			UUID applicationRouteId = resolveLookupId(conn, "application_routes", applicationRoute.getValue());
+			UUID contactTypeId = resolveLookupId(conn, "contact_types", contactType.getValue());
 			
-			String insertSql =
-					"INSERT INTO companies"
-							+ " (user_id, name, applied_role, status_id, application_route_id, contact_type_id, email_url)"
-							+ " VALUES ((SELECT u.id FROM users u WHERE u.auth_id = ?), ?, ?, ?, ?, ?, '')"
-							+ " RETURNING id";
+			String insertSql = "INSERT INTO companies"
+					+ " (user_id, name, applied_role, status_id, application_route_id, contact_type_id, email_url)"
+					+ " VALUES ((SELECT u.id FROM users u WHERE u.auth_id = ?), ?, ?, ?, ?, ?, '')"
+					+ " RETURNING id";
 			UUID companyId;
 			
 			try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
@@ -195,9 +194,9 @@ public final class CompanyRepository {
 			RecruitingPlatform applicationRoute,
 			ContactType contactType) {
 		try (Connection conn = getConnection()) {
-			UUID statusId = resolveOrCreateLookupId(conn, "company_status", status.getValue());
-			UUID applicationRouteId = resolveOrCreateLookupId(conn, "application_routes", applicationRoute.getValue());
-			UUID contactTypeId = resolveOrCreateLookupId(conn, "contact_types", contactType.getValue());
+			UUID statusId = resolveLookupId(conn, "company_status", status.getValue());
+			UUID applicationRouteId = resolveLookupId(conn, "application_routes", applicationRoute.getValue());
+			UUID contactTypeId = resolveLookupId(conn, "contact_types", contactType.getValue());
 			
 			String updateSql = "UPDATE companies SET"
 					+ " name = ?, applied_role = ?,"
@@ -262,7 +261,7 @@ public final class CompanyRepository {
 		}
 	}
 	
-	private UUID resolveOrCreateLookupId(Connection conn, String tableName, String value) throws SQLException {
+	private UUID resolveLookupId(Connection conn, String tableName, String value) throws SQLException {
 		String selectSql = "SELECT id FROM " + tableName + " WHERE name = ?";
 		
 		try (PreparedStatement stmt = conn.prepareStatement(selectSql)) {
@@ -274,14 +273,7 @@ public final class CompanyRepository {
 			}
 		}
 		
-		String insertSql = "INSERT INTO " + tableName + " (name) VALUES (?) RETURNING id";
-		try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
-			stmt.setString(1, value);
-			try (ResultSet rs = stmt.executeQuery()) {
-				rs.next();
-				return rs.getObject("id", UUID.class);
-			}
-		}
+		throw new IllegalArgumentException("Unknown value in " + tableName + ": " + value);
 	}
 	
 	@SuppressWarnings("NullAway")
