@@ -25,13 +25,25 @@
 ### DTO
 
 - `dev.shoheiyamagiwa.shukan.infra.dto` 下に配置する
-- `Request` / `Response` ごとにそれぞれ作成する
 
 ### Mapper
 
 - `dev.shoheiyamagiwa.shukan.infra.mapper` 下に配置する
 - `DTO` と `エンティティ` の相互変換を担当する
 
-## Controller
+## プレゼンテーション層
 
-- `dev.shoheiyamagiwa.shukan.presentation` 下に配置する
+### Controller
+
+- `dev.shoheiyamagiwa.shukan.presentation.controller` 下に配置する
+- データの変換には，後述の `Mapper` を使用する
+
+### DTO
+
+- `dev.shoheiyamagiwa.shukan.presentation.dto` 下に配置する
+- HTTP の `Request` / `Response` ごとにそれぞれ作成する
+
+### Mapper
+
+- `dev.shoheiyamagiwa.shukan.presentation.mapper` 下に配置する
+- `DTO` と `エンティティ` の相互変換を担当する
