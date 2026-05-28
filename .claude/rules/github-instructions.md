@@ -1,2 +1,2 @@
-作業中のリポジトリに紐づいているプロジェクトを取得する: `gh project list --owner shukan-app --format json`
-プロジェクトを指定してIssueを確認する: `gh project item-list [project-number] --owner shukan-app --format json`
+- 作業中のリポジトリに紐づいているプロジェクトを取得する: `gh project list --owner shukan-app --format json`
+- プロジェクトを指定してIssueを確認する: `gh project item-list [project-number] --owner shukan-app --format json`
