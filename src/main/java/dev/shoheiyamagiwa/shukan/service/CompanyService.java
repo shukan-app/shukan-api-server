@@ -1,0 +1,66 @@
+package dev.shoheiyamagiwa.shukan.service;
+
+import dev.shoheiyamagiwa.shukan.domain.entity.Company;
+import dev.shoheiyamagiwa.shukan.domain.vo.CompanyStatus;
+import dev.shoheiyamagiwa.shukan.domain.vo.ContactType;
+import dev.shoheiyamagiwa.shukan.domain.vo.RecrutingPlatform;
+import dev.shoheiyamagiwa.shukan.infra.repository.CompanyRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import org.jspecify.annotations.Nullable;
+
+public final class CompanyService {
+
+  private final CompanyRepository companyRepository;
+
+  public CompanyService(CompanyRepository companyRepository) {
+    this.companyRepository = companyRepository;
+  }
+
+  public CompaniesPage getCompanies(
+      String authId,
+      int page,
+      int pageSize,
+      @Nullable String q,
+      @Nullable CompanyStatus status,
+      @Nullable String sort,
+      @Nullable String order) {
+    List<Company> companies =
+        companyRepository.findAll(authId, page, pageSize, q, status, sort, order);
+    int total = companyRepository.count(authId, q, status);
+    int totalPages = pageSize > 0 ? (int) Math.ceil((double) total / pageSize) : 0;
+    return new CompaniesPage(companies, page, pageSize, totalPages);
+  }
+
+  public Optional<Company> findCompany(String authId, UUID companyId) {
+    return companyRepository.findById(authId, companyId);
+  }
+
+  public Company registerCompany(
+      String authId,
+      String name,
+      String appliedRole,
+      CompanyStatus status,
+      RecrutingPlatform applicationRoute,
+      ContactType contactType) {
+    return companyRepository.create(
+        authId, name, appliedRole, status, applicationRoute, contactType);
+  }
+
+  public Optional<Company> updateCompany(
+      String authId,
+      UUID companyId,
+      String name,
+      String appliedRole,
+      CompanyStatus status,
+      RecrutingPlatform applicationRoute,
+      ContactType contactType) {
+    return companyRepository.update(
+        authId, companyId, name, appliedRole, status, applicationRoute, contactType);
+  }
+
+  public boolean deleteCompany(String authId, UUID companyId) {
+    return companyRepository.softDelete(authId, companyId);
+  }
+}

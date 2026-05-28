@@ -1,5 +1,6 @@
-package dev.shoheiyamagiwa.shukan.controller;
+package dev.shoheiyamagiwa.shukan.presentation.controller;
 
+import dev.shoheiyamagiwa.shukan.presentation.dto.HealthResponseDto;
 import io.javalin.http.HttpStatus;
 import io.javalin.router.JavalinDefaultRoutingApi;
 

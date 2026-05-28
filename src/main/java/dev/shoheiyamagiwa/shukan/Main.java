@@ -4,12 +4,15 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import dev.shoheiyamagiwa.shukan.controller.ErrorResponseDto;
-import dev.shoheiyamagiwa.shukan.controller.HealthController;
+import dev.shoheiyamagiwa.shukan.infra.repository.CompanyRepository;
 import dev.shoheiyamagiwa.shukan.middleware.AuthMiddleware;
 import dev.shoheiyamagiwa.shukan.middleware.AuthMiddlewareProvider;
 import dev.shoheiyamagiwa.shukan.middleware.DenyingAuthMiddlewareProvider;
 import dev.shoheiyamagiwa.shukan.middleware.FirebaseAuthMiddlewareProvider;
+import dev.shoheiyamagiwa.shukan.presentation.controller.CompanyController;
+import dev.shoheiyamagiwa.shukan.presentation.controller.HealthController;
+import dev.shoheiyamagiwa.shukan.presentation.dto.ErrorResponseDto;
+import dev.shoheiyamagiwa.shukan.service.CompanyService;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.HttpStatus;
@@ -75,8 +78,16 @@ public final class Main {
 
   private void start() {
     migrateDatabase();
+    String url = requireEnv("JDBC_DATABASE_URL");
+    String user = requireEnv("JDBC_DATABASE_USERNAME");
+    String password = requireEnv("JDBC_DATABASE_PASSWORD");
+    CompanyRepository companyRepository = new CompanyRepository(url, user, password);
+    CompanyService companyService = new CompanyService(companyRepository);
+    CompanyController companyController = new CompanyController(companyService);
     FirebaseApp firebaseApp = initializeFirebase();
-    createApplication(new FirebaseAuthMiddlewareProvider(FirebaseAuth.getInstance(firebaseApp)))
+    createApplication(
+            new FirebaseAuthMiddlewareProvider(FirebaseAuth.getInstance(firebaseApp)),
+            routes -> companyController.registerRoutes(routes))
         .start(resolvePort());
   }
 

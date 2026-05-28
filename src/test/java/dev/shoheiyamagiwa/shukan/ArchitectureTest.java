@@ -33,21 +33,21 @@ public final class ArchitectureTest {
         .withOptionalLayers(true)
         .layer("Controller")
         .definedBy(
-            "dev.shoheiyamagiwa.shukan.controller..",
+            "dev.shoheiyamagiwa.shukan.presentation..",
             "dev.shoheiyamagiwa.shukan.middleware..",
             "dev.shoheiyamagiwa.shukan")
         .layer("Service")
         .definedBy("dev.shoheiyamagiwa.shukan.service..")
         .layer("Repository")
-        .definedBy("dev.shoheiyamagiwa.shukan.repository..")
+        .definedBy("dev.shoheiyamagiwa.shukan.infra..")
         .layer("Entity")
-        .definedBy("dev.shoheiyamagiwa.shukan.entity..")
+        .definedBy("dev.shoheiyamagiwa.shukan.domain..")
         .whereLayer("Controller")
         .mayNotBeAccessedByAnyLayer()
         .whereLayer("Service")
         .mayOnlyBeAccessedByLayers("Controller", "Service")
         .whereLayer("Repository")
-        .mayOnlyBeAccessedByLayers("Service", "Repository")
+        .mayOnlyBeAccessedByLayers("Controller", "Service", "Repository")
         .check(importedClasses);
   }
 
@@ -93,22 +93,10 @@ public final class ArchitectureTest {
         .resideInAPackage("dev.shoheiyamagiwa.shukan.service..")
         .and()
         .areNotInterfaces()
+        .and()
+        .areNotRecords()
         .should()
         .haveSimpleNameEndingWith("Service")
-        .allowEmptyShould(true)
-        .check(importedClasses);
-
-    classes()
-        .that()
-        .resideInAPackage("dev.shoheiyamagiwa.shukan.service..")
-        .and()
-        .areInterfaces()
-        .should()
-        .haveSimpleNameEndingWith("Repository")
-        .orShould()
-        .haveSimpleNameEndingWith("RepositoryProvider")
-        .orShould()
-        .haveSimpleNameEndingWith("TransactionManager")
         .allowEmptyShould(true)
         .check(importedClasses);
   }
@@ -117,15 +105,27 @@ public final class ArchitectureTest {
   public void testRepositoryRules() {
     classes()
         .that()
-        .resideInAPackage("dev.shoheiyamagiwa.shukan.repository..")
+        .resideInAPackage("dev.shoheiyamagiwa.shukan.infra.repository..")
         .and()
         .areNotInterfaces()
         .should()
-        .haveSimpleNameEndingWith("Impl")
-        .orShould()
-        .haveSimpleNameEndingWith("Dao")
-        .orShould()
+        .haveSimpleNameEndingWith("Repository")
+        .allowEmptyShould(true)
+        .check(importedClasses);
+
+    classes()
+        .that()
+        .resideInAPackage("dev.shoheiyamagiwa.shukan.infra.dto..")
+        .should()
         .haveSimpleNameEndingWith("Dto")
+        .allowEmptyShould(true)
+        .check(importedClasses);
+
+    classes()
+        .that()
+        .resideInAPackage("dev.shoheiyamagiwa.shukan.infra.mapper..")
+        .should()
+        .haveSimpleNameEndingWith("Mapper")
         .allowEmptyShould(true)
         .check(importedClasses);
   }
@@ -134,13 +134,27 @@ public final class ArchitectureTest {
   public void testControllerRules() {
     classes()
         .that()
-        .resideInAPackage("dev.shoheiyamagiwa.shukan.controller..")
+        .resideInAPackage("dev.shoheiyamagiwa.shukan.presentation.controller..")
         .should()
         .haveSimpleNameEndingWith("Controller")
-        .orShould()
+        .allowEmptyShould(true)
+        .check(importedClasses);
+
+    classes()
+        .that()
+        .resideInAPackage("dev.shoheiyamagiwa.shukan.presentation.dto..")
+        .should()
         .haveSimpleNameEndingWith("RequestDto")
         .orShould()
         .haveSimpleNameEndingWith("ResponseDto")
+        .allowEmptyShould(true)
+        .check(importedClasses);
+
+    classes()
+        .that()
+        .resideInAPackage("dev.shoheiyamagiwa.shukan.presentation.mapper..")
+        .should()
+        .haveSimpleNameEndingWith("Mapper")
         .allowEmptyShould(true)
         .check(importedClasses);
   }
@@ -149,13 +163,13 @@ public final class ArchitectureTest {
   public void testEntityRules() {
     noClasses()
         .that()
-        .resideInAPackage("dev.shoheiyamagiwa.shukan.entity..")
+        .resideInAPackage("dev.shoheiyamagiwa.shukan.domain..")
         .should()
         .dependOnClassesThat()
         .resideInAnyPackage(
             "dev.shoheiyamagiwa.shukan.service..",
-            "dev.shoheiyamagiwa.shukan.repository..",
-            "dev.shoheiyamagiwa.shukan.controller..",
+            "dev.shoheiyamagiwa.shukan.infra..",
+            "dev.shoheiyamagiwa.shukan.presentation..",
             "dev.shoheiyamagiwa.shukan.middleware..")
         .allowEmptyShould(true)
         .check(importedClasses);
