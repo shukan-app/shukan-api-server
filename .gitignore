@@ -44,4 +44,6 @@ build/
 .claude/worktrees
 .claude/settings.local.json
 
-### User Settings ###
+### Secrets ###
+.env.*
+!.env.example
