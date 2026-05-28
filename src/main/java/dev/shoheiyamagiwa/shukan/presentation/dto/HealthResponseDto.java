@@ -1,3 +1,4 @@
 package dev.shoheiyamagiwa.shukan.presentation.dto;
 
-public record HealthResponseDto(String status) {}
+public record HealthResponseDto(String status) {
+}
