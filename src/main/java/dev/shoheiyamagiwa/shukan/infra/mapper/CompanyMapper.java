@@ -3,7 +3,7 @@ package dev.shoheiyamagiwa.shukan.infra.mapper;
 import dev.shoheiyamagiwa.shukan.domain.entity.Company;
 import dev.shoheiyamagiwa.shukan.domain.vo.CompanyStatus;
 import dev.shoheiyamagiwa.shukan.domain.vo.ContactType;
-import dev.shoheiyamagiwa.shukan.domain.vo.RecrutingPlatform;
+import dev.shoheiyamagiwa.shukan.domain.vo.RecruitingPlatform;
 import dev.shoheiyamagiwa.shukan.infra.dto.CompanyDto;
 
 public final class CompanyMapper {
@@ -14,7 +14,7 @@ public final class CompanyMapper {
 				dto.name(),
 				dto.appliedRole(),
 				CompanyStatus.fromValue(dto.status()),
-				RecrutingPlatform.fromValue(dto.applicationRoute()),
+				RecruitingPlatform.fromValue(dto.applicationRoute()),
 				ContactType.fromValue(dto.contactType()),
 				dto.createdAt(),
 				dto.updatedAt(),

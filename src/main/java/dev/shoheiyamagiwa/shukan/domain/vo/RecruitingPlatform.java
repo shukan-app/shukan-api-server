@@ -1,6 +1,6 @@
 package dev.shoheiyamagiwa.shukan.domain.vo;
 
-public enum RecrutingPlatform {
+public enum RecruitingPlatform {
 	MYNAVI("mynavi"),
 	RIKUNABI("rikunabi"),
 	ONE_CAREER("oneCareer"),
@@ -21,17 +21,17 @@ public enum RecrutingPlatform {
 	
 	private final String value;
 	
-	RecrutingPlatform(String value) {
+	RecruitingPlatform(String value) {
 		this.value = value;
 	}
 	
-	public static RecrutingPlatform fromValue(String value) {
-		for (RecrutingPlatform platform : values()) {
+	public static RecruitingPlatform fromValue(String value) {
+		for (RecruitingPlatform platform : values()) {
 			if (platform.value.equals(value)) {
 				return platform;
 			}
 		}
-		throw new IllegalArgumentException("Unknown RecrutingPlatform: " + value);
+		throw new IllegalArgumentException("Unknown RecruitingPlatform: " + value);
 	}
 	
 	public String getValue() {

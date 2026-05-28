@@ -3,7 +3,7 @@ package dev.shoheiyamagiwa.shukan.presentation.mapper;
 import dev.shoheiyamagiwa.shukan.domain.entity.Company;
 import dev.shoheiyamagiwa.shukan.domain.vo.CompanyStatus;
 import dev.shoheiyamagiwa.shukan.domain.vo.ContactType;
-import dev.shoheiyamagiwa.shukan.domain.vo.RecrutingPlatform;
+import dev.shoheiyamagiwa.shukan.domain.vo.RecruitingPlatform;
 import dev.shoheiyamagiwa.shukan.presentation.dto.CompanyDetailResponseDto;
 import dev.shoheiyamagiwa.shukan.presentation.dto.CompanyResponseDto;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ public final class CompanyPresentationMapperTest {
 				"Corp A",
 				"Engineer",
 				CompanyStatus.PREENTRY,
-				RecrutingPlatform.ONE_CAREER,
+				RecruitingPlatform.ONE_CAREER,
 				ContactType.PLATFORM_MESSAGE,
 				NOW,
 				NOW,

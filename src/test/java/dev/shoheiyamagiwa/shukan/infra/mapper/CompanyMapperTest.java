@@ -3,7 +3,7 @@ package dev.shoheiyamagiwa.shukan.infra.mapper;
 import dev.shoheiyamagiwa.shukan.domain.entity.Company;
 import dev.shoheiyamagiwa.shukan.domain.vo.CompanyStatus;
 import dev.shoheiyamagiwa.shukan.domain.vo.ContactType;
-import dev.shoheiyamagiwa.shukan.domain.vo.RecrutingPlatform;
+import dev.shoheiyamagiwa.shukan.domain.vo.RecruitingPlatform;
 import dev.shoheiyamagiwa.shukan.infra.dto.CompanyDto;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +29,7 @@ public final class CompanyMapperTest {
 		assertEquals("Corp A", entity.name());
 		assertEquals("Engineer", entity.appliedRole());
 		assertEquals(CompanyStatus.BOOKMARKED, entity.status());
-		assertEquals(RecrutingPlatform.MYNAVI, entity.applicationRoute());
+		assertEquals(RecruitingPlatform.MYNAVI, entity.applicationRoute());
 		assertEquals(ContactType.EMAIL, entity.contactType());
 		assertEquals(NOW, entity.createdAt());
 		assertEquals(NOW, entity.updatedAt());
@@ -44,7 +44,7 @@ public final class CompanyMapperTest {
 						"Corp A",
 						"Engineer",
 						CompanyStatus.BOOKMARKED,
-						RecrutingPlatform.MYNAVI,
+						RecruitingPlatform.MYNAVI,
 						ContactType.EMAIL,
 						NOW,
 						NOW,

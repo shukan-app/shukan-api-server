@@ -3,7 +3,7 @@ package dev.shoheiyamagiwa.shukan.service;
 import dev.shoheiyamagiwa.shukan.domain.entity.Company;
 import dev.shoheiyamagiwa.shukan.domain.vo.CompanyStatus;
 import dev.shoheiyamagiwa.shukan.domain.vo.ContactType;
-import dev.shoheiyamagiwa.shukan.domain.vo.RecrutingPlatform;
+import dev.shoheiyamagiwa.shukan.domain.vo.RecruitingPlatform;
 import dev.shoheiyamagiwa.shukan.infra.repository.CompanyRepository;
 import org.jspecify.annotations.Nullable;
 
@@ -43,7 +43,7 @@ public final class CompanyService {
 			String name,
 			String appliedRole,
 			CompanyStatus status,
-			RecrutingPlatform applicationRoute,
+			RecruitingPlatform applicationRoute,
 			ContactType contactType) {
 		return companyRepository.create(
 				authId, name, appliedRole, status, applicationRoute, contactType);
@@ -55,7 +55,7 @@ public final class CompanyService {
 			String name,
 			String appliedRole,
 			CompanyStatus status,
-			RecrutingPlatform applicationRoute,
+			RecruitingPlatform applicationRoute,
 			ContactType contactType) {
 		return companyRepository.update(
 				authId, companyId, name, appliedRole, status, applicationRoute, contactType);

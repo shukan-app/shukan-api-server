@@ -2,7 +2,7 @@ package dev.shoheiyamagiwa.shukan.domain.entity;
 
 import dev.shoheiyamagiwa.shukan.domain.vo.CompanyStatus;
 import dev.shoheiyamagiwa.shukan.domain.vo.ContactType;
-import dev.shoheiyamagiwa.shukan.domain.vo.RecrutingPlatform;
+import dev.shoheiyamagiwa.shukan.domain.vo.RecruitingPlatform;
 import org.jspecify.annotations.Nullable;
 
 import java.time.OffsetDateTime;
@@ -13,7 +13,7 @@ public record Company(
 		String name,
 		String appliedRole,
 		CompanyStatus status,
-		RecrutingPlatform applicationRoute,
+		RecruitingPlatform applicationRoute,
 		ContactType contactType,
 		OffsetDateTime createdAt,
 		OffsetDateTime updatedAt,

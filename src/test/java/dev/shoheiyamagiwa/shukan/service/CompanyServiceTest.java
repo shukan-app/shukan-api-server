@@ -3,7 +3,7 @@ package dev.shoheiyamagiwa.shukan.service;
 import dev.shoheiyamagiwa.shukan.domain.entity.Company;
 import dev.shoheiyamagiwa.shukan.domain.vo.CompanyStatus;
 import dev.shoheiyamagiwa.shukan.domain.vo.ContactType;
-import dev.shoheiyamagiwa.shukan.domain.vo.RecrutingPlatform;
+import dev.shoheiyamagiwa.shukan.domain.vo.RecruitingPlatform;
 import dev.shoheiyamagiwa.shukan.infra.repository.CompanyRepository;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeAll;
@@ -57,14 +57,14 @@ public final class CompanyServiceTest {
 						"Test Corp",
 						"Software Engineer",
 						CompanyStatus.BOOKMARKED,
-						RecrutingPlatform.MYNAVI,
+						RecruitingPlatform.MYNAVI,
 						ContactType.EMAIL);
 		
 		assertNotNull(company.id());
 		assertEquals("Test Corp", company.name());
 		assertEquals("Software Engineer", company.appliedRole());
 		assertEquals(CompanyStatus.BOOKMARKED, company.status());
-		assertEquals(RecrutingPlatform.MYNAVI, company.applicationRoute());
+		assertEquals(RecruitingPlatform.MYNAVI, company.applicationRoute());
 		assertEquals(ContactType.EMAIL, company.contactType());
 		assertNotNull(company.createdAt());
 		assertNotNull(company.updatedAt());
@@ -78,7 +78,7 @@ public final class CompanyServiceTest {
 						"Find Corp",
 						"Designer",
 						CompanyStatus.PREENTRY,
-						RecrutingPlatform.OTHER,
+						RecruitingPlatform.OTHER,
 						ContactType.OTHER);
 		
 		Optional<Company> found = companyService.findCompany(TEST_AUTH_ID, created.id());
@@ -102,7 +102,7 @@ public final class CompanyServiceTest {
 				"List Corp",
 				"Manager",
 				CompanyStatus.UNDER_SCREENING,
-				RecrutingPlatform.WANTEDLY,
+				RecruitingPlatform.WANTEDLY,
 				ContactType.LINE);
 		
 		CompaniesPage page = companyService.getCompanies(TEST_AUTH_ID, 0, 50, null, null, null, null);
@@ -120,7 +120,7 @@ public final class CompanyServiceTest {
 				"Filtered Corp",
 				"Analyst",
 				CompanyStatus.OFFER_RECEIVED,
-				RecrutingPlatform.PAIZA,
+				RecruitingPlatform.PAIZA,
 				ContactType.PHONE);
 		
 		CompaniesPage page =
@@ -139,7 +139,7 @@ public final class CompanyServiceTest {
 						"Update Corp",
 						"Engineer",
 						CompanyStatus.BOOKMARKED,
-						RecrutingPlatform.RIKUNABI,
+						RecruitingPlatform.RIKUNABI,
 						ContactType.EMAIL);
 		
 		Optional<Company> updated =
@@ -149,7 +149,7 @@ public final class CompanyServiceTest {
 						"Updated Corp",
 						"Senior Engineer",
 						CompanyStatus.PREENTRY,
-						RecrutingPlatform.AGENT,
+						RecruitingPlatform.AGENT,
 						ContactType.OTHER);
 		
 		assertTrue(updated.isPresent());
@@ -166,7 +166,7 @@ public final class CompanyServiceTest {
 						"Delete Corp",
 						"Intern",
 						CompanyStatus.REJECTED,
-						RecrutingPlatform.OTHER,
+						RecruitingPlatform.OTHER,
 						ContactType.OTHER);
 		
 		boolean deleted = companyService.deleteCompany(TEST_AUTH_ID, created.id());

@@ -45,20 +45,20 @@ public final class CompanyVoTest {
 	}
 	
 	@Test
-	public void testRecrutingPlatformFromValue() {
-		assertEquals(RecrutingPlatform.MYNAVI, RecrutingPlatform.fromValue("mynavi"));
-		assertEquals(RecrutingPlatform.ONE_CAREER, RecrutingPlatform.fromValue("oneCareer"));
-		assertEquals(RecrutingPlatform.OTHER, RecrutingPlatform.fromValue("other"));
+	public void testRecruitingPlatformFromValue() {
+		assertEquals(RecruitingPlatform.MYNAVI, RecruitingPlatform.fromValue("mynavi"));
+		assertEquals(RecruitingPlatform.ONE_CAREER, RecruitingPlatform.fromValue("oneCareer"));
+		assertEquals(RecruitingPlatform.OTHER, RecruitingPlatform.fromValue("other"));
 	}
 	
 	@Test
-	public void testRecrutingPlatformFromValueThrowsOnUnknown() {
-		assertThrows(IllegalArgumentException.class, () -> RecrutingPlatform.fromValue("unknown"));
+	public void testRecruitingPlatformFromValueThrowsOnUnknown() {
+		assertThrows(IllegalArgumentException.class, () -> RecruitingPlatform.fromValue("unknown"));
 	}
 	
 	@Test
-	public void testRecrutingPlatformGetValue() {
-		assertEquals("mynavi", RecrutingPlatform.MYNAVI.getValue());
-		assertEquals("oneCareer", RecrutingPlatform.ONE_CAREER.getValue());
+	public void testRecruitingPlatformGetValue() {
+		assertEquals("mynavi", RecruitingPlatform.MYNAVI.getValue());
+		assertEquals("oneCareer", RecruitingPlatform.ONE_CAREER.getValue());
 	}
 }

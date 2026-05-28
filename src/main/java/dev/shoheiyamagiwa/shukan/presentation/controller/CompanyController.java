@@ -3,7 +3,7 @@ package dev.shoheiyamagiwa.shukan.presentation.controller;
 import dev.shoheiyamagiwa.shukan.domain.entity.Company;
 import dev.shoheiyamagiwa.shukan.domain.vo.CompanyStatus;
 import dev.shoheiyamagiwa.shukan.domain.vo.ContactType;
-import dev.shoheiyamagiwa.shukan.domain.vo.RecrutingPlatform;
+import dev.shoheiyamagiwa.shukan.domain.vo.RecruitingPlatform;
 import dev.shoheiyamagiwa.shukan.middleware.AuthenticatedRequestContext;
 import dev.shoheiyamagiwa.shukan.presentation.dto.*;
 import dev.shoheiyamagiwa.shukan.presentation.mapper.CompanyPresentationMapper;
@@ -32,11 +32,13 @@ public final class CompanyController {
 		return auth.userId();
 	}
 	
+	@Nullable
 	private static UUID parseCompanyId(io.javalin.http.Context ctx) {
 		try {
 			return UUID.fromString(ctx.pathParam("id"));
 		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException("Invalid company ID");
+			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid company ID"));
+			return null;
 		}
 	}
 	
@@ -67,14 +69,14 @@ public final class CompanyController {
 	}
 	
 	@Nullable
-	private static RecrutingPlatform parseRecrutingPlatform(
+	private static RecruitingPlatform parseRecruitingPlatform(
 			io.javalin.http.Context ctx, @Nullable String value) {
 		if (value == null) {
 			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("applicationRoute is required"));
 			return null;
 		}
 		try {
-			return RecrutingPlatform.fromValue(value);
+			return RecruitingPlatform.fromValue(value);
 		} catch (IllegalArgumentException e) {
 			ctx.status(HttpStatus.BAD_REQUEST)
 					.json(new ErrorResponseDto("Invalid applicationRoute: " + value));
@@ -188,7 +190,7 @@ public final class CompanyController {
 		if (status == null) {
 			return;
 		}
-		RecrutingPlatform applicationRoute = parseRecrutingPlatform(ctx, applicationRouteValue);
+		RecruitingPlatform applicationRoute = parseRecruitingPlatform(ctx, applicationRouteValue);
 		if (applicationRoute == null) {
 			return;
 		}
@@ -206,6 +208,9 @@ public final class CompanyController {
 	private void getCompany(io.javalin.http.Context ctx) {
 		String authId = requireAuthId(ctx);
 		UUID companyId = parseCompanyId(ctx);
+		if (companyId == null) {
+			return;
+		}
 		
 		Optional<Company> company = companyService.findCompany(authId, companyId);
 		if (company.isEmpty()) {
@@ -218,6 +223,9 @@ public final class CompanyController {
 	private void updateCompany(io.javalin.http.Context ctx) {
 		String authId = requireAuthId(ctx);
 		UUID companyId = parseCompanyId(ctx);
+		if (companyId == null) {
+			return;
+		}
 		UpdateCompanyRequestDto body = ctx.bodyAsClass(UpdateCompanyRequestDto.class);
 		
 		@Nullable String name = body.name();
@@ -241,7 +249,7 @@ public final class CompanyController {
 		if (status == null) {
 			return;
 		}
-		RecrutingPlatform applicationRoute = parseRecrutingPlatform(ctx, applicationRouteValue);
+		RecruitingPlatform applicationRoute = parseRecruitingPlatform(ctx, applicationRouteValue);
 		if (applicationRoute == null) {
 			return;
 		}
@@ -263,6 +271,9 @@ public final class CompanyController {
 	private void deleteCompany(io.javalin.http.Context ctx) {
 		String authId = requireAuthId(ctx);
 		UUID companyId = parseCompanyId(ctx);
+		if (companyId == null) {
+			return;
+		}
 		
 		boolean deleted = companyService.deleteCompany(authId, companyId);
 		if (!deleted) {

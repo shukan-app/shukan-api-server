@@ -3,7 +3,7 @@ package dev.shoheiyamagiwa.shukan.infra.repository;
 import dev.shoheiyamagiwa.shukan.domain.entity.Company;
 import dev.shoheiyamagiwa.shukan.domain.vo.CompanyStatus;
 import dev.shoheiyamagiwa.shukan.domain.vo.ContactType;
-import dev.shoheiyamagiwa.shukan.domain.vo.RecrutingPlatform;
+import dev.shoheiyamagiwa.shukan.domain.vo.RecruitingPlatform;
 import dev.shoheiyamagiwa.shukan.infra.dto.CompanyDto;
 import dev.shoheiyamagiwa.shukan.infra.mapper.CompanyMapper;
 import org.jspecify.annotations.Nullable;
@@ -155,7 +155,7 @@ public final class CompanyRepository {
 			String name,
 			String appliedRole,
 			CompanyStatus status,
-			RecrutingPlatform applicationRoute,
+			RecruitingPlatform applicationRoute,
 			ContactType contactType) {
 		try (Connection conn = getConnection()) {
 			UUID statusId = resolveOrCreateLookupId(conn, "company_status", status.getValue());
@@ -194,7 +194,7 @@ public final class CompanyRepository {
 			String name,
 			String appliedRole,
 			CompanyStatus status,
-			RecrutingPlatform applicationRoute,
+			RecruitingPlatform applicationRoute,
 			ContactType contactType) {
 		try (Connection conn = getConnection()) {
 			UUID statusId = resolveOrCreateLookupId(conn, "company_status", status.getValue());
