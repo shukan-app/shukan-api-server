@@ -1,28 +1,42 @@
 INSERT INTO company_status (name)
-VALUES ('unapplied'),
-       ('applied'),
-       ('selection'),
-       ('offer'),
-       ('rejected'),
-       ('declined');
+VALUES ('bookmarked'),
+       ('preentry'),
+       ('informal_contact'),
+       ('experience_program'),
+       ('preparing_application'),
+       ('under_screening'),
+       ('interview_scheduling'),
+       ('interview_in_progress'),
+       ('final_selection'),
+       ('offer_received'),
+       ('offer_accepted'),
+       ('offer_declined'),
+       ('selection_withdrawn'),
+       ('rejected');
 
 INSERT INTO contact_types (name)
 VALUES ('email'),
-       ('platform_message'),
        ('phone'),
+       ('line'),
+       ('platform_message'),
+       ('contact_form'),
        ('other');
 
 INSERT INTO application_routes (name)
 VALUES ('mynavi'),
        ('rikunabi'),
        ('one_career'),
-       ('gaishishukatsu'),
-       ('openwork'),
+       ('gaishi_shukatsu'),
+       ('offer_box'),
+       ('kimisuka'),
+       ('doda_campus'),
+       ('iroots'),
+       ('supporterz'),
+       ('paiza'),
+       ('levtech'),
+       ('track_job'),
        ('wantedly'),
-       ('doda'),
-       ('green'),
-       ('bizreach'),
-       ('direct_apply'),
+       ('direct'),
        ('agent'),
        ('referral'),
        ('other');
@@ -32,51 +46,61 @@ VALUES ('user'),
        ('ai');
 
 INSERT INTO task_status (name)
-VALUES ('todo'),
-       ('done');
+VALUES ('complete'),
+       ('incomplete');
 
 INSERT INTO task_types (name)
-VALUES ('es_submission'),
-       ('test_taking'),
-       ('interview'),
-       ('document_submission'),
+VALUES ('document_submission'),
+       ('assessment'),
+       ('scheduling'),
+       ('reply_required'),
+       ('preparation'),
        ('other');
 
 INSERT INTO event_format_types (name)
 VALUES ('online'),
        ('offline'),
-       ('hybrid');
+       ('hybrid'),
+       ('on_demand');
 
 INSERT INTO event_status (name)
 VALUES ('scheduled'),
-       ('cancelled'),
-       ('completed');
+       ('attended'),
+       ('absent'),
+       ('canceled'),
+       ('rescheduling_required');
 
 INSERT INTO event_types (name)
-VALUES ('briefing'),
+VALUES ('info_session'),
+       ('informal_meet'),
        ('interview'),
-       ('internship'),
-       ('ob_visit'),
+       ('group_work'),
+       ('experience_program'),
+       ('assessment'),
+       ('offer_event'),
        ('other');
 
 INSERT INTO recruiting_platforms (name)
 VALUES ('mynavi'),
        ('rikunabi'),
        ('one_career'),
-       ('gaishishukatsu'),
-       ('openwork'),
+       ('gaishi_shukatsu'),
+       ('offer_box'),
+       ('kimisuka'),
+       ('doda_campus'),
+       ('iroots'),
+       ('supporterz'),
+       ('paiza'),
+       ('levtech'),
+       ('track_job'),
        ('wantedly'),
-       ('doda'),
-       ('green'),
-       ('bizreach'),
-       ('direct_apply'),
+       ('direct'),
        ('agent'),
        ('referral'),
        ('other');
 
 INSERT INTO scout_status (name)
 VALUES ('unread'),
-       ('read'),
-       ('replied'),
-       ('interested'),
-       ('rejected');
+       ('unresponded'),
+       ('accepted'),
+       ('declined');
