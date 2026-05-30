@@ -1,5 +1,5 @@
 [flyway]
-cleanDisabled = true
+cleanDisabled = false
 
 [environments.default]
 url = "jdbc:postgresql://localhost:5432/shukan_dev"
