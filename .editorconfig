@@ -1,0 +1,13 @@
+root = true
+
+[*]
+tab_width = 4
+indent_size = tab
+indent_style = tab
+ij_any_keep_indents_on_empty_lines = true
+
+[*.json]
+tab_width = 2
+
+[*.md]
+tab_width = 2
