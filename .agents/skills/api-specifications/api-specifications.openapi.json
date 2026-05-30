@@ -282,7 +282,7 @@
                   },
                   "applicationRoute": {
                     "title": "応募経路",
-                    "$ref": "#/components/schemas/RecrutingPlatform"
+                    "$ref": "#/components/schemas/RecruitingPlatform"
                   },
                   "contactType": {
                     "title": "連絡先種別",
@@ -1225,7 +1225,7 @@
           },
           "applicationRoute": {
             "title": "応募経路",
-            "$ref": "#/components/schemas/RecrutingPlatform"
+            "$ref": "#/components/schemas/RecruitingPlatform"
           },
           "contactType": {
             "title": "連絡先種別",
@@ -1705,7 +1705,7 @@
           },
           "platform": {
             "title": "就活プラットフォーム",
-            "$ref": "#/components/schemas/RecrutingPlatform"
+            "$ref": "#/components/schemas/RecruitingPlatform"
           },
           "detailsUrl": {
             "type": [
@@ -1799,7 +1799,7 @@
         ],
         "title": "ページネーション"
       },
-      "RecrutingPlatform": {
+      "RecruitingPlatform": {
         "type": "string",
         "title": "就活プラットフォーム",
         "enum": [
