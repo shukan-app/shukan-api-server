@@ -91,6 +91,20 @@ public final class CompanyControllerIntegrationTest {
 		assertTrue(response.body().contains("\"status\":\"bookmarked\""));
 		assertNotNull(extractId(response.body()));
 	}
+
+	@Test
+	public void testRegisterCompanyReturnsNotFoundWhenUserDoesNotExist() throws IOException, InterruptedException {
+		HttpResponse<String> response = send(
+			"POST",
+			"/users/me/companies",
+			"""
+				{"name":"Acme Corp","appliedRole":"Engineer","status":"bookmarked",\
+				"applicationRoute":"mynavi","contactType":"email"}""",
+			"non-existing-user");
+
+		assertEquals(404, response.statusCode());
+		assertTrue(response.body().contains("Not Found"));
+	}
 	
 	@Test
 	public void testRegisterCompanyRejectsInvalidName() throws IOException, InterruptedException {
@@ -249,6 +263,10 @@ public final class CompanyControllerIntegrationTest {
 	}
 	
 	private static HttpResponse<String> send(String method, String path, @Nullable String body, boolean authorized) throws IOException, InterruptedException {
+		return send(method, path, body, authorized ? TEST_AUTH_ID : null);
+	}
+
+	private static HttpResponse<String> send(String method, String path, @Nullable String body, @Nullable String bearerToken) throws IOException, InterruptedException {
 		HttpRequest.BodyPublisher publisher = body == null
 			? HttpRequest.BodyPublishers.noBody()
 			: HttpRequest.BodyPublishers.ofString(body);
@@ -258,8 +276,8 @@ public final class CompanyControllerIntegrationTest {
 			.header("Content-Type", "application/json")
 			.method(method, publisher);
 		
-		if (authorized) {
-			builder.header("Authorization", "Bearer " + TEST_AUTH_ID);
+		if (bearerToken != null) {
+			builder.header("Authorization", "Bearer " + bearerToken);
 		}
 		
 		return HttpClient.newHttpClient()

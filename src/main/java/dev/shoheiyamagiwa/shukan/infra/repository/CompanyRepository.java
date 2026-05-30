@@ -145,7 +145,7 @@ public final class CompanyRepository {
 		}
 	}
 	
-	public Company create(
+	public Optional<Company> create(
 		String authId,
 		String name,
 		String appliedRole,
@@ -160,25 +160,28 @@ public final class CompanyRepository {
 			
 			String insertSql = "INSERT INTO companies"
 				+ " (user_id, name, applied_role, status_id, application_route_id, contact_type_id, creation_source_url)"
-				+ " VALUES ((SELECT u.id FROM users u WHERE u.auth_id = ?), ?, ?, ?, ?, ?, '')"
+				+ " SELECT u.id, ?, ?, ?, ?, ?, ''"
+				+ " FROM users u WHERE u.auth_id = ?"
 				+ " RETURNING id";
 			UUID companyId;
 			
 			try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
-				stmt.setString(1, authId);
-				stmt.setString(2, name);
-				stmt.setString(3, appliedRole);
-				stmt.setObject(4, statusId);
-				stmt.setObject(5, applicationRouteId);
-				stmt.setObject(6, contactTypeId);
+				stmt.setString(1, name);
+				stmt.setString(2, appliedRole);
+				stmt.setObject(3, statusId);
+				stmt.setObject(4, applicationRouteId);
+				stmt.setObject(5, contactTypeId);
+				stmt.setString(6, authId);
 				
 				try (ResultSet rs = stmt.executeQuery()) {
-					rs.next();
+					if (!rs.next()) {
+						return Optional.empty();
+					}
 					companyId = rs.getObject("id", UUID.class);
 				}
 			}
 			
-			return findById(conn, authId, companyId).orElseThrow();
+			return findById(conn, authId, companyId);
 		} catch (SQLException e) {
 			throw new RuntimeException("Database error", e);
 		}

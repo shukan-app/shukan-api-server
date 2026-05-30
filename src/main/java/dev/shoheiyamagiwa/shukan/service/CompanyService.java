@@ -38,7 +38,7 @@ public final class CompanyService {
 		return companyRepository.findById(authId, companyId);
 	}
 	
-	public Company registerCompany(
+	public Optional<Company> registerCompany(
 			String authId,
 			String name,
 			String appliedRole,

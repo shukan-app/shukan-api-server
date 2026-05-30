@@ -51,7 +51,7 @@ public final class CompanyServiceTest {
 	
 	@Test
 	public void testRegisterCompany() {
-		Company company =
+		Optional<Company> company =
 				companyService.registerCompany(
 						TEST_AUTH_ID,
 						"Test Corp",
@@ -59,20 +59,23 @@ public final class CompanyServiceTest {
 						CompanyStatus.BOOKMARKED,
 						RecruitingPlatform.MYNAVI,
 						ContactType.EMAIL);
+
+		assertTrue(company.isPresent());
+		Company registered = company.get();
 		
-		assertNotNull(company.id());
-		assertEquals("Test Corp", company.name());
-		assertEquals("Software Engineer", company.appliedRole());
-		assertEquals(CompanyStatus.BOOKMARKED, company.status());
-		assertEquals(RecruitingPlatform.MYNAVI, company.applicationRoute());
-		assertEquals(ContactType.EMAIL, company.contactType());
-		assertNotNull(company.createdAt());
-		assertNotNull(company.updatedAt());
+		assertNotNull(registered.id());
+		assertEquals("Test Corp", registered.name());
+		assertEquals("Software Engineer", registered.appliedRole());
+		assertEquals(CompanyStatus.BOOKMARKED, registered.status());
+		assertEquals(RecruitingPlatform.MYNAVI, registered.applicationRoute());
+		assertEquals(ContactType.EMAIL, registered.contactType());
+		assertNotNull(registered.createdAt());
+		assertNotNull(registered.updatedAt());
 	}
 	
 	@Test
 	public void testFindCompany() {
-		Company created =
+		Optional<Company> created =
 				companyService.registerCompany(
 						TEST_AUTH_ID,
 						"Find Corp",
@@ -80,11 +83,12 @@ public final class CompanyServiceTest {
 						CompanyStatus.PREENTRY,
 						RecruitingPlatform.OTHER,
 						ContactType.OTHER);
+		assertTrue(created.isPresent());
 		
-		Optional<Company> found = companyService.findCompany(TEST_AUTH_ID, created.id());
+		Optional<Company> found = companyService.findCompany(TEST_AUTH_ID, created.get().id());
 		
 		assertTrue(found.isPresent());
-		assertEquals(created.id(), found.get().id());
+		assertEquals(created.get().id(), found.get().id());
 		assertEquals("Find Corp", found.get().name());
 	}
 	
@@ -133,7 +137,7 @@ public final class CompanyServiceTest {
 	
 	@Test
 	public void testUpdateCompany() {
-		Company created =
+		Optional<Company> created =
 				companyService.registerCompany(
 						TEST_AUTH_ID,
 						"Update Corp",
@@ -141,11 +145,12 @@ public final class CompanyServiceTest {
 						CompanyStatus.BOOKMARKED,
 						RecruitingPlatform.RIKUNABI,
 						ContactType.EMAIL);
+		assertTrue(created.isPresent());
 		
 		Optional<Company> updated =
 				companyService.updateCompany(
 						TEST_AUTH_ID,
-						created.id(),
+						created.get().id(),
 						"Updated Corp",
 						"Senior Engineer",
 						CompanyStatus.PREENTRY,
@@ -160,7 +165,7 @@ public final class CompanyServiceTest {
 	
 	@Test
 	public void testDeleteCompany() {
-		Company created =
+		Optional<Company> created =
 				companyService.registerCompany(
 						TEST_AUTH_ID,
 						"Delete Corp",
@@ -168,11 +173,12 @@ public final class CompanyServiceTest {
 						CompanyStatus.REJECTED,
 						RecruitingPlatform.OTHER,
 						ContactType.OTHER);
+		assertTrue(created.isPresent());
 		
-		boolean deleted = companyService.deleteCompany(TEST_AUTH_ID, created.id());
+		boolean deleted = companyService.deleteCompany(TEST_AUTH_ID, created.get().id());
 		
 		assertTrue(deleted);
-		assertFalse(companyService.findCompany(TEST_AUTH_ID, created.id()).isPresent());
+		assertFalse(companyService.findCompany(TEST_AUTH_ID, created.get().id()).isPresent());
 	}
 	
 	@Test

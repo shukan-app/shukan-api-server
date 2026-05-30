@@ -201,9 +201,13 @@ public final class CompanyController {
 			return;
 		}
 		
-		Company company = companyService.registerCompany(authId, name, appliedRole, status, applicationRoute, contactType);
-		
-		ctx.json(CompanyPresentationMapper.toCompanyDetailResponse(company));
+		Optional<Company> company = companyService.registerCompany(authId, name, appliedRole, status, applicationRoute, contactType);
+		if (company.isEmpty()) {
+			ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("User not found"));
+			return;
+		}
+
+		ctx.json(CompanyPresentationMapper.toCompanyDetailResponse(company.get()));
 	}
 	
 	private void getCompany(Context ctx) {
