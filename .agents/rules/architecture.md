@@ -29,7 +29,7 @@
 ### Mapper
 
 - `dev.shoheiyamagiwa.shukan.infra.mapper` 下に配置する
-- `DTO` と `エンティティ` の相互変換を担当する
+- `DB` と `エンティティ` の相互変換を担当する
 
 ## プレゼンテーション層
 
