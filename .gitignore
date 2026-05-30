@@ -39,9 +39,6 @@ build/
 ### Mac OS ###
 .DS_Store
 
-### Claude Code ###
-.mcp.json
-.claude/worktrees
-.claude/settings.local.json
-
-### User Settings ###
+### Agents ###
+.agents/worktrees
+.agents/settings.local.json
