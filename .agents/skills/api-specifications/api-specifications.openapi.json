@@ -289,7 +289,10 @@
                     "$ref": "#/components/schemas/ContactType"
                   },
                   "creationSourceUrl": {
-                    "type": "string",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "title": "作成元URL",
                     "description": "どのURLを参照して企業データが作成されたかを表す"
                   },
@@ -1232,7 +1235,10 @@
             "$ref": "#/components/schemas/ContactType"
           },
           "creationSourceUrl": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "title": "作成元URL",
             "description": "どのURLを参照して企業データが作成されたかを表す"
           },
