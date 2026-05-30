@@ -10,6 +10,9 @@ target/
 .idea/compiler.xml
 .idea/libraries/
 .idea/runConfigurations
+.idea/dataSources.xml
+.idea/data_source_mapping.xml
+.idea/sqldialects.xml
 *.iws
 *.iml
 *.ipr
@@ -39,10 +42,9 @@ build/
 ### Mac OS ###
 .DS_Store
 
-### Claude Code ###
-.mcp.json
-.claude/worktrees
-.claude/settings.local.json
+### Agents ###
+.agents/worktrees
+.agents/settings.local.json
 
 ### Secrets ###
 .env.*
