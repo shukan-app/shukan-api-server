@@ -130,6 +130,22 @@ public final class CompanyControllerIntegrationTest {
 		assertTrue(response.body().contains("\"pagination\"") || response.body().contains("page"));
 		assertTrue(response.body().contains("List Corp"));
 	}
+
+	@Test
+	public void testGetCompaniesRejectsInvalidPageQuery() throws IOException, InterruptedException {
+		HttpResponse<String> response = send("GET", "/users/me/companies?page=abc", null, true);
+
+		assertEquals(400, response.statusCode());
+		assertTrue(response.body().contains("Invalid page: abc"));
+	}
+
+	@Test
+	public void testGetCompaniesRejectsInvalidPageSizeQuery() throws IOException, InterruptedException {
+		HttpResponse<String> response = send("GET", "/users/me/companies?pageSize=abc", null, true);
+
+		assertEquals(400, response.statusCode());
+		assertTrue(response.body().contains("Invalid pageSize: abc"));
+	}
 	
 	@Test
 	public void testGetCompanyReturnsDetail() throws IOException, InterruptedException {

@@ -43,14 +43,16 @@ public final class CompanyController {
 		}
 	}
 	
-	private static int parseIntParam(@Nullable String value, int defaultValue) {
+	@Nullable
+	private static Integer parseIntParam(Context ctx, String parameterName, @Nullable String value, int defaultValue) {
 		if (value == null || value.isBlank()) {
 			return defaultValue;
 		}
 		try {
 			return Integer.parseInt(value);
 		} catch (NumberFormatException e) {
-			return defaultValue;
+			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid " + parameterName + ": " + value));
+			return null;
 		}
 	}
 	
@@ -107,8 +109,15 @@ public final class CompanyController {
 	private void getCompanies(Context ctx) {
 		String authId = requireAuthId(ctx);
 		
-		int page = parseIntParam(ctx.queryParam("page"), 0);
-		int pageSize = parseIntParam(ctx.queryParam("pageSize"), 50);
+		Integer page = parseIntParam(ctx, "page", ctx.queryParam("page"), 0);
+		if (page == null) {
+			return;
+		}
+
+		Integer pageSize = parseIntParam(ctx, "pageSize", ctx.queryParam("pageSize"), 50);
+		if (pageSize == null) {
+			return;
+		}
 		
 		if (page < 0 || page > 99) {
 			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("page must be between 0 and 99"));
