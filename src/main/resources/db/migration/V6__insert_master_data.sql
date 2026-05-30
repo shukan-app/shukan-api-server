@@ -41,7 +41,7 @@ VALUES ('mynavi'),
        ('referral'),
        ('other');
 
-INSERT INTO task_creation_sources (name)
+INSERT INTO task_creator_kinds (name)
 VALUES ('user'),
        ('ai');
 

@@ -18,6 +18,7 @@ CREATE TABLE scouts
 	company_name           TEXT        NOT NULL,
 	recruiting_platform_id UUID        NOT NULL REFERENCES recruiting_platforms (id),
 	details_url            TEXT,
+	email_url              TEXT        NOT NULL,
 	status_id              UUID        NOT NULL REFERENCES scout_status (id),
 	created_at             TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at             TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
