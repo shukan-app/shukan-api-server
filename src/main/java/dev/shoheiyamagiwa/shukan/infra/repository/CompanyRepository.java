@@ -83,7 +83,7 @@ public final class CompanyRepository {
 		}
 		if (status != null) {
 			where.append(" AND cs.name = ?");
-			params.add(status.getValue());
+			params.add(status.toDatabaseValue());
 		}
 		
 		String orderBy = buildOrderByClause(sort, order);
@@ -120,7 +120,7 @@ public final class CompanyRepository {
 		
 		if (status != null) {
 			where.append(" AND cs.name = ?");
-			params.add(status.getValue());
+			params.add(status.toDatabaseValue());
 		}
 		
 		String sql =
@@ -155,12 +155,13 @@ public final class CompanyRepository {
 			RecruitingPlatform applicationRoute,
 			ContactType contactType) {
 		try (Connection conn = getConnection()) {
-			UUID statusId = resolveLookupId(conn, "company_status", status.getValue());
-			UUID applicationRouteId = resolveLookupId(conn, "application_routes", applicationRoute.getValue());
-			UUID contactTypeId = resolveLookupId(conn, "contact_types", contactType.getValue());
+			UUID statusId = resolveLookupId(conn, "company_status", status.toDatabaseValue());
+			UUID applicationRouteId =
+					resolveLookupId(conn, "application_routes", applicationRoute.toDatabaseValue());
+			UUID contactTypeId = resolveLookupId(conn, "contact_types", contactType.toDatabaseValue());
 			
 			String insertSql = "INSERT INTO companies"
-					+ " (user_id, name, applied_role, status_id, application_route_id, contact_type_id, email_url)"
+					+ " (user_id, name, applied_role, status_id, application_route_id, contact_type_id, creation_source_url)"
 					+ " VALUES ((SELECT u.id FROM users u WHERE u.auth_id = ?), ?, ?, ?, ?, ?, '')"
 					+ " RETURNING id";
 			UUID companyId;
@@ -194,9 +195,10 @@ public final class CompanyRepository {
 			RecruitingPlatform applicationRoute,
 			ContactType contactType) {
 		try (Connection conn = getConnection()) {
-			UUID statusId = resolveLookupId(conn, "company_status", status.getValue());
-			UUID applicationRouteId = resolveLookupId(conn, "application_routes", applicationRoute.getValue());
-			UUID contactTypeId = resolveLookupId(conn, "contact_types", contactType.getValue());
+			UUID statusId = resolveLookupId(conn, "company_status", status.toDatabaseValue());
+			UUID applicationRouteId =
+					resolveLookupId(conn, "application_routes", applicationRoute.toDatabaseValue());
+			UUID contactTypeId = resolveLookupId(conn, "contact_types", contactType.toDatabaseValue());
 			
 			String updateSql = "UPDATE companies SET"
 					+ " name = ?, applied_role = ?,"

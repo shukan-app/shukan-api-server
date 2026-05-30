@@ -25,6 +25,12 @@ public final class CompanyVoTest {
 		assertEquals("informalContact", CompanyStatus.INFORMAL_CONTACT.getValue());
 		assertEquals("offerAccepted", CompanyStatus.OFFER_ACCEPTED.getValue());
 	}
+
+	@Test
+	public void testCompanyStatusFromDatabaseValueAndToDatabaseValue() {
+		assertEquals(CompanyStatus.INFORMAL_CONTACT, CompanyStatus.fromDatabaseValue("informal_contact"));
+		assertEquals("offer_accepted", CompanyStatus.OFFER_ACCEPTED.toDatabaseValue());
+	}
 	
 	@Test
 	public void testContactTypeFromValue() {
@@ -43,6 +49,12 @@ public final class CompanyVoTest {
 		assertEquals("email", ContactType.EMAIL.getValue());
 		assertEquals("platformMessage", ContactType.PLATFORM_MESSAGE.getValue());
 	}
+
+	@Test
+	public void testContactTypeFromDatabaseValueAndToDatabaseValue() {
+		assertEquals(ContactType.PLATFORM_MESSAGE, ContactType.fromDatabaseValue("platform_message"));
+		assertEquals("contact_form", ContactType.CONTACT_FORM.toDatabaseValue());
+	}
 	
 	@Test
 	public void testRecruitingPlatformFromValue() {
@@ -60,5 +72,11 @@ public final class CompanyVoTest {
 	public void testRecruitingPlatformGetValue() {
 		assertEquals("mynavi", RecruitingPlatform.MYNAVI.getValue());
 		assertEquals("oneCareer", RecruitingPlatform.ONE_CAREER.getValue());
+	}
+
+	@Test
+	public void testRecruitingPlatformFromDatabaseValueAndToDatabaseValue() {
+		assertEquals(RecruitingPlatform.ONE_CAREER, RecruitingPlatform.fromDatabaseValue("one_career"));
+		assertEquals("track_job", RecruitingPlatform.TRACK_JOB.toDatabaseValue());
 	}
 }

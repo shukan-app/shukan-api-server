@@ -21,16 +21,25 @@ public final class CompanyMapperTest {
 	@Test
 	public void testToEntity() {
 		CompanyDto dto =
-				new CompanyDto(ID, "Corp A", "Engineer", "bookmarked", "mynavi", "email", NOW, NOW, null);
+				new CompanyDto(
+						ID,
+						"Corp A",
+						"Engineer",
+						"informal_contact",
+						"one_career",
+						"platform_message",
+						NOW,
+						NOW,
+						null);
 		
 		Company entity = CompanyMapper.toEntity(dto);
 		
 		assertEquals(ID, entity.id());
 		assertEquals("Corp A", entity.name());
 		assertEquals("Engineer", entity.appliedRole());
-		assertEquals(CompanyStatus.BOOKMARKED, entity.status());
-		assertEquals(RecruitingPlatform.MYNAVI, entity.applicationRoute());
-		assertEquals(ContactType.EMAIL, entity.contactType());
+		assertEquals(CompanyStatus.INFORMAL_CONTACT, entity.status());
+		assertEquals(RecruitingPlatform.ONE_CAREER, entity.applicationRoute());
+		assertEquals(ContactType.PLATFORM_MESSAGE, entity.contactType());
 		assertEquals(NOW, entity.createdAt());
 		assertEquals(NOW, entity.updatedAt());
 		assertNull(entity.deletedAt());
@@ -43,9 +52,9 @@ public final class CompanyMapperTest {
 						ID,
 						"Corp A",
 						"Engineer",
-						CompanyStatus.BOOKMARKED,
-						RecruitingPlatform.MYNAVI,
-						ContactType.EMAIL,
+						CompanyStatus.INTERVIEW_IN_PROGRESS,
+						RecruitingPlatform.TRACK_JOB,
+						ContactType.CONTACT_FORM,
 						NOW,
 						NOW,
 						null);
@@ -55,9 +64,9 @@ public final class CompanyMapperTest {
 		assertEquals(ID, dto.id());
 		assertEquals("Corp A", dto.name());
 		assertEquals("Engineer", dto.appliedRole());
-		assertEquals("bookmarked", dto.status());
-		assertEquals("mynavi", dto.applicationRoute());
-		assertEquals("email", dto.contactType());
+		assertEquals("interview_in_progress", dto.status());
+		assertEquals("track_job", dto.applicationRoute());
+		assertEquals("contact_form", dto.contactType());
 		assertEquals(NOW, dto.createdAt());
 		assertEquals(NOW, dto.updatedAt());
 		assertNull(dto.deletedAt());
