@@ -79,7 +79,7 @@ public final class TaskRepository {
 			params.add(type.toDatabaseValue());
 		}
 		
-		String sql = SELECT_TASK + where + " ORDER BY t.deadline ASC NULLS LAST, t.created_at ASC LIMIT ? OFFSET ?";
+		String sql = SELECT_TASK + where + " ORDER BY t.deadline  NULLS LAST, t.created_at LIMIT ? OFFSET ?";
 		params.add(pageSize);
 		params.add((long) page * pageSize);
 		
@@ -144,8 +144,7 @@ public final class TaskRepository {
 		try (Connection conn = getConnection()) {
 			UUID typeId = resolveLookupId(conn, "task_types", type.toDatabaseValue());
 			UUID statusId = resolveLookupId(conn, "task_status", status.toDatabaseValue());
-			UUID creatorKindId =
-				resolveLookupId(conn, "task_creator_kinds", TaskCreationSource.USER.toDatabaseValue());
+			UUID creatorKindId = resolveLookupId(conn, "task_creator_kinds", TaskCreationSource.USER.toDatabaseValue());
 			
 			String insertSql = "INSERT INTO tasks"
 				+ " (user_id, title, company_id, type_id, status_id, creator_kind_id, creation_source_url, deadline)"
