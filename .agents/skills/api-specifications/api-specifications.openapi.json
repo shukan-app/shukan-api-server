@@ -1723,9 +1723,14 @@
             "title": "詳細URL"
           },
           "creationSourceUrl": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "title": "作成元URL",
-            "description": "どのURLを参照してスカウトデータが作成されたかを表す"
+            "description": "どのURLを参照してスカウトデータが作成されたかを表す",
+            "minLength": 7,
+            "maxLength": 2048
           },
           "createdAt": {
             "type": "string",
