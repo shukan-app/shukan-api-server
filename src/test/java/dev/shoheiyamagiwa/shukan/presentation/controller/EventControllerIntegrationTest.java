@@ -83,7 +83,7 @@ public final class EventControllerIntegrationTest {
 		HttpResponse<String> response = send("GET", "/users/me/events", null, false);
 
 		assertEquals(401, response.statusCode());
-		assertEquals("{\"message\":\"Unauthorized\"}", response.body());
+		assertEquals("{\"type\":\"about:blank\",\"title\":\"Unauthorized\",\"status\":401,\"detail\":\"Unauthorized\",\"instance\":\"/users/me/events\"}", response.body());
 	}
 
 	@Test

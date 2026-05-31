@@ -72,7 +72,7 @@ public final class CompanyControllerIntegrationTest {
 		HttpResponse<String> response = send("GET", "/users/me/companies", null, false);
 		
 		assertEquals(401, response.statusCode());
-		assertEquals("{\"message\":\"Unauthorized\"}", response.body());
+		assertEquals("{\"type\":\"about:blank\",\"title\":\"Unauthorized\",\"status\":401,\"detail\":\"Unauthorized\",\"instance\":\"/users/me/companies\"}", response.body());
 	}
 	
 	@Test
