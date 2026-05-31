@@ -5,16 +5,19 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import dev.shoheiyamagiwa.shukan.infra.repository.CompanyRepository;
+import dev.shoheiyamagiwa.shukan.infra.repository.EventRepository;
 import dev.shoheiyamagiwa.shukan.infra.repository.TaskRepository;
 import dev.shoheiyamagiwa.shukan.middleware.AuthMiddleware;
 import dev.shoheiyamagiwa.shukan.middleware.AuthMiddlewareProvider;
 import dev.shoheiyamagiwa.shukan.middleware.DenyingAuthMiddlewareProvider;
 import dev.shoheiyamagiwa.shukan.middleware.FirebaseAuthMiddlewareProvider;
 import dev.shoheiyamagiwa.shukan.presentation.controller.CompanyController;
+import dev.shoheiyamagiwa.shukan.presentation.controller.EventController;
 import dev.shoheiyamagiwa.shukan.presentation.controller.HealthController;
 import dev.shoheiyamagiwa.shukan.presentation.controller.TaskController;
 import dev.shoheiyamagiwa.shukan.presentation.dto.ErrorResponseDto;
 import dev.shoheiyamagiwa.shukan.service.CompanyService;
+import dev.shoheiyamagiwa.shukan.service.EventService;
 import dev.shoheiyamagiwa.shukan.service.TaskService;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
@@ -101,12 +104,16 @@ public final class Main {
 		TaskRepository taskRepository = new TaskRepository(url, user, password);
 		TaskService taskService = new TaskService(taskRepository);
 		TaskController taskController = new TaskController(taskService);
+		EventRepository eventRepository = new EventRepository(url, user, password);
+		EventService eventService = new EventService(eventRepository);
+		EventController eventController = new EventController(eventService);
 		FirebaseApp firebaseApp = initializeFirebase();
 		createApplication(
 			new FirebaseAuthMiddlewareProvider(FirebaseAuth.getInstance(firebaseApp)),
 			routes -> {
 				companyController.registerRoutes(routes);
 				taskController.registerRoutes(routes);
+				eventController.registerRoutes(routes);
 			})
 			.start(resolvePort());
 	}
