@@ -25,7 +25,7 @@ CREATE TABLE companies
 	status_id            UUID        NOT NULL REFERENCES company_status (id),
 	application_route_id UUID        NOT NULL REFERENCES application_routes (id),
 	contact_type_id      UUID        NOT NULL REFERENCES contact_types (id),
-	email_url            TEXT        NOT NULL,
+	creation_source_url  TEXT,
 	created_at           TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at           TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	deleted_at           TIMESTAMPTZ          DEFAULT NULL

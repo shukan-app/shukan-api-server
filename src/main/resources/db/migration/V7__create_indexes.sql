@@ -15,7 +15,7 @@ CREATE INDEX idx_companies_contact_type_id ON companies (contact_type_id);
 
 CREATE INDEX idx_tasks_status_id ON tasks (status_id);
 CREATE INDEX idx_tasks_type_id ON tasks (type_id);
-CREATE INDEX idx_tasks_creation_source_id ON tasks (creation_source_id);
+CREATE INDEX idx_tasks_creation_source_id ON tasks (creator_kind_id);
 
 CREATE INDEX idx_events_status_id ON events (status_id);
 CREATE INDEX idx_events_type_id ON events (type_id);

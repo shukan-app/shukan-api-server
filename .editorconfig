@@ -1,8 +1,13 @@
 root = true
 
 [*]
-charset = utf-8
-end_of_line = lf
-indent_size = 4
-indent_style = tab
 tab_width = 4
+indent_size = tab
+indent_style = tab
+ij_any_keep_indents_on_empty_lines = true
+
+[*.json]
+tab_width = 2
+
+[*.md]
+tab_width = 2

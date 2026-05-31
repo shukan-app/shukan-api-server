@@ -282,11 +282,19 @@
                   },
                   "applicationRoute": {
                     "title": "応募経路",
-                    "$ref": "#/components/schemas/RecrutingPlatform"
+                    "$ref": "#/components/schemas/RecruitingPlatform"
                   },
                   "contactType": {
                     "title": "連絡先種別",
                     "$ref": "#/components/schemas/ContactType"
+                  },
+                  "creationSourceUrl": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "title": "作成元URL",
+                    "description": "どのURLを参照して企業データが作成されたかを表す"
                   },
                   "createdAt": {
                     "type": "string",
@@ -320,6 +328,7 @@
                   "status",
                   "applicationRoute",
                   "contactType",
+                  "creationSourceUrl",
                   "createdAt",
                   "updatedAt",
                   "deletedAt"
@@ -1219,11 +1228,19 @@
           },
           "applicationRoute": {
             "title": "応募経路",
-            "$ref": "#/components/schemas/RecrutingPlatform"
+            "$ref": "#/components/schemas/RecruitingPlatform"
           },
           "contactType": {
             "title": "連絡先種別",
             "$ref": "#/components/schemas/ContactType"
+          },
+          "creationSourceUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "title": "作成元URL",
+            "description": "どのURLを参照して企業データが作成されたかを表す"
           },
           "createdAt": {
             "type": "string",
@@ -1259,7 +1276,8 @@
           "deletedAt",
           "applicationRoute",
           "contactType",
-          "id"
+          "id",
+          "creationSourceUrl"
         ],
         "title": "企業詳細"
       },
@@ -1327,14 +1345,15 @@
             "title": "作成元",
             "$ref": "#/components/schemas/TaskCreationSource"
           },
-          "url": {
+          "creationSourceUrl": {
             "type": [
               "string",
               "null"
             ],
-            "title": "参照URL",
+            "title": "作成元URL",
             "maxLength": 2048,
-            "minLength": 7
+            "minLength": 7,
+            "description": "どのURLを参照してタスクデータが作成されたかを表す"
           },
           "deadline": {
             "type": [
@@ -1373,7 +1392,7 @@
           "type",
           "status",
           "createdBy",
-          "url",
+          "creationSourceUrl",
           "createdAt",
           "updatedAt",
           "deletedAt",
@@ -1432,14 +1451,15 @@
             "$ref": "#/components/schemas/TaskStatus",
             "title": "ステータス"
           },
-          "url": {
+          "creationSourceUrl": {
             "type": [
               "string",
               "null"
             ],
-            "title": "参照URL",
+            "title": "作成元URL",
             "maxLength": 2048,
-            "minLength": 7
+            "minLength": 7,
+            "description": "どのURLを参照してタスクデータが作成されたかを表す"
           },
           "deadline": {
             "type": [
@@ -1455,7 +1475,7 @@
           "companyId",
           "type",
           "status",
-          "url",
+          "creationSourceUrl",
           "deadline"
         ],
         "title": "タスク書き込みリクエスト"
@@ -1500,14 +1520,15 @@
             "maxLength": 50,
             "title": "開催場所"
           },
-          "detailsUrl": {
+          "creationSourceUrl": {
             "type": [
               "string",
               "null"
             ],
             "minLength": 7,
             "maxLength": 2048,
-            "title": "詳細URL"
+            "title": "作成元メールURL",
+            "description": "どのURLを参照してイベントが作成されたかを表す"
           },
           "beginAt": {
             "type": "string",
@@ -1553,7 +1574,7 @@
           "createdAt",
           "updatedAt",
           "deletedAt",
-          "detailsUrl",
+          "creationSourceUrl",
           "endAt"
         ],
         "title": "イベント"
@@ -1629,14 +1650,15 @@
             "maxLength": 50,
             "title": "開催場所"
           },
-          "detailsUrl": {
+          "creationSourceUrl": {
             "type": [
               "string",
               "null"
             ],
             "minLength": 7,
             "maxLength": 2048,
-            "title": "詳細URL"
+            "title": "作成元URL",
+            "description": "どのURLを参照してイベントが作成されたかを表す"
           },
           "beginAt": {
             "type": "string",
@@ -1657,7 +1679,7 @@
           "formatType",
           "location",
           "beginAt",
-          "detailsUrl",
+          "creationSourceUrl",
           "endAt"
         ],
         "title": "イベント書き込みリクエスト"
@@ -1689,7 +1711,7 @@
           },
           "platform": {
             "title": "就活プラットフォーム",
-            "$ref": "#/components/schemas/RecrutingPlatform"
+            "$ref": "#/components/schemas/RecruitingPlatform"
           },
           "detailsUrl": {
             "type": [
@@ -1699,6 +1721,11 @@
             "maxLength": 2048,
             "minLength": 7,
             "title": "詳細URL"
+          },
+          "creationSourceUrl": {
+            "type": "string",
+            "title": "作成元URL",
+            "description": "どのURLを参照してスカウトデータが作成されたかを表す"
           },
           "createdAt": {
             "type": "string",
@@ -1731,7 +1758,8 @@
           "status",
           "createdAt",
           "updatedAt",
-          "deletedAt"
+          "deletedAt",
+          "creationSourceUrl"
         ],
         "title": "スカウト"
       },
@@ -1777,7 +1805,7 @@
         ],
         "title": "ページネーション"
       },
-      "RecrutingPlatform": {
+      "RecruitingPlatform": {
         "type": "string",
         "title": "就活プラットフォーム",
         "enum": [
