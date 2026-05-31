@@ -4,6 +4,7 @@ import dev.shoheiyamagiwa.shukan.domain.entity.Task;
 import dev.shoheiyamagiwa.shukan.domain.vo.TaskStatus;
 import dev.shoheiyamagiwa.shukan.domain.vo.TaskType;
 import dev.shoheiyamagiwa.shukan.middleware.AuthenticatedRequestContext;
+import dev.shoheiyamagiwa.shukan.presentation.ErrorResponses;
 import dev.shoheiyamagiwa.shukan.presentation.dto.*;
 import dev.shoheiyamagiwa.shukan.presentation.mapper.TaskPresentationMapper;
 import dev.shoheiyamagiwa.shukan.service.TaskService;
@@ -34,7 +35,7 @@ public final class TaskController {
 
 	private boolean ensureUserExists(Context ctx, String authId) {
 		if (!taskService.userExists(authId)) {
-			ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("User not found"));
+			ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "User not found");
 			return false;
 		}
 		return true;
@@ -45,7 +46,7 @@ public final class TaskController {
 		try {
 			return UUID.fromString(ctx.pathParam("id"));
 		} catch (IllegalArgumentException e) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid task ID"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid task ID");
 			return null;
 		}
 	}
@@ -58,7 +59,7 @@ public final class TaskController {
 		try {
 			return Integer.parseInt(value);
 		} catch (NumberFormatException e) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid " + parameterName + ": " + value));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid " + parameterName + ": " + value);
 			return null;
 		}
 	}
@@ -66,13 +67,13 @@ public final class TaskController {
 	@Nullable
 	private static TaskType parseTaskType(Context ctx, @Nullable String value) {
 		if (value == null) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("type is required"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "type is required");
 			return null;
 		}
 		try {
 			return TaskType.fromValue(value);
 		} catch (IllegalArgumentException e) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid type: " + value));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid type: " + value);
 			return null;
 		}
 	}
@@ -80,20 +81,20 @@ public final class TaskController {
 	@Nullable
 	private static TaskStatus parseTaskStatus(Context ctx, @Nullable String value) {
 		if (value == null) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("status is required"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "status is required");
 			return null;
 		}
 		try {
 			return TaskStatus.fromValue(value);
 		} catch (IllegalArgumentException e) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid status: " + value));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid status: " + value);
 			return null;
 		}
 	}
 
 	private static boolean validateTitle(Context ctx, @Nullable String title) {
 		if (title == null || title.length() < 2 || title.length() > 32) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("title must be between 2 and 32 characters"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "title must be between 2 and 32 characters");
 			return false;
 		}
 		return true;
@@ -102,8 +103,7 @@ public final class TaskController {
 	private static boolean validateCreationSourceUrl(Context ctx, @Nullable String creationSourceUrl) {
 		if (creationSourceUrl != null
 			&& (creationSourceUrl.length() < 7 || creationSourceUrl.length() > 2048)) {
-			ctx.status(HttpStatus.BAD_REQUEST)
-				.json(new ErrorResponseDto("creationSourceUrl must be between 7 and 2048 characters"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "creationSourceUrl must be between 7 and 2048 characters");
 			return false;
 		}
 		return true;
@@ -133,12 +133,12 @@ public final class TaskController {
 		}
 
 		if (page < 0 || page > 99) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("page must be between 0 and 99"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "page must be between 0 and 99");
 			return;
 		}
 
 		if (pageSize < 1 || pageSize > 100) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("pageSize must be between 1 and 100"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "pageSize must be between 1 and 100");
 			return;
 		}
 
@@ -148,7 +148,7 @@ public final class TaskController {
 			try {
 				type = TaskType.fromValue(typeParam);
 			} catch (IllegalArgumentException e) {
-				ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid type: " + typeParam));
+				ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid type: " + typeParam);
 				return;
 			}
 		}
@@ -179,7 +179,7 @@ public final class TaskController {
 		}
 
 		if (companyId == null) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("companyId is required"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "companyId is required");
 			return;
 		}
 
@@ -206,7 +206,7 @@ public final class TaskController {
 			creationSourceUrl,
 			body.deadline());
 		if (task.isEmpty()) {
-			ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("Company not found"));
+			ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "Company not found");
 			return;
 		}
 
@@ -236,7 +236,7 @@ public final class TaskController {
 		}
 
 		if (companyId == null) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("companyId is required"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "companyId is required");
 			return;
 		}
 
@@ -264,7 +264,7 @@ public final class TaskController {
 			creationSourceUrl,
 			body.deadline());
 		if (updated.isEmpty()) {
-			ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("Task not found"));
+			ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "Task not found");
 			return;
 		}
 
@@ -284,7 +284,7 @@ public final class TaskController {
 
 		boolean deleted = taskService.deleteTask(authId, taskId);
 		if (!deleted) {
-			ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("Task not found"));
+			ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "Task not found");
 			return;
 		}
 		ctx.status(HttpStatus.NO_CONTENT);

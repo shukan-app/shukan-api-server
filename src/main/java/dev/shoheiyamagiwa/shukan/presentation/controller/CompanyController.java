@@ -5,6 +5,7 @@ import dev.shoheiyamagiwa.shukan.domain.vo.CompanyStatus;
 import dev.shoheiyamagiwa.shukan.domain.vo.ContactType;
 import dev.shoheiyamagiwa.shukan.domain.vo.RecruitingPlatform;
 import dev.shoheiyamagiwa.shukan.middleware.AuthenticatedRequestContext;
+import dev.shoheiyamagiwa.shukan.presentation.ErrorResponses;
 import dev.shoheiyamagiwa.shukan.presentation.dto.*;
 import dev.shoheiyamagiwa.shukan.presentation.mapper.CompanyPresentationMapper;
 import dev.shoheiyamagiwa.shukan.service.CompaniesPage;
@@ -38,7 +39,7 @@ public final class CompanyController {
 		try {
 			return UUID.fromString(ctx.pathParam("id"));
 		} catch (IllegalArgumentException e) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid company ID"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid company ID");
 			return null;
 		}
 	}
@@ -51,7 +52,7 @@ public final class CompanyController {
 		try {
 			return Integer.parseInt(value);
 		} catch (NumberFormatException e) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid " + parameterName + ": " + value));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid " + parameterName + ": " + value);
 			return null;
 		}
 	}
@@ -59,13 +60,13 @@ public final class CompanyController {
 	@Nullable
 	private static CompanyStatus parseCompanyStatus(Context ctx, @Nullable String value) {
 		if (value == null) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("status is required"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "status is required");
 			return null;
 		}
 		try {
 			return CompanyStatus.fromValue(value);
 		} catch (IllegalArgumentException e) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid status: " + value));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid status: " + value);
 			return null;
 		}
 	}
@@ -73,13 +74,13 @@ public final class CompanyController {
 	@Nullable
 	private static RecruitingPlatform parseRecruitingPlatform(Context ctx, @Nullable String value) {
 		if (value == null) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("applicationRoute is required"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "applicationRoute is required");
 			return null;
 		}
 		try {
 			return RecruitingPlatform.fromValue(value);
 		} catch (IllegalArgumentException e) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid applicationRoute: " + value));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid applicationRoute: " + value);
 			return null;
 		}
 	}
@@ -87,13 +88,13 @@ public final class CompanyController {
 	@Nullable
 	private static ContactType parseContactType(Context ctx, @Nullable String value) {
 		if (value == null) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("contactType is required"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "contactType is required");
 			return null;
 		}
 		try {
 			return ContactType.fromValue(value);
 		} catch (IllegalArgumentException e) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid contactType: " + value));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid contactType: " + value);
 			return null;
 		}
 	}
@@ -120,18 +121,18 @@ public final class CompanyController {
 		}
 		
 		if (page < 0 || page > 99) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("page must be between 0 and 99"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "page must be between 0 and 99");
 			return;
 		}
 		
 		if (pageSize < 1 || pageSize > 100) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("pageSize must be between 1 and 100"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "pageSize must be between 1 and 100");
 			return;
 		}
 		
 		String q = ctx.queryParam("q");
 		if (q != null && (q.isEmpty() || q.length() > 32)) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("q must be between 1 and 32 characters"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "q must be between 1 and 32 characters");
 			return;
 		}
 		
@@ -141,20 +142,20 @@ public final class CompanyController {
 			try {
 				status = CompanyStatus.fromValue(statusParam);
 			} catch (IllegalArgumentException e) {
-				ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid status: " + statusParam));
+				ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid status: " + statusParam);
 				return;
 			}
 		}
 		
 		String sort = ctx.queryParam("sort");
 		if (sort != null && !sort.equals("taskDate") && !sort.equals("eventDate")) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid sort: " + sort));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid sort: " + sort);
 			return;
 		}
 		
 		String order = ctx.queryParam("order");
 		if (order != null && !order.equals("ascend") && !order.equals("descend")) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid order: " + order));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid order: " + order);
 			return;
 		}
 		
@@ -178,12 +179,12 @@ public final class CompanyController {
 		String creationSourceUrl = body.creationSourceUrl();
 		
 		if (name == null || name.length() < 2 || name.length() > 32) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("name must be between 2 and 32 characters"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "name must be between 2 and 32 characters");
 			return;
 		}
 		
 		if (appliedRole == null || appliedRole.length() < 2 || appliedRole.length() > 32) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("appliedRole must be between 2 and 32 characters"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "appliedRole must be between 2 and 32 characters");
 			return;
 		}
 		
@@ -204,7 +205,7 @@ public final class CompanyController {
 		
 		Optional<Company> company = companyService.registerCompany(authId, name, appliedRole, status, applicationRoute, contactType, creationSourceUrl);
 		if (company.isEmpty()) {
-			ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("User not found"));
+			ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "User not found");
 			return;
 		}
 
@@ -220,7 +221,7 @@ public final class CompanyController {
 		
 		Optional<Company> company = companyService.findCompany(authId, companyId);
 		if (company.isEmpty()) {
-			ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("Company not found"));
+			ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "Company not found");
 			return;
 		}
 		
@@ -244,11 +245,11 @@ public final class CompanyController {
 		String creationSourceUrl = body.creationSourceUrl();
 		
 		if (name == null || name.length() < 2 || name.length() > 32) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("name must be between 2 and 32 characters"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "name must be between 2 and 32 characters");
 			return;
 		}
 		if (appliedRole == null || appliedRole.length() < 2 || appliedRole.length() > 32) {
-			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("appliedRole must be between 2 and 32 characters"));
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "appliedRole must be between 2 and 32 characters");
 			return;
 		}
 		
@@ -269,7 +270,7 @@ public final class CompanyController {
 		
 		Optional<Company> updated = companyService.updateCompany(authId, companyId, name, appliedRole, status, applicationRoute, contactType, creationSourceUrl);
 		if (updated.isEmpty()) {
-			ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("Company not found"));
+			ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "Company not found");
 			return;
 		}
 		
@@ -285,7 +286,7 @@ public final class CompanyController {
 		
 		boolean deleted = companyService.deleteCompany(authId, companyId);
 		if (!deleted) {
-			ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("Company not found"));
+			ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "Company not found");
 			return;
 		}
 		ctx.status(HttpStatus.NO_CONTENT);

@@ -83,7 +83,7 @@ public final class EventControllerIntegrationTest {
 		HttpResponse<String> response = send("GET", "/users/me/events", null, false);
 
 		assertEquals(401, response.statusCode());
-		assertEquals("{\"message\":\"Unauthorized\"}", response.body());
+		assertEquals("{\"type\":\"about:blank\",\"title\":\"Unauthorized\",\"status\":401,\"detail\":\"Unauthorized\",\"instance\":\"/users/me/events\"}", response.body());
 	}
 
 	@Test
@@ -208,7 +208,9 @@ public final class EventControllerIntegrationTest {
 		HttpResponse<String> response = send("GET", "/users/me/events?page=invalid", null, true);
 
 		assertEquals(400, response.statusCode());
-		assertTrue(response.body().contains("Invalid page"));
+		assertEquals(
+			"{\"type\":\"about:blank\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Invalid page: invalid\",\"instance\":\"/users/me/events\"}",
+			response.body());
 	}
 
 	@Test
@@ -240,7 +242,7 @@ public final class EventControllerIntegrationTest {
 		HttpResponse<String> response = send("GET", "/users/me/events", null, "non-existing-user");
 
 		assertEquals(404, response.statusCode());
-		assertTrue(response.body().contains("found") || response.body().contains("Found"));
+		assertTrue(response.body().contains("\"detail\":\"User not found\""));
 	}
 
 	@Test

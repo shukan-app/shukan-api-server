@@ -4,6 +4,7 @@ import dev.shoheiyamagiwa.shukan.domain.entity.Scout;
 import dev.shoheiyamagiwa.shukan.domain.vo.RecruitingPlatform;
 import dev.shoheiyamagiwa.shukan.domain.vo.ScoutStatus;
 import dev.shoheiyamagiwa.shukan.middleware.AuthenticatedRequestContext;
+import dev.shoheiyamagiwa.shukan.presentation.ErrorResponses;
 import dev.shoheiyamagiwa.shukan.presentation.dto.*;
 import dev.shoheiyamagiwa.shukan.presentation.mapper.ScoutPresentationMapper;
 import dev.shoheiyamagiwa.shukan.service.ScoutService;
@@ -27,7 +28,7 @@ public final class ScoutController {
   private static String requireAuthId(Context ctx) {
     AuthenticatedRequestContext auth = ctx.attribute(AuthenticatedRequestContext.ATTRIBUTE_NAME);
     if (auth == null) {
-      ctx.status(HttpStatus.UNAUTHORIZED).json(new ErrorResponseDto("Unauthorized"));
+      ErrorResponses.respond(ctx, HttpStatus.UNAUTHORIZED, "Unauthorized");
       return null;
     }
 
@@ -36,7 +37,7 @@ public final class ScoutController {
 
   private boolean ensureUserExists(Context ctx, String authId) {
     if (!scoutService.userExists(authId)) {
-      ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("User not found"));
+      ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "User not found");
       return false;
     }
     return true;
@@ -47,7 +48,7 @@ public final class ScoutController {
     try {
       return UUID.fromString(ctx.pathParam("id"));
     } catch (IllegalArgumentException e) {
-      ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid scout ID"));
+      ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid scout ID");
       return null;
     }
   }
@@ -61,8 +62,7 @@ public final class ScoutController {
     try {
       return Integer.parseInt(value);
     } catch (NumberFormatException e) {
-      ctx.status(HttpStatus.BAD_REQUEST)
-          .json(new ErrorResponseDto("Invalid " + parameterName + ": " + value));
+      ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid " + parameterName + ": " + value);
       return null;
     }
   }
@@ -70,13 +70,13 @@ public final class ScoutController {
   @Nullable
   private static ScoutStatus parseScoutStatus(Context ctx, @Nullable String value) {
     if (value == null) {
-      ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("status is required"));
+      ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "status is required");
       return null;
     }
     try {
       return ScoutStatus.fromValue(value);
     } catch (IllegalArgumentException e) {
-      ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid status: " + value));
+      ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid status: " + value);
       return null;
     }
   }
@@ -84,21 +84,20 @@ public final class ScoutController {
   @Nullable
   private static RecruitingPlatform parseRecruitingPlatform(Context ctx, @Nullable String value) {
     if (value == null) {
-      ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("platform is required"));
+      ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "platform is required");
       return null;
     }
     try {
       return RecruitingPlatform.fromValue(value);
     } catch (IllegalArgumentException e) {
-      ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("Invalid platform: " + value));
+      ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid platform: " + value);
       return null;
     }
   }
 
   private static boolean validateTitle(Context ctx, @Nullable String title) {
     if (title == null || title.length() < 2 || title.length() > 50) {
-      ctx.status(HttpStatus.BAD_REQUEST)
-          .json(new ErrorResponseDto("title must be between 2 and 50 characters"));
+      ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "title must be between 2 and 50 characters");
       return false;
     }
     return true;
@@ -106,8 +105,7 @@ public final class ScoutController {
 
   private static boolean validateCompanyName(Context ctx, @Nullable String companyName) {
     if (companyName == null || companyName.length() < 2 || companyName.length() > 50) {
-      ctx.status(HttpStatus.BAD_REQUEST)
-          .json(new ErrorResponseDto("companyName must be between 2 and 50 characters"));
+      ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "companyName must be between 2 and 50 characters");
       return false;
     }
     return true;
@@ -115,8 +113,7 @@ public final class ScoutController {
 
   private static boolean validateUrl(Context ctx, String fieldName, @Nullable String value) {
     if (value != null && (value.length() < 7 || value.length() > 2048)) {
-      ctx.status(HttpStatus.BAD_REQUEST)
-          .json(new ErrorResponseDto(fieldName + " must be between 7 and 2048 characters"));
+      ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, fieldName + " must be between 7 and 2048 characters");
       return false;
     }
     return true;
@@ -149,14 +146,12 @@ public final class ScoutController {
     }
 
     if (page < 0 || page > 99) {
-      ctx.status(HttpStatus.BAD_REQUEST)
-          .json(new ErrorResponseDto("page must be between 0 and 99"));
+      ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "page must be between 0 and 99");
       return;
     }
 
     if (pageSize < 1 || pageSize > 100) {
-      ctx.status(HttpStatus.BAD_REQUEST)
-          .json(new ErrorResponseDto("pageSize must be between 1 and 100"));
+      ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "pageSize must be between 1 and 100");
       return;
     }
 
@@ -166,8 +161,7 @@ public final class ScoutController {
       try {
         status = ScoutStatus.fromValue(statusParam);
       } catch (IllegalArgumentException e) {
-        ctx.status(HttpStatus.BAD_REQUEST)
-            .json(new ErrorResponseDto("Invalid status: " + statusParam));
+        ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid status: " + statusParam);
         return;
       }
     }
@@ -178,8 +172,7 @@ public final class ScoutController {
       try {
         platform = RecruitingPlatform.fromValue(platformParam);
       } catch (IllegalArgumentException e) {
-        ctx.status(HttpStatus.BAD_REQUEST)
-            .json(new ErrorResponseDto("Invalid platform: " + platformParam));
+        ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "Invalid platform: " + platformParam);
         return;
       }
     }
@@ -222,7 +215,7 @@ public final class ScoutController {
             body.detailsUrl(),
             body.creationSourceUrl());
     if (scout.isEmpty()) {
-      ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("User not found"));
+      ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "User not found");
       return;
     }
 
@@ -264,7 +257,7 @@ public final class ScoutController {
             body.detailsUrl(),
             body.creationSourceUrl());
     if (updated.isEmpty()) {
-      ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("Scout not found"));
+      ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "Scout not found");
       return;
     }
 
@@ -287,7 +280,7 @@ public final class ScoutController {
 
     boolean deleted = scoutService.deleteScout(authId, scoutId);
     if (!deleted) {
-      ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("Scout not found"));
+      ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "Scout not found");
       return;
     }
     ctx.status(HttpStatus.NO_CONTENT);

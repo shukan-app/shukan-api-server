@@ -77,7 +77,7 @@ public final class ScoutControllerIntegrationTest {
     HttpResponse<String> response = send("GET", "/users/me/scouts", null, false);
 
     assertEquals(401, response.statusCode());
-    assertEquals("{\"message\":\"Unauthorized\"}", response.body());
+    assertEquals("{\"type\":\"about:blank\",\"title\":\"Unauthorized\",\"status\":401,\"detail\":\"Unauthorized\",\"instance\":\"/users/me/scouts\"}", response.body());
   }
 
   @Test
@@ -112,7 +112,7 @@ public final class ScoutControllerIntegrationTest {
             "non-existing-user");
 
     assertEquals(404, response.statusCode());
-    assertTrue(response.body().toLowerCase(Locale.ROOT).contains("not found"));
+    assertTrue(response.body().contains("\"detail\":\"User not found\""));
   }
 
   @Test

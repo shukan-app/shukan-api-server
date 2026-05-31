@@ -39,9 +39,11 @@ public final class MainTest {
 			HttpResponse<String> response = sendGet(app, "/missing");
 			
 			assertEquals(404, response.statusCode());
-			assertEquals("{\"message\":\"Not Found\"}", response.body());
+			assertEquals(
+				"{\"type\":\"about:blank\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Not Found\",\"instance\":\"/missing\"}",
+				response.body());
 			assertTrue(
-					response.headers().firstValue("content-type").orElse("").contains("application/json"));
+					response.headers().firstValue("content-type").orElse("").contains("application/problem+json"));
 		} finally {
 			app.stop();
 		}
@@ -71,7 +73,7 @@ public final class MainTest {
 			HttpResponse<String> response = sendGet(app, "/protected");
 			
 			assertEquals(401, response.statusCode());
-			assertEquals("{\"message\":\"Unauthorized\"}", response.body());
+			assertEquals(unauthorizedProblemDetails(), response.body());
 		} finally {
 			app.stop();
 		}
@@ -86,7 +88,7 @@ public final class MainTest {
 			HttpResponse<String> response = sendGet(app, "/protected", "Authorization", "valid-token");
 			
 			assertEquals(401, response.statusCode());
-			assertEquals("{\"message\":\"Unauthorized\"}", response.body());
+			assertEquals(unauthorizedProblemDetails(), response.body());
 		} finally {
 			app.stop();
 		}
@@ -102,7 +104,7 @@ public final class MainTest {
 					sendGet(app, "/protected", "Authorization", "Bearer valid-token");
 			
 			assertEquals(401, response.statusCode());
-			assertEquals("{\"message\":\"Unauthorized\"}", response.body());
+			assertEquals(unauthorizedProblemDetails(), response.body());
 		} finally {
 			app.stop();
 		}
@@ -151,6 +153,10 @@ public final class MainTest {
 		HttpRequest request = requestBuilder.build();
 		
 		return HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+	}
+	
+	private String unauthorizedProblemDetails() {
+		return "{\"type\":\"about:blank\",\"title\":\"Unauthorized\",\"status\":401,\"detail\":\"Unauthorized\",\"instance\":\"/protected\"}";
 	}
 	
 	private record ProtectedResponseDto(String userId) {

@@ -12,12 +12,12 @@ import dev.shoheiyamagiwa.shukan.middleware.AuthMiddleware;
 import dev.shoheiyamagiwa.shukan.middleware.AuthMiddlewareProvider;
 import dev.shoheiyamagiwa.shukan.middleware.DenyingAuthMiddlewareProvider;
 import dev.shoheiyamagiwa.shukan.middleware.FirebaseAuthMiddlewareProvider;
+import dev.shoheiyamagiwa.shukan.presentation.ErrorResponses;
 import dev.shoheiyamagiwa.shukan.presentation.controller.CompanyController;
 import dev.shoheiyamagiwa.shukan.presentation.controller.EventController;
 import dev.shoheiyamagiwa.shukan.presentation.controller.HealthController;
 import dev.shoheiyamagiwa.shukan.presentation.controller.ScoutController;
 import dev.shoheiyamagiwa.shukan.presentation.controller.TaskController;
-import dev.shoheiyamagiwa.shukan.presentation.dto.ErrorResponseDto;
 import dev.shoheiyamagiwa.shukan.service.CompanyService;
 import dev.shoheiyamagiwa.shukan.service.EventService;
 import dev.shoheiyamagiwa.shukan.service.ScoutService;
@@ -59,8 +59,12 @@ public final class Main {
 			new HealthController().registerRoutes(config.routes);
 			routeRegistrar.accept(config.routes);
 			
-			config.routes.error(HttpStatus.NOT_FOUND, ctx -> ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("Not Found")));
-			config.routes.exception(Exception.class, (exception, ctx) -> ctx.status(HttpStatus.INTERNAL_SERVER_ERROR).json(new ErrorResponseDto("Internal Server Error")));
+			config.routes.error(HttpStatus.NOT_FOUND, ctx -> {
+				if (!ErrorResponses.hasResponded(ctx)) {
+					ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "Not Found");
+				}
+			});
+			config.routes.exception(Exception.class, (exception, ctx) -> ErrorResponses.respond(ctx, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"));
 		});
 	}
 	

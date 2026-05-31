@@ -1,6 +1,6 @@
 package dev.shoheiyamagiwa.shukan.middleware;
 
-import dev.shoheiyamagiwa.shukan.presentation.dto.ErrorResponseDto;
+import dev.shoheiyamagiwa.shukan.presentation.ErrorResponses;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.router.JavalinDefaultRoutingApi;
@@ -49,7 +49,7 @@ public final class AuthMiddleware {
 	}
 	
 	private void reject(Context ctx, HttpStatus status, String message) {
-		ctx.status(status).json(new ErrorResponseDto(message));
+		ErrorResponses.respond(ctx, status, message);
 		ctx.skipRemainingHandlers();
 	}
 }
