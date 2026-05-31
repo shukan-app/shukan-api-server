@@ -5,14 +5,17 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import dev.shoheiyamagiwa.shukan.infra.repository.CompanyRepository;
+import dev.shoheiyamagiwa.shukan.infra.repository.TaskRepository;
 import dev.shoheiyamagiwa.shukan.middleware.AuthMiddleware;
 import dev.shoheiyamagiwa.shukan.middleware.AuthMiddlewareProvider;
 import dev.shoheiyamagiwa.shukan.middleware.DenyingAuthMiddlewareProvider;
 import dev.shoheiyamagiwa.shukan.middleware.FirebaseAuthMiddlewareProvider;
 import dev.shoheiyamagiwa.shukan.presentation.controller.CompanyController;
 import dev.shoheiyamagiwa.shukan.presentation.controller.HealthController;
+import dev.shoheiyamagiwa.shukan.presentation.controller.TaskController;
 import dev.shoheiyamagiwa.shukan.presentation.dto.ErrorResponseDto;
 import dev.shoheiyamagiwa.shukan.service.CompanyService;
+import dev.shoheiyamagiwa.shukan.service.TaskService;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.HttpStatus;
@@ -40,8 +43,8 @@ public final class Main {
 	}
 	
 	public static Javalin createApplication(
-			AuthMiddlewareProvider authMiddlewareProvider,
-			Consumer<JavalinDefaultRoutingApi> routeRegistrar) {
+		AuthMiddlewareProvider authMiddlewareProvider,
+		Consumer<JavalinDefaultRoutingApi> routeRegistrar) {
 		return Javalin.create(config -> {
 			config.http.defaultContentType = ContentType.JSON;
 			config.jsonMapper(new JavalinJackson3());
@@ -77,8 +80,8 @@ public final class Main {
 		}
 		try {
 			FirebaseOptions options = FirebaseOptions.builder()
-					.setCredentials(GoogleCredentials.getApplicationDefault())
-					.build();
+				.setCredentials(GoogleCredentials.getApplicationDefault())
+				.build();
 			return FirebaseApp.initializeApp(options);
 		} catch (IOException e) {
 			throw new IllegalStateException("Failed to load application default credentials", e);
@@ -95,11 +98,17 @@ public final class Main {
 		CompanyRepository companyRepository = new CompanyRepository(url, user, password);
 		CompanyService companyService = new CompanyService(companyRepository);
 		CompanyController companyController = new CompanyController(companyService);
+		TaskRepository taskRepository = new TaskRepository(url, user, password);
+		TaskService taskService = new TaskService(taskRepository);
+		TaskController taskController = new TaskController(taskService);
 		FirebaseApp firebaseApp = initializeFirebase();
 		createApplication(
-				new FirebaseAuthMiddlewareProvider(FirebaseAuth.getInstance(firebaseApp)),
-				routes -> companyController.registerRoutes(routes))
-				.start(resolvePort());
+			new FirebaseAuthMiddlewareProvider(FirebaseAuth.getInstance(firebaseApp)),
+			routes -> {
+				companyController.registerRoutes(routes);
+				taskController.registerRoutes(routes);
+			})
+			.start(resolvePort());
 	}
 	
 	private static void migrateDatabase(String url, String user, String password) {

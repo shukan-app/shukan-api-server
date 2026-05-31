@@ -25,7 +25,7 @@ CREATE TABLE tasks
 	type_id             UUID        NOT NULL REFERENCES task_types (id),
 	status_id           UUID        NOT NULL REFERENCES task_status (id),
 	creator_kind_id     UUID        NOT NULL REFERENCES task_creator_kinds (id),
-	creation_source_url TEXT        NOT NULL,
+	creation_source_url TEXT,
 	deadline            TIMESTAMPTZ          DEFAULT NULL,
 	created_at          TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at          TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,

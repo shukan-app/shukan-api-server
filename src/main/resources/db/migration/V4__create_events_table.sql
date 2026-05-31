@@ -26,7 +26,7 @@ CREATE TABLE events
 	status_id           UUID        NOT NULL REFERENCES event_status (id),
 	format_type_id      UUID        NOT NULL REFERENCES event_format_types (id),
 	location            TEXT,
-	creation_source_url TEXT        NOT NULL,
+	creation_source_url TEXT,
 	begin_at            TIMESTAMPTZ,
 	end_at              TIMESTAMPTZ,
 	created_at          TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
