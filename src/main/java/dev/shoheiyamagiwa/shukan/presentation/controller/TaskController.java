@@ -210,7 +210,7 @@ public final class TaskController {
 			return;
 		}
 
-		ctx.json(TaskPresentationMapper.toTaskResponse(task.get()));
+		ctx.status(HttpStatus.CREATED).json(TaskPresentationMapper.toTaskResponse(task.get()));
 	}
 
 	private void updateTask(Context ctx) {

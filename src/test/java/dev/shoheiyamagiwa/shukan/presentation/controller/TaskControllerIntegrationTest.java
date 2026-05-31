@@ -99,7 +99,7 @@ public final class TaskControllerIntegrationTest {
 				.formatted(companyId),
 			true);
 		
-		assertEquals(200, response.statusCode());
+		assertEquals(201, response.statusCode());
 		assertTrue(response.body().contains("\"title\":\"Prepare interview\""));
 		assertTrue(response.body().contains("\"type\":\"preparation\""));
 		assertTrue(response.body().contains("\"status\":\"incomplete\""));
@@ -255,7 +255,7 @@ public final class TaskControllerIntegrationTest {
 				"status":"incomplete","creationSourceUrl":null,"deadline":null}"""
 				.formatted(title, companyId),
 			true);
-		assertEquals(200, response.statusCode());
+		assertEquals(201, response.statusCode());
 		return extractId(response.body());
 	}
 	

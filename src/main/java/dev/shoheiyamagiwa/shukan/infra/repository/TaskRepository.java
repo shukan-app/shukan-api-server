@@ -79,7 +79,7 @@ public final class TaskRepository {
 			params.add(type.toDatabaseValue());
 		}
 		
-		String sql = SELECT_TASK + where + " ORDER BY t.deadline  NULLS LAST, t.created_at LIMIT ? OFFSET ?";
+		String sql = SELECT_TASK + where + " ORDER BY t.deadline NULLS LAST, t.created_at, t.id LIMIT ? OFFSET ?";
 		params.add(pageSize);
 		params.add((long) page * pageSize);
 		
@@ -200,12 +200,17 @@ public final class TaskRepository {
 			UUID typeId = resolveLookupId(conn, "task_types", type.toDatabaseValue());
 			UUID statusId = resolveLookupId(conn, "task_status", status.toDatabaseValue());
 			
-			String updateSql = "UPDATE tasks SET"
+			String updateSql = "UPDATE tasks t SET"
 				+ " title = ?, company_id = ?, type_id = ?, status_id = ?, creation_source_url = ?, deadline = ?,"
 				+ " updated_at = CURRENT_TIMESTAMP"
-				+ " WHERE id = ?"
-				+ " AND user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
-				+ " AND deleted_at IS NULL";
+				+ " WHERE t.id = ?"
+				+ " AND t.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+				+ " AND t.deleted_at IS NULL"
+				+ " AND EXISTS ("
+				+ " SELECT 1 FROM companies current_c"
+				+ " WHERE current_c.id = t.company_id"
+				+ " AND current_c.deleted_at IS NULL"
+				+ " )";
 			int affected;
 			
 			try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
