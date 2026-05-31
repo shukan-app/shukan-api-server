@@ -43,7 +43,7 @@ public final class MainTest {
 				"{\"type\":\"about:blank\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Not Found\",\"instance\":\"/missing\"}",
 				response.body());
 			assertTrue(
-					response.headers().firstValue("content-type").orElse("").contains("application/json"));
+					response.headers().firstValue("content-type").orElse("").contains("application/problem+json"));
 		} finally {
 			app.stop();
 		}

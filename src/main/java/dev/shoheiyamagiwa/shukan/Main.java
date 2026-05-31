@@ -59,7 +59,11 @@ public final class Main {
 			new HealthController().registerRoutes(config.routes);
 			routeRegistrar.accept(config.routes);
 			
-			config.routes.error(HttpStatus.NOT_FOUND, ctx -> ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "Not Found"));
+			config.routes.error(HttpStatus.NOT_FOUND, ctx -> {
+				if (!ErrorResponses.hasResponded(ctx)) {
+					ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "Not Found");
+				}
+			});
 			config.routes.exception(Exception.class, (exception, ctx) -> ErrorResponses.respond(ctx, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"));
 		});
 	}

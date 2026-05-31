@@ -104,7 +104,7 @@ public final class CompanyControllerIntegrationTest {
 			"non-existing-user");
 		
 		assertEquals(404, response.statusCode());
-		assertTrue(response.body().contains("Not Found"));
+		assertTrue(response.body().contains("\"detail\":\"User not found\""));
 	}
 	
 	@Test
@@ -151,7 +151,9 @@ public final class CompanyControllerIntegrationTest {
 		HttpResponse<String> response = send("GET", "/users/me/companies?page=abc", null, true);
 		
 		assertEquals(400, response.statusCode());
-		assertTrue(response.body().contains("Invalid page: abc"));
+		assertEquals(
+			"{\"type\":\"about:blank\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Invalid page: abc\",\"instance\":\"/users/me/companies\"}",
+			response.body());
 	}
 	
 	@Test
@@ -184,10 +186,14 @@ public final class CompanyControllerIntegrationTest {
 	
 	@Test
 	public void testGetCompanyReturnsNotFoundForUnknownId() throws IOException, InterruptedException {
-		HttpResponse<String> response = send("GET", "/users/me/companies/" + UUID.randomUUID(), null, true);
+		UUID id = UUID.randomUUID();
+		HttpResponse<String> response = send("GET", "/users/me/companies/" + id, null, true);
 		
 		assertEquals(404, response.statusCode());
-		assertTrue(response.body().contains("Not Found"));
+		assertEquals(
+			"{\"type\":\"about:blank\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Company not found\",\"instance\":\"/users/me/companies/%s\"}"
+				.formatted(id),
+			response.body());
 	}
 	
 	@Test

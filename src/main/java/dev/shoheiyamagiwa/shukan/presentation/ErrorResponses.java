@@ -6,12 +6,20 @@ import io.javalin.http.HttpStatus;
 
 public final class ErrorResponses {
 	private static final String DEFAULT_TYPE = "about:blank";
+	private static final String PROBLEM_JSON = "application/problem+json";
+	private static final String RESPONDED_ATTRIBUTE = ErrorResponses.class.getName() + ".responded";
 	
 	private ErrorResponses() {
 	}
 	
 	public static void respond(Context ctx, HttpStatus status, String detail) {
+		ctx.attribute(RESPONDED_ATTRIBUTE, true);
 		ctx.status(status).json(toDto(ctx, status, detail));
+		ctx.contentType(PROBLEM_JSON);
+	}
+	
+	public static boolean hasResponded(Context ctx) {
+		return Boolean.TRUE.equals(ctx.attribute(RESPONDED_ATTRIBUTE));
 	}
 	
 	private static ErrorResponseDto toDto(Context ctx, HttpStatus status, String detail) {
@@ -24,11 +32,7 @@ public final class ErrorResponses {
 	}
 	
 	private static String instance(Context ctx) {
-		String queryString = ctx.queryString();
-		if (queryString == null || queryString.isBlank()) {
-			return ctx.path();
-		}
-		return ctx.path() + "?" + queryString;
+		return ctx.path();
 	}
 	
 	private static String title(HttpStatus status) {

@@ -122,7 +122,7 @@ public final class TaskControllerIntegrationTest {
 			"non-existing-user");
 		
 		assertEquals(404, response.statusCode());
-		assertTrue(response.body().toLowerCase().contains("not found"));
+		assertTrue(response.body().contains("\"detail\":\"User not found\""));
 	}
 	
 	@Test
@@ -159,7 +159,9 @@ public final class TaskControllerIntegrationTest {
 		HttpResponse<String> response = send("GET", "/users/me/tasks?page=invalid", null, true);
 		
 		assertEquals(400, response.statusCode());
-		assertTrue(response.body().contains("Invalid page"));
+		assertEquals(
+			"{\"type\":\"about:blank\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Invalid page: invalid\",\"instance\":\"/users/me/tasks\"}",
+			response.body());
 	}
 	
 	@Test
@@ -175,7 +177,7 @@ public final class TaskControllerIntegrationTest {
 		HttpResponse<String> response = send("GET", "/users/me/tasks", null, "non-existing-user");
 		
 		assertEquals(404, response.statusCode());
-		assertTrue(response.body().toLowerCase().contains("not found"));
+		assertTrue(response.body().contains("\"detail\":\"User not found\""));
 	}
 	
 	@Test

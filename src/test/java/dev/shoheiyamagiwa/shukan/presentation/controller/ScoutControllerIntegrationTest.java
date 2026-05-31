@@ -112,7 +112,7 @@ public final class ScoutControllerIntegrationTest {
             "non-existing-user");
 
     assertEquals(404, response.statusCode());
-    assertTrue(response.body().toLowerCase(Locale.ROOT).contains("not found"));
+    assertTrue(response.body().contains("\"detail\":\"User not found\""));
   }
 
   @Test
