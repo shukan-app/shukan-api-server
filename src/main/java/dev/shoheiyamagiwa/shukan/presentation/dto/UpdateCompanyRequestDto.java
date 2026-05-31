@@ -12,6 +12,7 @@ public record UpdateCompanyRequestDto(
 		@Nullable String status,
 		@Nullable String applicationRoute,
 		@Nullable String contactType,
+		@Nullable String creationSourceUrl,
 		@Nullable OffsetDateTime createdAt,
 		@Nullable OffsetDateTime updatedAt,
 		@Nullable OffsetDateTime deletedAt) {

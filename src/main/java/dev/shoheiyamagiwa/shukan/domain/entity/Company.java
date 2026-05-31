@@ -15,6 +15,7 @@ public record Company(
 		CompanyStatus status,
 		RecruitingPlatform applicationRoute,
 		ContactType contactType,
+		@Nullable String creationSourceUrl,
 		OffsetDateTime createdAt,
 		OffsetDateTime updatedAt,
 		@Nullable OffsetDateTime deletedAt) {

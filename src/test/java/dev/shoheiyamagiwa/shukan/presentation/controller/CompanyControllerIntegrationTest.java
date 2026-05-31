@@ -82,16 +82,17 @@ public final class CompanyControllerIntegrationTest {
 			"/users/me/companies",
 			"""
 				{"name":"Acme Corp","appliedRole":"Engineer","status":"bookmarked",\
-				"applicationRoute":"mynavi","contactType":"email"}""",
+				"applicationRoute":"mynavi","contactType":"email","creationSourceUrl":"https://example.com/source"}""",
 			true);
 		
 		assertEquals(200, response.statusCode());
 		assertTrue(response.body().contains("\"name\":\"Acme Corp\""));
 		assertTrue(response.body().contains("\"appliedRole\":\"Engineer\""));
 		assertTrue(response.body().contains("\"status\":\"bookmarked\""));
+		assertTrue(response.body().contains("\"creationSourceUrl\":\"https://example.com/source\""));
 		assertNotNull(extractId(response.body()));
 	}
-
+	
 	@Test
 	public void testRegisterCompanyReturnsNotFoundWhenUserDoesNotExist() throws IOException, InterruptedException {
 		HttpResponse<String> response = send(
@@ -101,7 +102,7 @@ public final class CompanyControllerIntegrationTest {
 				{"name":"Acme Corp","appliedRole":"Engineer","status":"bookmarked",\
 				"applicationRoute":"mynavi","contactType":"email"}""",
 			"non-existing-user");
-
+		
 		assertEquals(404, response.statusCode());
 		assertTrue(response.body().contains("Not Found"));
 	}
@@ -144,19 +145,19 @@ public final class CompanyControllerIntegrationTest {
 		assertTrue(response.body().contains("\"pagination\"") || response.body().contains("page"));
 		assertTrue(response.body().contains("List Corp"));
 	}
-
+	
 	@Test
 	public void testGetCompaniesRejectsInvalidPageQuery() throws IOException, InterruptedException {
 		HttpResponse<String> response = send("GET", "/users/me/companies?page=abc", null, true);
-
+		
 		assertEquals(400, response.statusCode());
 		assertTrue(response.body().contains("Invalid page: abc"));
 	}
-
+	
 	@Test
 	public void testGetCompaniesRejectsInvalidPageSizeQuery() throws IOException, InterruptedException {
 		HttpResponse<String> response = send("GET", "/users/me/companies?pageSize=abc", null, true);
-
+		
 		assertEquals(400, response.statusCode());
 		assertTrue(response.body().contains("Invalid pageSize: abc"));
 	}
@@ -170,6 +171,7 @@ public final class CompanyControllerIntegrationTest {
 		assertEquals(200, response.statusCode());
 		assertTrue(response.body().contains("Detail Corp"));
 		assertTrue(response.body().contains("\"id\":\"" + id + "\""));
+		assertTrue(response.body().contains("\"creationSourceUrl\":null"));
 	}
 	
 	@Test
@@ -197,12 +199,13 @@ public final class CompanyControllerIntegrationTest {
 			"/users/me/companies/" + id,
 			"""
 				{"name":"Updated Corp","appliedRole":"Manager","status":"preentry",\
-				"applicationRoute":"agent","contactType":"other"}""",
+				"applicationRoute":"agent","contactType":"other","creationSourceUrl":"https://example.com/updated"}""",
 			true);
 		
 		assertEquals(200, response.statusCode());
 		assertTrue(response.body().contains("\"name\":\"Updated Corp\""));
 		assertTrue(response.body().contains("\"status\":\"preentry\""));
+		assertTrue(response.body().contains("\"creationSourceUrl\":\"https://example.com/updated\""));
 	}
 	
 	@Test
@@ -265,7 +268,7 @@ public final class CompanyControllerIntegrationTest {
 	private static HttpResponse<String> send(String method, String path, @Nullable String body, boolean authorized) throws IOException, InterruptedException {
 		return send(method, path, body, authorized ? TEST_AUTH_ID : null);
 	}
-
+	
 	private static HttpResponse<String> send(String method, String path, @Nullable String body, @Nullable String bearerToken) throws IOException, InterruptedException {
 		HttpRequest.BodyPublisher publisher = body == null
 			? HttpRequest.BodyPublishers.noBody()

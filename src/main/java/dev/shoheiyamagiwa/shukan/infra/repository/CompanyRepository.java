@@ -21,6 +21,7 @@ public final class CompanyRepository {
 			+ " cs.name AS status,"
 			+ " ar.name AS application_route,"
 			+ " ct.name AS contact_type,"
+			+ " c.creation_source_url,"
 			+ " c.created_at, c.updated_at, c.deleted_at"
 			+ " FROM companies c"
 			+ " JOIN company_status cs ON cs.id = c.status_id"
@@ -151,7 +152,8 @@ public final class CompanyRepository {
 		String appliedRole,
 		CompanyStatus status,
 		RecruitingPlatform applicationRoute,
-		ContactType contactType) {
+		ContactType contactType,
+		@Nullable String creationSourceUrl) {
 		try (Connection conn = getConnection()) {
 			UUID statusId = resolveLookupId(conn, "company_status", status.toDatabaseValue());
 			UUID applicationRouteId =
@@ -160,7 +162,7 @@ public final class CompanyRepository {
 			
 			String insertSql = "INSERT INTO companies"
 				+ " (user_id, name, applied_role, status_id, application_route_id, contact_type_id, creation_source_url)"
-				+ " SELECT u.id, ?, ?, ?, ?, ?, ''"
+				+ " SELECT u.id, ?, ?, ?, ?, ?, ?"
 				+ " FROM users u WHERE u.auth_id = ?"
 				+ " RETURNING id";
 			UUID companyId;
@@ -171,7 +173,8 @@ public final class CompanyRepository {
 				stmt.setObject(3, statusId);
 				stmt.setObject(4, applicationRouteId);
 				stmt.setObject(5, contactTypeId);
-				stmt.setString(6, authId);
+				stmt.setString(6, creationSourceUrl);
+				stmt.setString(7, authId);
 				
 				try (ResultSet rs = stmt.executeQuery()) {
 					if (!rs.next()) {
@@ -194,7 +197,8 @@ public final class CompanyRepository {
 		String appliedRole,
 		CompanyStatus status,
 		RecruitingPlatform applicationRoute,
-		ContactType contactType) {
+		ContactType contactType,
+		@Nullable String creationSourceUrl) {
 		try (Connection conn = getConnection()) {
 			UUID statusId = resolveLookupId(conn, "company_status", status.toDatabaseValue());
 			UUID applicationRouteId = resolveLookupId(conn, "application_routes", applicationRoute.toDatabaseValue());
@@ -202,7 +206,7 @@ public final class CompanyRepository {
 			
 			String updateSql = "UPDATE companies SET"
 				+ " name = ?, applied_role = ?,"
-				+ " status_id = ?, application_route_id = ?, contact_type_id = ?,"
+				+ " status_id = ?, application_route_id = ?, contact_type_id = ?, creation_source_url = ?,"
 				+ " updated_at = CURRENT_TIMESTAMP"
 				+ " WHERE id = ?"
 				+ " AND user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
@@ -215,8 +219,9 @@ public final class CompanyRepository {
 				stmt.setObject(3, statusId);
 				stmt.setObject(4, applicationRouteId);
 				stmt.setObject(5, contactTypeId);
-				stmt.setObject(6, companyId);
-				stmt.setString(7, authId);
+				stmt.setString(6, creationSourceUrl);
+				stmt.setObject(7, companyId);
+				stmt.setString(8, authId);
 				affected = stmt.executeUpdate();
 			}
 			
@@ -287,6 +292,7 @@ public final class CompanyRepository {
 			rs.getString("status"),
 			rs.getString("application_route"),
 			rs.getString("contact_type"),
+			rs.getString("creation_source_url"),
 			rs.getObject("created_at", OffsetDateTime.class),
 			rs.getObject("updated_at", OffsetDateTime.class),
 			rs.getObject("deleted_at", OffsetDateTime.class));

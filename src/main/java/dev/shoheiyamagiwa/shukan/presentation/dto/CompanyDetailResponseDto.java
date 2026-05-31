@@ -12,6 +12,7 @@ public record CompanyDetailResponseDto(
 		String status,
 		String applicationRoute,
 		String contactType,
+		@Nullable String creationSourceUrl,
 		OffsetDateTime createdAt,
 		OffsetDateTime updatedAt,
 		@Nullable OffsetDateTime deletedAt) {

@@ -27,6 +27,7 @@ public final class CompanyPresentationMapperTest {
 				CompanyStatus.PREENTRY,
 				RecruitingPlatform.ONE_CAREER,
 				ContactType.PLATFORM_MESSAGE,
+				"https://example.com/source",
 				NOW,
 				NOW,
 				null);
@@ -56,6 +57,7 @@ public final class CompanyPresentationMapperTest {
 		assertEquals("preentry", dto.status());
 		assertEquals("oneCareer", dto.applicationRoute());
 		assertEquals("platformMessage", dto.contactType());
+		assertEquals("https://example.com/source", dto.creationSourceUrl());
 		assertEquals(NOW, dto.createdAt());
 		assertEquals(NOW, dto.updatedAt());
 		assertNull(dto.deletedAt());

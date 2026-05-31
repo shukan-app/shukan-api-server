@@ -25,6 +25,7 @@ public final class CompanyPresentationMapper {
 				company.status().getValue(),
 				company.applicationRoute().getValue(),
 				company.contactType().getValue(),
+				company.creationSourceUrl(),
 				company.createdAt(),
 				company.updatedAt(),
 				company.deletedAt());

@@ -175,6 +175,7 @@ public final class CompanyController {
 		String statusValue = body.status();
 		String applicationRouteValue = body.applicationRoute();
 		String contactTypeValue = body.contactType();
+		String creationSourceUrl = body.creationSourceUrl();
 		
 		if (name == null || name.length() < 2 || name.length() > 32) {
 			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("name must be between 2 and 32 characters"));
@@ -201,7 +202,7 @@ public final class CompanyController {
 			return;
 		}
 		
-		Optional<Company> company = companyService.registerCompany(authId, name, appliedRole, status, applicationRoute, contactType);
+		Optional<Company> company = companyService.registerCompany(authId, name, appliedRole, status, applicationRoute, contactType, creationSourceUrl);
 		if (company.isEmpty()) {
 			ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("User not found"));
 			return;
@@ -240,6 +241,7 @@ public final class CompanyController {
 		String statusValue = body.status();
 		String applicationRouteValue = body.applicationRoute();
 		String contactTypeValue = body.contactType();
+		String creationSourceUrl = body.creationSourceUrl();
 		
 		if (name == null || name.length() < 2 || name.length() > 32) {
 			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("name must be between 2 and 32 characters"));
@@ -265,7 +267,7 @@ public final class CompanyController {
 			return;
 		}
 		
-		Optional<Company> updated = companyService.updateCompany(authId, companyId, name, appliedRole, status, applicationRoute, contactType);
+		Optional<Company> updated = companyService.updateCompany(authId, companyId, name, appliedRole, status, applicationRoute, contactType, creationSourceUrl);
 		if (updated.isEmpty()) {
 			ctx.status(HttpStatus.NOT_FOUND).json(new ErrorResponseDto("Company not found"));
 			return;

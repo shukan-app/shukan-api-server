@@ -16,6 +16,7 @@ public final class CompanyMapper {
 				CompanyStatus.fromDatabaseValue(dto.status()),
 				RecruitingPlatform.fromDatabaseValue(dto.applicationRoute()),
 				ContactType.fromDatabaseValue(dto.contactType()),
+				dto.creationSourceUrl(),
 				dto.createdAt(),
 				dto.updatedAt(),
 				dto.deletedAt());
@@ -29,6 +30,7 @@ public final class CompanyMapper {
 				entity.status().toDatabaseValue(),
 				entity.applicationRoute().toDatabaseValue(),
 				entity.contactType().toDatabaseValue(),
+				entity.creationSourceUrl(),
 				entity.createdAt(),
 				entity.updatedAt(),
 				entity.deletedAt());

@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public final class CompanyService {
-	
 	private final CompanyRepository companyRepository;
 	
 	public CompanyService(CompanyRepository companyRepository) {
@@ -20,15 +19,14 @@ public final class CompanyService {
 	}
 	
 	public CompaniesPage getCompanies(
-			String authId,
-			int page,
-			int pageSize,
-			@Nullable String q,
-			@Nullable CompanyStatus status,
-			@Nullable String sort,
-			@Nullable String order) {
-		List<Company> companies =
-				companyRepository.findAll(authId, page, pageSize, q, status, sort, order);
+		String authId,
+		int page,
+		int pageSize,
+		@Nullable String q,
+		@Nullable CompanyStatus status,
+		@Nullable String sort,
+		@Nullable String order) {
+		List<Company> companies = companyRepository.findAll(authId, page, pageSize, q, status, sort, order);
 		int total = companyRepository.count(authId, q, status);
 		int totalPages = pageSize > 0 ? (int) Math.ceil((double) total / pageSize) : 0;
 		return new CompaniesPage(companies, page, pageSize, totalPages);
@@ -39,26 +37,28 @@ public final class CompanyService {
 	}
 	
 	public Optional<Company> registerCompany(
-			String authId,
-			String name,
-			String appliedRole,
-			CompanyStatus status,
-			RecruitingPlatform applicationRoute,
-			ContactType contactType) {
+		String authId,
+		String name,
+		String appliedRole,
+		CompanyStatus status,
+		RecruitingPlatform applicationRoute,
+		ContactType contactType,
+		@Nullable String creationSourceUrl) {
 		return companyRepository.create(
-				authId, name, appliedRole, status, applicationRoute, contactType);
+			authId, name, appliedRole, status, applicationRoute, contactType, creationSourceUrl);
 	}
 	
 	public Optional<Company> updateCompany(
-			String authId,
-			UUID companyId,
-			String name,
-			String appliedRole,
-			CompanyStatus status,
-			RecruitingPlatform applicationRoute,
-			ContactType contactType) {
+		String authId,
+		UUID companyId,
+		String name,
+		String appliedRole,
+		CompanyStatus status,
+		RecruitingPlatform applicationRoute,
+		ContactType contactType,
+		@Nullable String creationSourceUrl) {
 		return companyRepository.update(
-				authId, companyId, name, appliedRole, status, applicationRoute, contactType);
+			authId, companyId, name, appliedRole, status, applicationRoute, contactType, creationSourceUrl);
 	}
 	
 	public boolean deleteCompany(String authId, UUID companyId) {

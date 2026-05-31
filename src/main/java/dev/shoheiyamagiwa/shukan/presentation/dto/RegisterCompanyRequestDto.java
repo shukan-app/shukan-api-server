@@ -7,5 +7,6 @@ public record RegisterCompanyRequestDto(
 		@Nullable String appliedRole,
 		@Nullable String status,
 		@Nullable String applicationRoute,
-		@Nullable String contactType) {
+		@Nullable String contactType,
+		@Nullable String creationSourceUrl) {
 }

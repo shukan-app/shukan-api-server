@@ -28,6 +28,7 @@ public final class CompanyMapperTest {
 						"informal_contact",
 						"one_career",
 						"platform_message",
+						"https://example.com/source",
 						NOW,
 						NOW,
 						null);
@@ -40,6 +41,7 @@ public final class CompanyMapperTest {
 		assertEquals(CompanyStatus.INFORMAL_CONTACT, entity.status());
 		assertEquals(RecruitingPlatform.ONE_CAREER, entity.applicationRoute());
 		assertEquals(ContactType.PLATFORM_MESSAGE, entity.contactType());
+		assertEquals("https://example.com/source", entity.creationSourceUrl());
 		assertEquals(NOW, entity.createdAt());
 		assertEquals(NOW, entity.updatedAt());
 		assertNull(entity.deletedAt());
@@ -55,6 +57,7 @@ public final class CompanyMapperTest {
 						CompanyStatus.INTERVIEW_IN_PROGRESS,
 						RecruitingPlatform.TRACK_JOB,
 						ContactType.CONTACT_FORM,
+						"https://example.com/source",
 						NOW,
 						NOW,
 						null);
@@ -67,6 +70,7 @@ public final class CompanyMapperTest {
 		assertEquals("interview_in_progress", dto.status());
 		assertEquals("track_job", dto.applicationRoute());
 		assertEquals("contact_form", dto.contactType());
+		assertEquals("https://example.com/source", dto.creationSourceUrl());
 		assertEquals(NOW, dto.createdAt());
 		assertEquals(NOW, dto.updatedAt());
 		assertNull(dto.deletedAt());
