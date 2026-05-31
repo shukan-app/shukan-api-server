@@ -415,7 +415,8 @@
               "type": "integer",
               "writeOnly": true,
               "minimum": 0,
-              "maximum": 99
+              "maximum": 99,
+              "default": 0
             }
           },
           {
@@ -427,7 +428,8 @@
               "type": "integer",
               "minimum": 1,
               "maximum": 100,
-              "writeOnly": true
+              "writeOnly": true,
+              "default": 20
             }
           },
           {
@@ -636,7 +638,8 @@
               "type": "integer",
               "writeOnly": true,
               "minimum": 0,
-              "maximum": 99
+              "maximum": 99,
+              "default": 0
             }
           },
           {
@@ -648,7 +651,8 @@
               "type": "integer",
               "writeOnly": true,
               "minimum": 1,
-              "maximum": 100
+              "maximum": 100,
+              "default": 50
             }
           },
           {
@@ -878,7 +882,8 @@
               "type": "integer",
               "minimum": 0,
               "maximum": 99,
-              "writeOnly": true
+              "writeOnly": true,
+              "default": 0
             }
           },
           {
@@ -890,7 +895,8 @@
               "type": "integer",
               "minimum": 1,
               "maximum": 100,
-              "writeOnly": true
+              "writeOnly": true,
+              "default": 50
             }
           },
           {
