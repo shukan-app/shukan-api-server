@@ -49,3 +49,4 @@ build/
 ### Secrets ###
 .env.*
 !.env.example
+*-firebase-adminsdk-*.json
