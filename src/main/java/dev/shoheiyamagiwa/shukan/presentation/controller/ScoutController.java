@@ -23,10 +23,12 @@ public final class ScoutController {
     this.scoutService = scoutService;
   }
 
+  @Nullable
   private static String requireAuthId(Context ctx) {
     AuthenticatedRequestContext auth = ctx.attribute(AuthenticatedRequestContext.ATTRIBUTE_NAME);
     if (auth == null) {
-      throw new IllegalStateException("Missing authenticated request context");
+      ctx.status(HttpStatus.UNAUTHORIZED).json(new ErrorResponseDto("Unauthorized"));
+      return null;
     }
 
     return auth.userId();
@@ -129,6 +131,9 @@ public final class ScoutController {
 
   private void getScouts(Context ctx) {
     String authId = requireAuthId(ctx);
+    if (authId == null) {
+      return;
+    }
     if (!ensureUserExists(ctx, authId)) {
       return;
     }
@@ -190,6 +195,9 @@ public final class ScoutController {
 
   private void registerScout(Context ctx) {
     String authId = requireAuthId(ctx);
+    if (authId == null) {
+      return;
+    }
     if (!ensureUserExists(ctx, authId)) {
       return;
     }
@@ -223,6 +231,9 @@ public final class ScoutController {
 
   private void updateScout(Context ctx) {
     String authId = requireAuthId(ctx);
+    if (authId == null) {
+      return;
+    }
     if (!ensureUserExists(ctx, authId)) {
       return;
     }
@@ -262,6 +273,9 @@ public final class ScoutController {
 
   private void deleteScout(Context ctx) {
     String authId = requireAuthId(ctx);
+    if (authId == null) {
+      return;
+    }
     if (!ensureUserExists(ctx, authId)) {
       return;
     }
