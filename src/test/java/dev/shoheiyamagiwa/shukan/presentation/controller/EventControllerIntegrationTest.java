@@ -155,6 +155,25 @@ public final class EventControllerIntegrationTest {
 		assertEquals(400, response.statusCode());
 		assertTrue(response.body().contains("beginAt"));
 	}
+	
+	@Test
+	public void testRegisterEventRejectsEndAtBeforeBeginAt() throws IOException, InterruptedException {
+		String companyId = createCompany("Event API Invalid Period Company");
+		
+		HttpResponse<String> response = send(
+			"POST",
+			"/users/me/events",
+			"""
+				{"title":"Invalid period","companyId":"%s","type":"interview",\
+				"status":"scheduled","formatType":"offline","location":null,\
+				"creationSourceUrl":null,"beginAt":"2026-07-20T11:00:00+09:00",\
+				"endAt":"2026-07-20T11:00:00+09:00"}"""
+				.formatted(companyId),
+			true);
+		
+		assertEquals(400, response.statusCode());
+		assertTrue(response.body().contains("beginAt must be before endAt"));
+	}
 
 	@Test
 	public void testGetEventsReturnsList() throws IOException, InterruptedException {

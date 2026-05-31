@@ -345,6 +345,11 @@ public final class EventController {
 			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("endAt is required"));
 			return false;
 		}
+		
+		if (!beginAt.isBefore(endAt)) {
+			ctx.status(HttpStatus.BAD_REQUEST).json(new ErrorResponseDto("beginAt must be before endAt"));
+			return false;
+		}
 
 		return true;
 	}
