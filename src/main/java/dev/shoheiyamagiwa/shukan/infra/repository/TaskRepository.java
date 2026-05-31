@@ -103,7 +103,8 @@ public final class TaskRepository {
 		
 		StringBuilder where = new StringBuilder(
 			" WHERE t.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
-				+ " AND t.deleted_at IS NULL");
+				+ " AND t.deleted_at IS NULL"
+				+ " AND c.deleted_at IS NULL");
 		
 		if (type != null) {
 			where.append(" AND tt.name = ?");
@@ -111,6 +112,7 @@ public final class TaskRepository {
 		}
 		
 		String sql = "SELECT COUNT(*) FROM tasks t"
+			+ " JOIN companies c ON c.id = t.company_id"
 			+ " JOIN task_types tt ON tt.id = t.type_id"
 			+ where;
 		
