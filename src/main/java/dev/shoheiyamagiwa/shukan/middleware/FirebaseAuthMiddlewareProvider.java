@@ -3,7 +3,6 @@ package dev.shoheiyamagiwa.shukan.middleware;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,11 +18,11 @@ public final class FirebaseAuthMiddlewareProvider implements AuthMiddlewareProvi
 		this.verifier =
 			token -> {
 				try {
-					@Nullable FirebaseToken firebaseToken = firebaseAuth.verifyIdToken(token);
+					FirebaseToken firebaseToken = firebaseAuth.verifyIdToken(token);
 					if (firebaseToken == null) {
 						return Optional.empty();
 					}
-					@Nullable String uid = firebaseToken.getUid();
+					String uid = firebaseToken.getUid();
 					if (uid == null || uid.isBlank()) {
 						return Optional.empty();
 					}
