@@ -15,8 +15,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public final class ScoutRepository {
-	private static final String ACTIVE_USER_ID_BY_AUTH_ID =
-		"SELECT u.id FROM users u WHERE u.auth_id = ? AND u.deleted_at IS NULL";
 	private static final String SELECT_SCOUT =
 		"SELECT s.id, s.title, s.company_name,"
 			+ " ss.name AS status,"
@@ -44,7 +42,7 @@ public final class ScoutRepository {
 	}
 	
 	public boolean userExists(String authId) {
-		String sql = "SELECT 1 FROM users WHERE auth_id = ? AND deleted_at IS NULL";
+		String sql = UserQueryRepository.ACTIVE_USER_EXISTS_BY_AUTH_ID;
 		try (Connection conn = getConnection();
 		     PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, authId);
@@ -67,7 +65,7 @@ public final class ScoutRepository {
 		
 		StringBuilder where =
 			new StringBuilder(
-				" WHERE s.user_id = (" + ACTIVE_USER_ID_BY_AUTH_ID + ")"
+				" WHERE s.user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 					+ " AND s.deleted_at IS NULL");
 		
 		if (status != null) {
@@ -106,7 +104,7 @@ public final class ScoutRepository {
 		
 		StringBuilder where =
 			new StringBuilder(
-				" WHERE s.user_id = (" + ACTIVE_USER_ID_BY_AUTH_ID + ")"
+				" WHERE s.user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 					+ " AND s.deleted_at IS NULL");
 		
 		if (status != null) {
@@ -208,7 +206,7 @@ public final class ScoutRepository {
 					+ " title = ?, company_name = ?, status_id = ?, recruiting_platform_id = ?,"
 					+ " details_url = ?, creation_source_url = ?, updated_at = CURRENT_TIMESTAMP"
 					+ " WHERE s.id = ?"
-					+ " AND s.user_id = (" + ACTIVE_USER_ID_BY_AUTH_ID + ")"
+					+ " AND s.user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 					+ " AND s.deleted_at IS NULL";
 			int affected;
 			
@@ -238,7 +236,7 @@ public final class ScoutRepository {
 		String sql =
 			"UPDATE scouts SET deleted_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP"
 				+ " WHERE id = ?"
-				+ " AND user_id = (" + ACTIVE_USER_ID_BY_AUTH_ID + ")"
+				+ " AND user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 				+ " AND deleted_at IS NULL";
 		
 		try (Connection conn = getConnection();
@@ -256,7 +254,7 @@ public final class ScoutRepository {
 		String sql =
 			SELECT_SCOUT
 				+ " WHERE s.id = ?"
-				+ " AND s.user_id = (" + ACTIVE_USER_ID_BY_AUTH_ID + ")"
+				+ " AND s.user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 				+ " AND s.deleted_at IS NULL";
 		
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
