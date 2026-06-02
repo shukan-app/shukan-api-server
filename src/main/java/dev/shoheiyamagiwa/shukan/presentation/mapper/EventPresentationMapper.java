@@ -4,7 +4,7 @@ import dev.shoheiyamagiwa.shukan.domain.entity.Event;
 import dev.shoheiyamagiwa.shukan.presentation.dto.EventResponseDto;
 
 public final class EventPresentationMapper {
-
+	
 	public static EventResponseDto toEventResponse(Event event) {
 		return new EventResponseDto(
 			event.id(),

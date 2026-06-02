@@ -21,16 +21,16 @@ public final class CompanyPresentationMapperTest {
 	
 	private static Company buildCompany() {
 		return new Company(
-				ID,
-				"Corp A",
-				"Engineer",
-				CompanyStatus.PREENTRY,
-				RecruitingPlatform.ONE_CAREER,
-				ContactType.PLATFORM_MESSAGE,
-				"https://example.com/source",
-				NOW,
-				NOW,
-				null);
+			ID,
+			"Corp A",
+			"Engineer",
+			CompanyStatus.PREENTRY,
+			RecruitingPlatform.ONE_CAREER,
+			ContactType.PLATFORM_MESSAGE,
+			"https://example.com/source",
+			NOW,
+			NOW,
+			null);
 	}
 	
 	@Test
@@ -49,7 +49,7 @@ public final class CompanyPresentationMapperTest {
 	@Test
 	public void testToCompanyDetailResponse() {
 		CompanyDetailResponseDto dto =
-				CompanyPresentationMapper.toCompanyDetailResponse(buildCompany());
+			CompanyPresentationMapper.toCompanyDetailResponse(buildCompany());
 		
 		assertEquals(ID, dto.id());
 		assertEquals("Corp A", dto.name());

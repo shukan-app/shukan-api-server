@@ -6,7 +6,10 @@ import dev.shoheiyamagiwa.shukan.domain.vo.ContactType;
 import dev.shoheiyamagiwa.shukan.domain.vo.RecruitingPlatform;
 import dev.shoheiyamagiwa.shukan.middleware.AuthenticatedRequestContext;
 import dev.shoheiyamagiwa.shukan.presentation.ErrorResponses;
-import dev.shoheiyamagiwa.shukan.presentation.dto.*;
+import dev.shoheiyamagiwa.shukan.presentation.dto.GetCompaniesResponseDto;
+import dev.shoheiyamagiwa.shukan.presentation.dto.PaginationResponseDto;
+import dev.shoheiyamagiwa.shukan.presentation.dto.RegisterCompanyRequestDto;
+import dev.shoheiyamagiwa.shukan.presentation.dto.UpdateCompanyRequestDto;
 import dev.shoheiyamagiwa.shukan.presentation.mapper.CompanyPresentationMapper;
 import dev.shoheiyamagiwa.shukan.service.CompaniesPage;
 import dev.shoheiyamagiwa.shukan.service.CompanyService;
@@ -114,7 +117,7 @@ public final class CompanyController {
 		if (page == null) {
 			return;
 		}
-
+		
 		Integer pageSize = parseIntParam(ctx, "pageSize", ctx.queryParam("pageSize"), 50);
 		if (pageSize == null) {
 			return;
@@ -162,8 +165,8 @@ public final class CompanyController {
 		CompaniesPage result = companyService.getCompanies(authId, page, pageSize, q, status, sort, order);
 		
 		GetCompaniesResponseDto response = new GetCompaniesResponseDto(
-				new PaginationResponseDto(result.page(), result.pageSize(), result.totalPages()),
-				result.companies().stream().map(CompanyPresentationMapper::toCompanyResponse).toList());
+			new PaginationResponseDto(result.page(), result.pageSize(), result.totalPages()),
+			result.companies().stream().map(CompanyPresentationMapper::toCompanyResponse).toList());
 		ctx.json(response);
 	}
 	
@@ -208,7 +211,7 @@ public final class CompanyController {
 			ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "User not found");
 			return;
 		}
-
+		
 		ctx.json(CompanyPresentationMapper.toCompanyDetailResponse(company.get()));
 	}
 	

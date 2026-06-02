@@ -13,11 +13,7 @@ import dev.shoheiyamagiwa.shukan.middleware.AuthMiddlewareProvider;
 import dev.shoheiyamagiwa.shukan.middleware.DenyingAuthMiddlewareProvider;
 import dev.shoheiyamagiwa.shukan.middleware.FirebaseAuthMiddlewareProvider;
 import dev.shoheiyamagiwa.shukan.presentation.ErrorResponses;
-import dev.shoheiyamagiwa.shukan.presentation.controller.CompanyController;
-import dev.shoheiyamagiwa.shukan.presentation.controller.EventController;
-import dev.shoheiyamagiwa.shukan.presentation.controller.HealthController;
-import dev.shoheiyamagiwa.shukan.presentation.controller.ScoutController;
-import dev.shoheiyamagiwa.shukan.presentation.controller.TaskController;
+import dev.shoheiyamagiwa.shukan.presentation.controller.*;
 import dev.shoheiyamagiwa.shukan.service.CompanyService;
 import dev.shoheiyamagiwa.shukan.service.EventService;
 import dev.shoheiyamagiwa.shukan.service.ScoutService;
@@ -98,6 +94,11 @@ public final class Main {
 		}
 	}
 	
+	private static void migrateDatabase(String url, String user, String password) {
+		Flyway flyway = Flyway.configure().dataSource(url, user, password).load();
+		flyway.migrate();
+	}
+	
 	private void start() {
 		String url = requireEnv("JDBC_DATABASE_URL");
 		String user = requireEnv("JDBC_DATABASE_USERNAME");
@@ -127,11 +128,6 @@ public final class Main {
 				scoutController.registerRoutes(routes);
 			})
 			.start(resolvePort());
-	}
-	
-	private static void migrateDatabase(String url, String user, String password) {
-		Flyway flyway = Flyway.configure().dataSource(url, user, password).load();
-		flyway.migrate();
 	}
 	
 	private String requireEnv(String name) {

@@ -13,26 +13,26 @@ import java.util.UUID;
 
 public final class TaskService {
 	private final TaskRepository taskRepository;
-
+	
 	public TaskService(TaskRepository taskRepository) {
 		this.taskRepository = taskRepository;
 	}
-
+	
 	public boolean userExists(String authId) {
 		return taskRepository.userExists(authId);
 	}
-
+	
 	public TasksPage getTasks(String authId, int page, int pageSize, @Nullable TaskType type) {
 		List<Task> tasks = taskRepository.findAll(authId, page, pageSize, type);
 		int total = taskRepository.count(authId, type);
 		int totalPages = pageSize > 0 ? (int) Math.ceil((double) total / pageSize) : 0;
 		return new TasksPage(tasks, page, pageSize, totalPages);
 	}
-
+	
 	public Optional<Task> findTask(String authId, UUID taskId) {
 		return taskRepository.findById(authId, taskId);
 	}
-
+	
 	public Optional<Task> registerTask(
 		String authId,
 		String title,
@@ -43,7 +43,7 @@ public final class TaskService {
 		@Nullable OffsetDateTime deadline) {
 		return taskRepository.create(authId, title, companyId, type, status, creationSourceUrl, deadline);
 	}
-
+	
 	public Optional<Task> updateTask(
 		String authId,
 		UUID taskId,
@@ -55,7 +55,7 @@ public final class TaskService {
 		@Nullable OffsetDateTime deadline) {
 		return taskRepository.update(authId, taskId, title, companyId, type, status, creationSourceUrl, deadline);
 	}
-
+	
 	public boolean deleteTask(String authId, UUID taskId) {
 		return taskRepository.softDelete(authId, taskId);
 	}

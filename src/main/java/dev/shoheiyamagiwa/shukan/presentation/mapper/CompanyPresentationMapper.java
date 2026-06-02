@@ -8,26 +8,26 @@ public final class CompanyPresentationMapper {
 	
 	public static CompanyResponseDto toCompanyResponse(Company company) {
 		return new CompanyResponseDto(
-				company.id(),
-				company.name(),
-				company.appliedRole(),
-				company.status().getValue(),
-				company.createdAt(),
-				company.updatedAt(),
-				company.deletedAt());
+			company.id(),
+			company.name(),
+			company.appliedRole(),
+			company.status().getValue(),
+			company.createdAt(),
+			company.updatedAt(),
+			company.deletedAt());
 	}
 	
 	public static CompanyDetailResponseDto toCompanyDetailResponse(Company company) {
 		return new CompanyDetailResponseDto(
-				company.id(),
-				company.name(),
-				company.appliedRole(),
-				company.status().getValue(),
-				company.applicationRoute().getValue(),
-				company.contactType().getValue(),
-				company.creationSourceUrl(),
-				company.createdAt(),
-				company.updatedAt(),
-				company.deletedAt());
+			company.id(),
+			company.name(),
+			company.appliedRole(),
+			company.status().getValue(),
+			company.applicationRoute().getValue(),
+			company.contactType().getValue(),
+			company.creationSourceUrl(),
+			company.createdAt(),
+			company.updatedAt(),
+			company.deletedAt());
 	}
 }

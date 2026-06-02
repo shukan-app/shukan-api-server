@@ -9,15 +9,15 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public record Task(
-		UUID id,
-		String title,
-		Company company,
-		TaskType type,
-		TaskStatus status,
-		TaskCreationSource createdBy,
-		@Nullable String creationSourceUrl,
-		@Nullable OffsetDateTime deadline,
-		OffsetDateTime createdAt,
-		OffsetDateTime updatedAt,
-		@Nullable OffsetDateTime deletedAt) {
+	UUID id,
+	String title,
+	Company company,
+	TaskType type,
+	TaskStatus status,
+	TaskCreationSource createdBy,
+	@Nullable String creationSourceUrl,
+	@Nullable OffsetDateTime deadline,
+	OffsetDateTime createdAt,
+	OffsetDateTime updatedAt,
+	@Nullable OffsetDateTime deletedAt) {
 }

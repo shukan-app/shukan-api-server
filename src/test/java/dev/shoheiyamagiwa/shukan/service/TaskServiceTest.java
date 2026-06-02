@@ -51,6 +51,21 @@ public final class TaskServiceTest {
 		}
 	}
 	
+	private static UUID createCompany(String name) {
+		Optional<Company> company = companyService.registerCompany(
+			TEST_AUTH_ID,
+			name,
+			"Engineer",
+			CompanyStatus.BOOKMARKED,
+			RecruitingPlatform.MYNAVI,
+			ContactType.EMAIL,
+			null);
+		if (company.isEmpty()) {
+			throw new IllegalStateException("Failed to create company for test");
+		}
+		return company.get().id();
+	}
+	
 	@Test
 	public void testRegisterTask() {
 		UUID companyId = createCompany("Task Register Corp");
@@ -244,20 +259,5 @@ public final class TaskServiceTest {
 		boolean deleted = taskService.deleteTask(TEST_AUTH_ID, UUID.randomUUID());
 		
 		assertFalse(deleted);
-	}
-	
-	private static UUID createCompany(String name) {
-		Optional<Company> company = companyService.registerCompany(
-			TEST_AUTH_ID,
-			name,
-			"Engineer",
-			CompanyStatus.BOOKMARKED,
-			RecruitingPlatform.MYNAVI,
-			ContactType.EMAIL,
-			null);
-		if (company.isEmpty()) {
-			throw new IllegalStateException("Failed to create company for test");
-		}
-		return company.get().id();
 	}
 }

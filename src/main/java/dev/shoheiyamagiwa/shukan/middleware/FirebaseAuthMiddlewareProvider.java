@@ -11,27 +11,27 @@ import java.util.Optional;
 
 public final class FirebaseAuthMiddlewareProvider implements AuthMiddlewareProvider {
 	private static final Logger logger =
-			LoggerFactory.getLogger(FirebaseAuthMiddlewareProvider.class);
+		LoggerFactory.getLogger(FirebaseAuthMiddlewareProvider.class);
 	
 	private final FirebaseTokenVerifier verifier;
 	
 	public FirebaseAuthMiddlewareProvider(FirebaseAuth firebaseAuth) {
 		this.verifier =
-				token -> {
-					try {
-						@Nullable FirebaseToken firebaseToken = firebaseAuth.verifyIdToken(token);
-						if (firebaseToken == null) {
-							return Optional.empty();
-						}
-						@Nullable String uid = firebaseToken.getUid();
-						if (uid == null || uid.isBlank()) {
-							return Optional.empty();
-						}
-						return Optional.of(uid);
-					} catch (FirebaseAuthException e) {
+			token -> {
+				try {
+					@Nullable FirebaseToken firebaseToken = firebaseAuth.verifyIdToken(token);
+					if (firebaseToken == null) {
 						return Optional.empty();
 					}
-				};
+					@Nullable String uid = firebaseToken.getUid();
+					if (uid == null || uid.isBlank()) {
+						return Optional.empty();
+					}
+					return Optional.of(uid);
+				} catch (FirebaseAuthException e) {
+					return Optional.empty();
+				}
+			};
 	}
 	
 	/**

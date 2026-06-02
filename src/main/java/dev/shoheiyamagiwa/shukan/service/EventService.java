@@ -14,15 +14,15 @@ import java.util.UUID;
 
 public final class EventService {
 	private final EventRepository eventRepository;
-
+	
 	public EventService(EventRepository eventRepository) {
 		this.eventRepository = eventRepository;
 	}
-
+	
 	public boolean userExists(String authId) {
 		return eventRepository.userExists(authId);
 	}
-
+	
 	public EventsPage getEvents(
 		String authId,
 		int page,
@@ -34,11 +34,11 @@ public final class EventService {
 		int totalPages = pageSize > 0 ? (int) Math.ceil((double) total / pageSize) : 0;
 		return new EventsPage(events, page, pageSize, totalPages);
 	}
-
+	
 	public Optional<Event> findEvent(String authId, UUID eventId) {
 		return eventRepository.findById(authId, eventId);
 	}
-
+	
 	public Optional<Event> registerEvent(
 		String authId,
 		String title,
@@ -62,7 +62,7 @@ public final class EventService {
 			beginAt,
 			endAt);
 	}
-
+	
 	public Optional<Event> updateEvent(
 		String authId,
 		UUID eventId,
@@ -88,7 +88,7 @@ public final class EventService {
 			beginAt,
 			endAt);
 	}
-
+	
 	public boolean deleteEvent(String authId, UUID eventId) {
 		return eventRepository.softDelete(authId, eventId);
 	}

@@ -9,14 +9,14 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public record Company(
-		UUID id,
-		String name,
-		String appliedRole,
-		CompanyStatus status,
-		RecruitingPlatform applicationRoute,
-		ContactType contactType,
-		@Nullable String creationSourceUrl,
-		OffsetDateTime createdAt,
-		OffsetDateTime updatedAt,
-		@Nullable OffsetDateTime deletedAt) {
+	UUID id,
+	String name,
+	String appliedRole,
+	CompanyStatus status,
+	RecruitingPlatform applicationRoute,
+	ContactType contactType,
+	@Nullable String creationSourceUrl,
+	OffsetDateTime createdAt,
+	OffsetDateTime updatedAt,
+	@Nullable OffsetDateTime deletedAt) {
 }

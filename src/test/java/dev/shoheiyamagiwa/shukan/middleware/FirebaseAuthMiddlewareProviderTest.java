@@ -11,7 +11,7 @@ public final class FirebaseAuthMiddlewareProviderTest {
 	@Test
 	public void testVerifyBearerTokenReturnsUidOnSuccess() {
 		FirebaseAuthMiddlewareProvider provider =
-				new FirebaseAuthMiddlewareProvider(token -> Optional.of("test-uid"));
+			new FirebaseAuthMiddlewareProvider(token -> Optional.of("test-uid"));
 		
 		Optional<String> result = provider.verifyBearerToken("valid-token");
 		
@@ -21,7 +21,7 @@ public final class FirebaseAuthMiddlewareProviderTest {
 	@Test
 	public void testVerifyBearerTokenReturnsEmptyWhenVerifierReturnsEmpty() {
 		FirebaseAuthMiddlewareProvider provider =
-				new FirebaseAuthMiddlewareProvider(token -> Optional.empty());
+			new FirebaseAuthMiddlewareProvider(token -> Optional.empty());
 		
 		Optional<String> result = provider.verifyBearerToken("invalid-token");
 		
@@ -31,10 +31,10 @@ public final class FirebaseAuthMiddlewareProviderTest {
 	@Test
 	public void testVerifyBearerTokenReturnsEmptyOnIllegalArgumentException() {
 		FirebaseAuthMiddlewareProvider provider =
-				new FirebaseAuthMiddlewareProvider(
-						token -> {
-							throw new IllegalArgumentException("Malformed token");
-						});
+			new FirebaseAuthMiddlewareProvider(
+				token -> {
+					throw new IllegalArgumentException("Malformed token");
+				});
 		
 		Optional<String> result = provider.verifyBearerToken("malformed-token");
 		
@@ -44,10 +44,10 @@ public final class FirebaseAuthMiddlewareProviderTest {
 	@Test
 	public void testVerifyBearerTokenReturnsEmptyOnUnexpectedRuntimeException() {
 		FirebaseAuthMiddlewareProvider provider =
-				new FirebaseAuthMiddlewareProvider(
-						token -> {
-							throw new RuntimeException("Unexpected error");
-						});
+			new FirebaseAuthMiddlewareProvider(
+				token -> {
+					throw new RuntimeException("Unexpected error");
+				});
 		
 		Optional<String> result = provider.verifyBearerToken("some-token");
 		

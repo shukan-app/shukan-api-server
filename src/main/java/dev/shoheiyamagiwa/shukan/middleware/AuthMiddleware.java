@@ -45,7 +45,7 @@ public final class AuthMiddleware {
 		}
 		
 		ctx.attribute(
-				AuthenticatedRequestContext.ATTRIBUTE_NAME, new AuthenticatedRequestContext(userId.get()));
+			AuthenticatedRequestContext.ATTRIBUTE_NAME, new AuthenticatedRequestContext(userId.get()));
 	}
 	
 	private void reject(Context ctx, HttpStatus status, String message) {

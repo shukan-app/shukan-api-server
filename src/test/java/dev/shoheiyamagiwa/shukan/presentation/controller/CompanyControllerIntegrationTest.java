@@ -67,6 +67,53 @@ public final class CompanyControllerIntegrationTest {
 		}
 	}
 	
+	private static String createCompany(String name) throws IOException, InterruptedException {
+		HttpResponse<String> response = send(
+			"POST",
+			"/users/me/companies",
+			"{\"name\":\""
+				+ name
+				+ "\",\"appliedRole\":\"Engineer\",\"status\":\"bookmarked\","
+				+ "\"applicationRoute\":\"mynavi\",\"contactType\":\"email\"}",
+			true);
+		assertEquals(200, response.statusCode());
+		
+		String id = extractId(response.body());
+		assertNotNull(id);
+		
+		return id;
+	}
+	
+	private static String extractId(String body) {
+		Matcher matcher = ID_PATTERN.matcher(body);
+		if (matcher.find()) {
+			return matcher.group(1);
+		}
+		throw new IllegalStateException("No id found in response body: " + body);
+	}
+	
+	private static HttpResponse<String> send(String method, String path, @Nullable String body, boolean authorized) throws IOException, InterruptedException {
+		return send(method, path, body, authorized ? TEST_AUTH_ID : null);
+	}
+	
+	private static HttpResponse<String> send(String method, String path, @Nullable String body, @Nullable String bearerToken) throws IOException, InterruptedException {
+		HttpRequest.BodyPublisher publisher = body == null
+			? HttpRequest.BodyPublishers.noBody()
+			: HttpRequest.BodyPublishers.ofString(body);
+		
+		HttpRequest.Builder builder = HttpRequest.newBuilder()
+			.uri(URI.create("http://localhost:" + app.port() + path))
+			.header("Content-Type", "application/json")
+			.method(method, publisher);
+		
+		if (bearerToken != null) {
+			builder.header("Authorization", "Bearer " + bearerToken);
+		}
+		
+		return HttpClient.newHttpClient()
+			.send(builder.build(), HttpResponse.BodyHandlers.ofString());
+	}
+	
 	@Test
 	public void testListCompaniesRejectsMissingAuthorization() throws IOException, InterruptedException {
 		HttpResponse<String> response = send("GET", "/users/me/companies", null, false);
@@ -244,53 +291,6 @@ public final class CompanyControllerIntegrationTest {
 		
 		assertEquals(404, response.statusCode());
 		assertTrue(response.body().contains("Not Found"));
-	}
-	
-	private static String createCompany(String name) throws IOException, InterruptedException {
-		HttpResponse<String> response = send(
-			"POST",
-			"/users/me/companies",
-			"{\"name\":\""
-				+ name
-				+ "\",\"appliedRole\":\"Engineer\",\"status\":\"bookmarked\","
-				+ "\"applicationRoute\":\"mynavi\",\"contactType\":\"email\"}",
-			true);
-		assertEquals(200, response.statusCode());
-		
-		String id = extractId(response.body());
-		assertNotNull(id);
-		
-		return id;
-	}
-	
-	private static String extractId(String body) {
-		Matcher matcher = ID_PATTERN.matcher(body);
-		if (matcher.find()) {
-			return matcher.group(1);
-		}
-		throw new IllegalStateException("No id found in response body: " + body);
-	}
-	
-	private static HttpResponse<String> send(String method, String path, @Nullable String body, boolean authorized) throws IOException, InterruptedException {
-		return send(method, path, body, authorized ? TEST_AUTH_ID : null);
-	}
-	
-	private static HttpResponse<String> send(String method, String path, @Nullable String body, @Nullable String bearerToken) throws IOException, InterruptedException {
-		HttpRequest.BodyPublisher publisher = body == null
-			? HttpRequest.BodyPublishers.noBody()
-			: HttpRequest.BodyPublishers.ofString(body);
-		
-		HttpRequest.Builder builder = HttpRequest.newBuilder()
-			.uri(URI.create("http://localhost:" + app.port() + path))
-			.header("Content-Type", "application/json")
-			.method(method, publisher);
-		
-		if (bearerToken != null) {
-			builder.header("Authorization", "Bearer " + bearerToken);
-		}
-		
-		return HttpClient.newHttpClient()
-			.send(builder.build(), HttpResponse.BodyHandlers.ofString());
 	}
 	
 	private record TestAuthMiddlewareProvider() implements AuthMiddlewareProvider {

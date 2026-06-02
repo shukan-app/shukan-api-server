@@ -13,7 +13,7 @@ public final class EventVoTest {
 		assertEquals("offerEvent", EventType.OFFER_EVENT.getValue());
 		assertEquals("offer_event", EventType.OFFER_EVENT.toDatabaseValue());
 	}
-
+	
 	@Test
 	public void testEventStatusMapping() {
 		assertEquals(EventStatus.RESCHEDULING_REQUIRED, EventStatus.fromValue("reschedulingRequired"));
@@ -21,7 +21,7 @@ public final class EventVoTest {
 		assertEquals("canceled", EventStatus.CANCELED.getValue());
 		assertEquals("canceled", EventStatus.CANCELED.toDatabaseValue());
 	}
-
+	
 	@Test
 	public void testEventFormatTypeMapping() {
 		assertEquals(EventFormatType.ON_DEMAND, EventFormatType.fromValue("onDemand"));
@@ -29,7 +29,7 @@ public final class EventVoTest {
 		assertEquals("hybrid", EventFormatType.HYBRID.getValue());
 		assertEquals("hybrid", EventFormatType.HYBRID.toDatabaseValue());
 	}
-
+	
 	@Test
 	public void testInvalidValuesThrow() {
 		assertThrows(IllegalArgumentException.class, () -> EventType.fromValue("invalid"));

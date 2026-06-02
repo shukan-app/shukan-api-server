@@ -18,7 +18,7 @@ public final class EventPresentationMapperTest {
 	private static final OffsetDateTime CREATED_AT = OffsetDateTime.parse("2026-07-01T09:00:00+09:00");
 	private static final OffsetDateTime BEGIN_AT = OffsetDateTime.parse("2026-07-20T10:00:00+09:00");
 	private static final OffsetDateTime END_AT = OffsetDateTime.parse("2026-07-20T11:00:00+09:00");
-
+	
 	@Test
 	public void testToEventResponse() {
 		Company company = new Company(
@@ -46,9 +46,9 @@ public final class EventPresentationMapperTest {
 			CREATED_AT,
 			CREATED_AT,
 			null);
-
+		
 		EventResponseDto dto = EventPresentationMapper.toEventResponse(event);
-
+		
 		assertEquals(ID, dto.id());
 		assertEquals("Company briefing", dto.title());
 		assertEquals(COMPANY_ID, dto.company().id());

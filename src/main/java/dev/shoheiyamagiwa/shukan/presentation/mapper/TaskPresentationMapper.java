@@ -4,7 +4,7 @@ import dev.shoheiyamagiwa.shukan.domain.entity.Task;
 import dev.shoheiyamagiwa.shukan.presentation.dto.TaskResponseDto;
 
 public final class TaskPresentationMapper {
-
+	
 	public static TaskResponseDto toTaskResponse(Task task) {
 		return new TaskResponseDto(
 			task.id(),

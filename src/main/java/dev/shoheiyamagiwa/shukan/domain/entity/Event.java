@@ -9,17 +9,17 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public record Event(
-		UUID id,
-		String title,
-		Company company,
-		EventType type,
-		EventStatus status,
-		EventFormatType formatType,
-		@Nullable String location,
-		@Nullable String creationSourceUrl,
-		OffsetDateTime beginAt,
-		OffsetDateTime endAt,
-		OffsetDateTime createdAt,
-		OffsetDateTime updatedAt,
-		@Nullable OffsetDateTime deletedAt) {
+	UUID id,
+	String title,
+	Company company,
+	EventType type,
+	EventStatus status,
+	EventFormatType formatType,
+	@Nullable String location,
+	@Nullable String creationSourceUrl,
+	OffsetDateTime beginAt,
+	OffsetDateTime endAt,
+	OffsetDateTime createdAt,
+	OffsetDateTime updatedAt,
+	@Nullable OffsetDateTime deletedAt) {
 }

@@ -35,7 +35,7 @@ public enum RecruitingPlatform {
 		}
 		throw new IllegalArgumentException("Unknown RecruitingPlatform: " + value);
 	}
-
+	
 	public static RecruitingPlatform fromDatabaseValue(String value) {
 		for (RecruitingPlatform platform : values()) {
 			if (platform.databaseValue.equals(value)) {
@@ -48,7 +48,7 @@ public enum RecruitingPlatform {
 	public String getValue() {
 		return value;
 	}
-
+	
 	public String toDatabaseValue() {
 		return databaseValue;
 	}

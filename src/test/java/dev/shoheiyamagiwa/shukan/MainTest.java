@@ -25,7 +25,7 @@ public final class MainTest {
 			assertEquals(200, response.statusCode());
 			assertEquals("{\"status\":\"ok\"}", response.body());
 			assertTrue(
-					response.headers().firstValue("content-type").orElse("").contains("application/json"));
+				response.headers().firstValue("content-type").orElse("").contains("application/json"));
 		} finally {
 			app.stop();
 		}
@@ -43,7 +43,7 @@ public final class MainTest {
 				"{\"type\":\"about:blank\",\"title\":\"Not Found\",\"status\":404,\"detail\":\"Not Found\",\"instance\":\"/missing\"}",
 				response.body());
 			assertTrue(
-					response.headers().firstValue("content-type").orElse("").contains("application/problem+json"));
+				response.headers().firstValue("content-type").orElse("").contains("application/problem+json"));
 		} finally {
 			app.stop();
 		}
@@ -55,7 +55,7 @@ public final class MainTest {
 		
 		try {
 			HttpResponse<String> response =
-					sendGet(app, "/protected", "Authorization", "Bearer valid-token");
+				sendGet(app, "/protected", "Authorization", "Bearer valid-token");
 			
 			assertEquals(200, response.statusCode());
 			assertEquals("{\"userId\":\"auth-valid-token\"}", response.body());
@@ -66,7 +66,7 @@ public final class MainTest {
 	
 	@Test
 	public void testProtectedEndpointRejectsMissingAuthorizationHeader()
-			throws IOException, InterruptedException {
+		throws IOException, InterruptedException {
 		Javalin app = createProtectedApplication(new TestAuthMiddlewareProvider(true)).start(0);
 		
 		try {
@@ -81,7 +81,7 @@ public final class MainTest {
 	
 	@Test
 	public void testProtectedEndpointRejectsMalformedAuthorizationHeader()
-			throws IOException, InterruptedException {
+		throws IOException, InterruptedException {
 		Javalin app = createProtectedApplication(new TestAuthMiddlewareProvider(true)).start(0);
 		
 		try {
@@ -96,12 +96,12 @@ public final class MainTest {
 	
 	@Test
 	public void testProtectedEndpointRejectsAuthorizationProviderFailure()
-			throws IOException, InterruptedException {
+		throws IOException, InterruptedException {
 		Javalin app = createProtectedApplication(new TestAuthMiddlewareProvider(false)).start(0);
 		
 		try {
 			HttpResponse<String> response =
-					sendGet(app, "/protected", "Authorization", "Bearer valid-token");
+				sendGet(app, "/protected", "Authorization", "Bearer valid-token");
 			
 			assertEquals(401, response.statusCode());
 			assertEquals(unauthorizedProblemDetails(), response.body());
@@ -127,24 +127,24 @@ public final class MainTest {
 	
 	private Javalin createProtectedApplication(AuthMiddlewareProvider provider) {
 		return Main.createApplication(
-				provider,
-				routes ->
-						routes.get(
-								"/protected",
-								ctx -> {
-									AuthenticatedRequestContext authContext =
-											ctx.attribute(AuthenticatedRequestContext.ATTRIBUTE_NAME);
-									if (authContext == null) {
-										throw new IllegalStateException("Missing authenticated request context");
-									}
-									ctx.json(new ProtectedResponseDto(authContext.userId()));
-								}));
+			provider,
+			routes ->
+				routes.get(
+					"/protected",
+					ctx -> {
+						AuthenticatedRequestContext authContext =
+							ctx.attribute(AuthenticatedRequestContext.ATTRIBUTE_NAME);
+						if (authContext == null) {
+							throw new IllegalStateException("Missing authenticated request context");
+						}
+						ctx.json(new ProtectedResponseDto(authContext.userId()));
+					}));
 	}
 	
 	private HttpResponse<String> sendGet(Javalin app, String path, String... headers)
-			throws IOException, InterruptedException {
+		throws IOException, InterruptedException {
 		HttpRequest.Builder requestBuilder =
-				HttpRequest.newBuilder().uri(URI.create("http://localhost:" + app.port() + path)).GET();
+			HttpRequest.newBuilder().uri(URI.create("http://localhost:" + app.port() + path)).GET();
 		
 		for (int i = 0; i < headers.length; i += 2) {
 			requestBuilder.header(headers[i], headers[i + 1]);
@@ -163,7 +163,7 @@ public final class MainTest {
 	}
 	
 	private record TestAuthMiddlewareProvider(boolean acceptsAuthorization)
-			implements AuthMiddlewareProvider {
+		implements AuthMiddlewareProvider {
 		@Override
 		public Optional<String> verifyBearerToken(String bearerToken) {
 			if (!acceptsAuthorization) {

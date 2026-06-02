@@ -21,17 +21,17 @@ public final class CompanyMapperTest {
 	@Test
 	public void testToEntity() {
 		CompanyDto dto =
-				new CompanyDto(
-						ID,
-						"Corp A",
-						"Engineer",
-						"informal_contact",
-						"one_career",
-						"platform_message",
-						"https://example.com/source",
-						NOW,
-						NOW,
-						null);
+			new CompanyDto(
+				ID,
+				"Corp A",
+				"Engineer",
+				"informal_contact",
+				"one_career",
+				"platform_message",
+				"https://example.com/source",
+				NOW,
+				NOW,
+				null);
 		
 		Company entity = CompanyMapper.toEntity(dto);
 		
@@ -50,17 +50,17 @@ public final class CompanyMapperTest {
 	@Test
 	public void testToDto() {
 		Company entity =
-				new Company(
-						ID,
-						"Corp A",
-						"Engineer",
-						CompanyStatus.INTERVIEW_IN_PROGRESS,
-						RecruitingPlatform.TRACK_JOB,
-						ContactType.CONTACT_FORM,
-						"https://example.com/source",
-						NOW,
-						NOW,
-						null);
+			new Company(
+				ID,
+				"Corp A",
+				"Engineer",
+				CompanyStatus.INTERVIEW_IN_PROGRESS,
+				RecruitingPlatform.TRACK_JOB,
+				ContactType.CONTACT_FORM,
+				"https://example.com/source",
+				NOW,
+				NOW,
+				null);
 		
 		CompanyDto dto = CompanyMapper.toDto(entity);
 		

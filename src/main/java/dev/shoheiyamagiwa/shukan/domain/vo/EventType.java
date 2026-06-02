@@ -9,15 +9,15 @@ public enum EventType {
 	ASSESSMENT("assessment", "assessment"),
 	OFFER_EVENT("offerEvent", "offer_event"),
 	OTHER("other", "other");
-
+	
 	private final String value;
 	private final String databaseValue;
-
+	
 	EventType(String value, String databaseValue) {
 		this.value = value;
 		this.databaseValue = databaseValue;
 	}
-
+	
 	public static EventType fromValue(String value) {
 		for (EventType type : values()) {
 			if (type.value.equals(value)) {
@@ -26,7 +26,7 @@ public enum EventType {
 		}
 		throw new IllegalArgumentException("Unknown EventType: " + value);
 	}
-
+	
 	public static EventType fromDatabaseValue(String value) {
 		for (EventType type : values()) {
 			if (type.databaseValue.equals(value)) {
@@ -35,11 +35,11 @@ public enum EventType {
 		}
 		throw new IllegalArgumentException("Unknown EventType: " + value);
 	}
-
+	
 	public String getValue() {
 		return value;
 	}
-
+	
 	public String toDatabaseValue() {
 		return databaseValue;
 	}

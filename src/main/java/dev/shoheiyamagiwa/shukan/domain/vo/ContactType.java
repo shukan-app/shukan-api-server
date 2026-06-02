@@ -24,7 +24,7 @@ public enum ContactType {
 		}
 		throw new IllegalArgumentException("Unknown ContactType: " + value);
 	}
-
+	
 	public static ContactType fromDatabaseValue(String value) {
 		for (ContactType type : values()) {
 			if (type.databaseValue.equals(value)) {
@@ -37,7 +37,7 @@ public enum ContactType {
 	public String getValue() {
 		return value;
 	}
-
+	
 	public String toDatabaseValue() {
 		return databaseValue;
 	}
