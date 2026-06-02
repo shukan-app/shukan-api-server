@@ -54,7 +54,7 @@ public final class TaskRepository {
 	}
 	
 	public boolean userExists(String authId) {
-		String sql = "SELECT 1 FROM users WHERE auth_id = ?";
+		String sql = UserQueryRepository.ACTIVE_USER_EXISTS_BY_AUTH_ID;
 		try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, authId);
 			try (ResultSet rs = stmt.executeQuery()) {
@@ -70,7 +70,7 @@ public final class TaskRepository {
 		params.add(authId);
 		
 		StringBuilder where = new StringBuilder(
-			" WHERE t.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+			" WHERE t.user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 				+ " AND t.deleted_at IS NULL"
 				+ " AND c.deleted_at IS NULL");
 		
@@ -102,7 +102,7 @@ public final class TaskRepository {
 		params.add(authId);
 		
 		StringBuilder where = new StringBuilder(
-			" WHERE t.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+			" WHERE t.user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 				+ " AND t.deleted_at IS NULL"
 				+ " AND c.deleted_at IS NULL");
 		
@@ -154,6 +154,7 @@ public final class TaskRepository {
 				+ " FROM users u"
 				+ " JOIN companies c ON c.id = ?"
 				+ " WHERE u.auth_id = ?"
+				+ " AND u.deleted_at IS NULL"
 				+ " AND c.user_id = u.id"
 				+ " AND c.deleted_at IS NULL"
 				+ " RETURNING id";
@@ -204,7 +205,7 @@ public final class TaskRepository {
 				+ " title = ?, company_id = ?, type_id = ?, status_id = ?, creation_source_url = ?, deadline = ?,"
 				+ " updated_at = CURRENT_TIMESTAMP"
 				+ " WHERE t.id = ?"
-				+ " AND t.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+				+ " AND t.user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 				+ " AND t.deleted_at IS NULL"
 				+ " AND EXISTS ("
 				+ " SELECT 1 FROM companies current_c"
@@ -238,7 +239,7 @@ public final class TaskRepository {
 	public boolean softDelete(String authId, UUID taskId) {
 		String sql = "UPDATE tasks SET deleted_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP"
 			+ " WHERE id = ?"
-			+ " AND user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+			+ " AND user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 			+ " AND deleted_at IS NULL";
 		
 		try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -253,7 +254,7 @@ public final class TaskRepository {
 	private Optional<Task> findById(Connection conn, String authId, UUID taskId) throws SQLException {
 		String sql = SELECT_TASK
 			+ " WHERE t.id = ?"
-			+ " AND t.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+			+ " AND t.user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 			+ " AND t.deleted_at IS NULL"
 			+ " AND c.deleted_at IS NULL";
 		
@@ -273,7 +274,7 @@ public final class TaskRepository {
 	private boolean isCompanyOwnedByUser(Connection conn, String authId, UUID companyId) throws SQLException {
 		String sql = "SELECT 1 FROM companies c"
 			+ " WHERE c.id = ?"
-			+ " AND c.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+			+ " AND c.user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 			+ " AND c.deleted_at IS NULL";
 		
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {

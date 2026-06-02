@@ -74,7 +74,7 @@ public final class CompanyRepository {
 		params.add(authId);
 		
 		StringBuilder where = new StringBuilder(
-			" WHERE c.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+			" WHERE c.user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 				+ " AND c.deleted_at IS NULL");
 		
 		if (q != null && !q.isBlank()) {
@@ -110,7 +110,7 @@ public final class CompanyRepository {
 		params.add(authId);
 		
 		StringBuilder where = new StringBuilder(
-			" WHERE c.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+			" WHERE c.user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 				+ " AND c.deleted_at IS NULL");
 		
 		if (q != null && !q.isBlank()) {
@@ -164,6 +164,7 @@ public final class CompanyRepository {
 				+ " (user_id, name, applied_role, status_id, application_route_id, contact_type_id, creation_source_url)"
 				+ " SELECT u.id, ?, ?, ?, ?, ?, ?"
 				+ " FROM users u WHERE u.auth_id = ?"
+				+ " AND u.deleted_at IS NULL"
 				+ " RETURNING id";
 			UUID companyId;
 			
@@ -209,7 +210,7 @@ public final class CompanyRepository {
 				+ " status_id = ?, application_route_id = ?, contact_type_id = ?, creation_source_url = ?,"
 				+ " updated_at = CURRENT_TIMESTAMP"
 				+ " WHERE id = ?"
-				+ " AND user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+				+ " AND user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 				+ " AND deleted_at IS NULL";
 			int affected;
 			
@@ -238,7 +239,7 @@ public final class CompanyRepository {
 	public boolean softDelete(String authId, UUID companyId) {
 		String sql = "UPDATE companies SET deleted_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP"
 			+ " WHERE id = ?"
-			+ " AND user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+			+ " AND user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 			+ " AND deleted_at IS NULL";
 		
 		try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -253,7 +254,7 @@ public final class CompanyRepository {
 	private Optional<Company> findById(Connection conn, String authId, UUID companyId) throws SQLException {
 		String sql = SELECT_COMPANY
 			+ " WHERE c.id = ?"
-			+ " AND c.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+			+ " AND c.user_id = (" + UserQueryRepository.ACTIVE_USER_ID_BY_AUTH_ID + ")"
 			+ " AND c.deleted_at IS NULL";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setObject(1, companyId);
