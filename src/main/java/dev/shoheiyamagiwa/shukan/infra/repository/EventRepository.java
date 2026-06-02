@@ -16,6 +16,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public final class EventRepository {
+	private static final String ACTIVE_USER_ID_BY_AUTH_ID =
+		"SELECT u.id FROM users u WHERE u.auth_id = ? AND u.deleted_at IS NULL";
 	private static final String SELECT_EVENT =
 		"SELECT e.id, e.title,"
 			+ " c.id AS company_id, c.name AS company_name, c.applied_role AS company_applied_role,"
@@ -55,7 +57,7 @@ public final class EventRepository {
 	}
 
 	public boolean userExists(String authId) {
-		String sql = "SELECT 1 FROM users WHERE auth_id = ?";
+		String sql = "SELECT 1 FROM users WHERE auth_id = ? AND deleted_at IS NULL";
 		try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, authId);
 			try (ResultSet rs = stmt.executeQuery()) {
@@ -76,7 +78,7 @@ public final class EventRepository {
 		params.add(authId);
 
 		StringBuilder where = new StringBuilder(
-			" WHERE e.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+			" WHERE e.user_id = (" + ACTIVE_USER_ID_BY_AUTH_ID + ")"
 				+ " AND e.deleted_at IS NULL"
 				+ " AND c.deleted_at IS NULL");
 
@@ -115,7 +117,7 @@ public final class EventRepository {
 		params.add(authId);
 
 		StringBuilder where = new StringBuilder(
-			" WHERE e.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+			" WHERE e.user_id = (" + ACTIVE_USER_ID_BY_AUTH_ID + ")"
 				+ " AND e.deleted_at IS NULL"
 				+ " AND c.deleted_at IS NULL");
 
@@ -177,6 +179,7 @@ public final class EventRepository {
 				+ " FROM users u"
 				+ " JOIN companies c ON c.id = ?"
 				+ " WHERE u.auth_id = ?"
+				+ " AND u.deleted_at IS NULL"
 				+ " AND c.user_id = u.id"
 				+ " AND c.deleted_at IS NULL"
 				+ " RETURNING id";
@@ -234,7 +237,7 @@ public final class EventRepository {
 				+ " location = ?, creation_source_url = ?, begin_at = ?, end_at = ?,"
 				+ " updated_at = CURRENT_TIMESTAMP"
 				+ " WHERE e.id = ?"
-				+ " AND e.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+				+ " AND e.user_id = (" + ACTIVE_USER_ID_BY_AUTH_ID + ")"
 				+ " AND e.deleted_at IS NULL"
 				+ " AND EXISTS ("
 				+ " SELECT 1 FROM companies current_c"
@@ -271,7 +274,7 @@ public final class EventRepository {
 	public boolean softDelete(String authId, UUID eventId) {
 		String sql = "UPDATE events SET deleted_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP"
 			+ " WHERE id = ?"
-			+ " AND user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+			+ " AND user_id = (" + ACTIVE_USER_ID_BY_AUTH_ID + ")"
 			+ " AND deleted_at IS NULL";
 
 		try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -286,7 +289,7 @@ public final class EventRepository {
 	private Optional<Event> findById(Connection conn, String authId, UUID eventId) throws SQLException {
 		String sql = SELECT_EVENT
 			+ " WHERE e.id = ?"
-			+ " AND e.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+			+ " AND e.user_id = (" + ACTIVE_USER_ID_BY_AUTH_ID + ")"
 			+ " AND e.deleted_at IS NULL"
 			+ " AND c.deleted_at IS NULL";
 
@@ -306,7 +309,7 @@ public final class EventRepository {
 	private boolean isCompanyOwnedByUser(Connection conn, String authId, UUID companyId) throws SQLException {
 		String sql = "SELECT 1 FROM companies c"
 			+ " WHERE c.id = ?"
-			+ " AND c.user_id = (SELECT u.id FROM users u WHERE u.auth_id = ?)"
+			+ " AND c.user_id = (" + ACTIVE_USER_ID_BY_AUTH_ID + ")"
 			+ " AND c.deleted_at IS NULL";
 
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
