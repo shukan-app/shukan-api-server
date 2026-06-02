@@ -102,6 +102,15 @@ public final class CompanyController {
 		}
 	}
 	
+	private static boolean validateCreationSourceUrl(Context ctx, @Nullable String creationSourceUrl) {
+		if (creationSourceUrl != null
+			&& (creationSourceUrl.length() < 7 || creationSourceUrl.length() > 2048)) {
+			ErrorResponses.respond(ctx, HttpStatus.BAD_REQUEST, "creationSourceUrl must be between 7 and 2048 characters");
+			return false;
+		}
+		return true;
+	}
+	
 	public void registerRoutes(JavalinDefaultRoutingApi routes) {
 		routes.get("/users/me/companies", this::getCompanies);
 		routes.post("/users/me/companies", this::registerCompany);
@@ -206,6 +215,10 @@ public final class CompanyController {
 			return;
 		}
 		
+		if (!validateCreationSourceUrl(ctx, creationSourceUrl)) {
+			return;
+		}
+		
 		Optional<Company> company = companyService.registerCompany(authId, name, appliedRole, status, applicationRoute, contactType, creationSourceUrl);
 		if (company.isEmpty()) {
 			ErrorResponses.respond(ctx, HttpStatus.NOT_FOUND, "User not found");
@@ -268,6 +281,10 @@ public final class CompanyController {
 		
 		ContactType contactType = parseContactType(ctx, contactTypeValue);
 		if (contactType == null) {
+			return;
+		}
+		
+		if (!validateCreationSourceUrl(ctx, creationSourceUrl)) {
 			return;
 		}
 		
