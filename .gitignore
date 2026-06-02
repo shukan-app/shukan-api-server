@@ -53,3 +53,6 @@ build/
 .env.*
 !.env.example
 *-firebase-adminsdk-*.json
+
+### Others ###
+*.log
