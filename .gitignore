@@ -46,6 +46,9 @@ build/
 .agents/worktrees
 .agents/settings.local.json
 
+### Codex Security ###
+.codex-security-scans/
+
 ### Secrets ###
 .env.*
 !.env.example
