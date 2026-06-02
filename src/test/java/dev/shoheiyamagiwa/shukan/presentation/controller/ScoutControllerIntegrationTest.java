@@ -48,9 +48,7 @@ public final class ScoutControllerIntegrationTest {
 			.load()
 			.migrate();
 		
-		try (Connection conn =
-				 DriverManager.getConnection(
-					 postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
+		try (Connection conn = DriverManager.getConnection(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
 		     PreparedStatement stmt = conn.prepareStatement("INSERT INTO users (auth_id) VALUES (?)")) {
 			stmt.setString(1, TEST_AUTH_ID);
 			stmt.executeUpdate();
