@@ -2,8 +2,12 @@ package dev.shoheiyamagiwa.shukan.presentation.controller;
 
 import dev.shoheiyamagiwa.shukan.Main;
 import dev.shoheiyamagiwa.shukan.infra.repository.CompanyRepository;
+import dev.shoheiyamagiwa.shukan.infra.repository.EventRepository;
+import dev.shoheiyamagiwa.shukan.infra.repository.TaskRepository;
 import dev.shoheiyamagiwa.shukan.middleware.AuthMiddlewareProvider;
 import dev.shoheiyamagiwa.shukan.service.CompanyService;
+import dev.shoheiyamagiwa.shukan.service.EventService;
+import dev.shoheiyamagiwa.shukan.service.TaskService;
 import io.javalin.Javalin;
 import org.flywaydb.core.Flyway;
 import org.jspecify.annotations.Nullable;
@@ -22,6 +26,7 @@ import java.net.http.HttpResponse;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
@@ -53,11 +58,24 @@ public final class CompanyControllerIntegrationTest {
 			stmt.executeUpdate();
 		}
 		
-		CompanyRepository repository = new CompanyRepository(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
-		CompanyService companyService = new CompanyService(repository);
+		CompanyRepository companyRepository = new CompanyRepository(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
+		TaskRepository taskRepository = new TaskRepository(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
+		EventRepository eventRepository = new EventRepository(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
+		CompanyService companyService = new CompanyService(companyRepository);
+		TaskService taskService = new TaskService(taskRepository);
+		EventService eventService = new EventService(eventRepository);
 		CompanyController companyController = new CompanyController(companyService);
+		TaskController taskController = new TaskController(taskService);
+		EventController eventController = new EventController(eventService);
 		
-		app = Main.createApplication(new TestAuthMiddlewareProvider(), companyController::registerRoutes).start(0);
+		app = Main.createApplication(
+				new TestAuthMiddlewareProvider(),
+				routes -> {
+					companyController.registerRoutes(routes);
+					taskController.registerRoutes(routes);
+					eventController.registerRoutes(routes);
+				})
+			.start(0);
 	}
 	
 	@AfterAll
@@ -90,6 +108,45 @@ public final class CompanyControllerIntegrationTest {
 			return matcher.group(1);
 		}
 		throw new IllegalStateException("No id found in response body: " + body);
+	}
+	
+	private static String createTask(String companyId, String title) throws IOException, InterruptedException {
+		HttpResponse<String> response = send(
+			"POST",
+			"/users/me/tasks",
+			"""
+				{"title":"%s","companyId":"%s","type":"assessment",\
+				"status":"incomplete","creationSourceUrl":null,"deadline":null}"""
+				.formatted(title, companyId),
+			true);
+		assertEquals(201, response.statusCode());
+		return extractId(response.body());
+	}
+	
+	private static String createEvent(String companyId, String title) throws IOException, InterruptedException {
+		HttpResponse<String> response = send(
+			"POST",
+			"/users/me/events",
+			"""
+				{"title":"%s","companyId":"%s","type":"interview",\
+				"status":"scheduled","formatType":"offline","location":null,\
+				"creationSourceUrl":null,"beginAt":"2026-07-20T10:00:00+09:00",\
+				"endAt":"2026-07-20T11:00:00+09:00"}"""
+				.formatted(title, companyId),
+			true);
+		assertEquals(201, response.statusCode());
+		return extractId(response.body());
+	}
+	
+	private static int countRows(String sql, String id) throws SQLException {
+		try (Connection conn = DriverManager.getConnection(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
+		     PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setObject(1, UUID.fromString(id));
+			try (ResultSet rs = stmt.executeQuery()) {
+				assertTrue(rs.next());
+				return rs.getInt(1);
+			}
+		}
 	}
 	
 	private static HttpResponse<String> send(String method, String path, @Nullable String body, boolean authorized) throws IOException, InterruptedException {
@@ -283,6 +340,31 @@ public final class CompanyControllerIntegrationTest {
 		
 		HttpResponse<String> getResponse = send("GET", "/users/me/companies/" + id, null, true);
 		assertEquals(404, getResponse.statusCode());
+	}
+	
+	@Test
+	public void testDeleteCompanySoftDeletesChildTasksAndEvents() throws IOException, InterruptedException, SQLException {
+		String companyId = createCompany("Cascade Delete Corp");
+		String taskId = createTask(companyId, "Cascade Task");
+		String eventId = createEvent(companyId, "Cascade Event");
+		
+		HttpResponse<String> response = send("DELETE", "/users/me/companies/" + companyId, null, true);
+		assertEquals(204, response.statusCode());
+		
+		HttpResponse<String> tasksResponse = send("GET", "/users/me/tasks?page=0&pageSize=20", null, true);
+		assertEquals(200, tasksResponse.statusCode());
+		assertFalse(tasksResponse.body().contains(taskId));
+		assertFalse(tasksResponse.body().contains("Cascade Task"));
+		
+		HttpResponse<String> eventsResponse = send("GET", "/users/me/events?page=0&pageSize=50", null, true);
+		assertEquals(200, eventsResponse.statusCode());
+		assertFalse(eventsResponse.body().contains(eventId));
+		assertFalse(eventsResponse.body().contains("Cascade Event"));
+		
+		assertEquals(1, countRows("SELECT COUNT(*) FROM tasks WHERE id = ? AND deleted_at IS NOT NULL", taskId));
+		assertEquals(1, countRows("SELECT COUNT(*) FROM events WHERE id = ? AND deleted_at IS NOT NULL", eventId));
+		assertEquals(0, countRows("SELECT COUNT(*) FROM tasks WHERE company_id = ? AND deleted_at IS NULL", companyId));
+		assertEquals(0, countRows("SELECT COUNT(*) FROM events WHERE company_id = ? AND deleted_at IS NULL", companyId));
 	}
 	
 	@Test
