@@ -198,6 +198,51 @@ public final class CompanyControllerIntegrationTest {
 	}
 	
 	@Test
+	public void testRegisterCompanyAllowsNullCreationSourceUrl() throws IOException, InterruptedException {
+		HttpResponse<String> response = send(
+			"POST",
+			"/users/me/companies",
+			"""
+				{"name":"Null Source Corp","appliedRole":"Engineer","status":"bookmarked",\
+				"applicationRoute":"mynavi","contactType":"email","creationSourceUrl":null}""",
+			true);
+		
+		assertEquals(200, response.statusCode());
+		assertTrue(response.body().contains("\"name\":\"Null Source Corp\""));
+		assertTrue(response.body().contains("\"creationSourceUrl\":null"));
+	}
+	
+	@Test
+	public void testRegisterCompanyRejectsTooShortCreationSourceUrl() throws IOException, InterruptedException {
+		HttpResponse<String> response = send(
+			"POST",
+			"/users/me/companies",
+			"""
+				{"name":"Short Source Corp","appliedRole":"Engineer","status":"bookmarked",\
+				"applicationRoute":"mynavi","contactType":"email","creationSourceUrl":"short"}""",
+			true);
+		
+		assertEquals(400, response.statusCode());
+		assertTrue(response.body().contains("creationSourceUrl must be between 7 and 2048 characters"));
+	}
+	
+	@Test
+	public void testRegisterCompanyRejectsOversizedCreationSourceUrl() throws IOException, InterruptedException {
+		String creationSourceUrl = "https://" + "a".repeat(2042);
+		HttpResponse<String> response = send(
+			"POST",
+			"/users/me/companies",
+			"""
+				{"name":"Oversized Source Corp","appliedRole":"Engineer","status":"bookmarked",\
+				"applicationRoute":"mynavi","contactType":"email","creationSourceUrl":"%s"}"""
+				.formatted(creationSourceUrl),
+			true);
+		
+		assertEquals(400, response.statusCode());
+		assertTrue(response.body().contains("creationSourceUrl must be between 7 and 2048 characters"));
+	}
+	
+	@Test
 	public void testRegisterCompanyReturnsNotFoundWhenUserDoesNotExist() throws IOException, InterruptedException {
 		HttpResponse<String> response = send(
 			"POST",
@@ -316,6 +361,57 @@ public final class CompanyControllerIntegrationTest {
 		assertTrue(response.body().contains("\"name\":\"Updated Corp\""));
 		assertTrue(response.body().contains("\"status\":\"preentry\""));
 		assertTrue(response.body().contains("\"creationSourceUrl\":\"https://example.com/updated\""));
+	}
+	
+	@Test
+	public void testUpdateCompanyAllowsNullCreationSourceUrl() throws IOException, InterruptedException {
+		String id = createCompany("Update Null Source Corp");
+		
+		HttpResponse<String> response = send(
+			"PUT",
+			"/users/me/companies/" + id,
+			"""
+				{"name":"Updated Null Source Corp","appliedRole":"Manager","status":"preentry",\
+				"applicationRoute":"agent","contactType":"other","creationSourceUrl":null}""",
+			true);
+		
+		assertEquals(200, response.statusCode());
+		assertTrue(response.body().contains("\"name\":\"Updated Null Source Corp\""));
+		assertTrue(response.body().contains("\"creationSourceUrl\":null"));
+	}
+	
+	@Test
+	public void testUpdateCompanyRejectsTooShortCreationSourceUrl() throws IOException, InterruptedException {
+		String id = createCompany("Update Short Source Corp");
+		
+		HttpResponse<String> response = send(
+			"PUT",
+			"/users/me/companies/" + id,
+			"""
+				{"name":"Updated Short Source Corp","appliedRole":"Manager","status":"preentry",\
+				"applicationRoute":"agent","contactType":"other","creationSourceUrl":"short"}""",
+			true);
+		
+		assertEquals(400, response.statusCode());
+		assertTrue(response.body().contains("creationSourceUrl must be between 7 and 2048 characters"));
+	}
+	
+	@Test
+	public void testUpdateCompanyRejectsOversizedCreationSourceUrl() throws IOException, InterruptedException {
+		String id = createCompany("Update Oversized Source Corp");
+		String creationSourceUrl = "https://" + "a".repeat(2042);
+		
+		HttpResponse<String> response = send(
+			"PUT",
+			"/users/me/companies/" + id,
+			"""
+				{"name":"Updated Oversized Source Corp","appliedRole":"Manager","status":"preentry",\
+				"applicationRoute":"agent","contactType":"other","creationSourceUrl":"%s"}"""
+				.formatted(creationSourceUrl),
+			true);
+		
+		assertEquals(400, response.statusCode());
+		assertTrue(response.body().contains("creationSourceUrl must be between 7 and 2048 characters"));
 	}
 	
 	@Test
