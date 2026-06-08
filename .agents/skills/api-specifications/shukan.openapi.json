@@ -1116,31 +1116,6 @@
           }
         ]
       }
-    },
-    "/users/me": {
-      "delete": {
-        "summary": "自身のユーザー情報を削除する",
-        "deprecated": false,
-        "description": "自身のユーザー情報を削除するエンドポイント",
-        "operationId": "deleteUser",
-        "tags": [],
-        "parameters": [],
-        "responses": {
-          "204": {
-            "description": "",
-            "headers": {}
-          },
-          "400": {
-            "$ref": "#/components/responses/Error",
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
-      }
     }
   },
   "webhooks": {},
